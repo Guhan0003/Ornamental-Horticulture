@@ -22,6 +22,24 @@ class Settings(BaseSettings):
     SECRET_KEY: str = DEV_SECRET_KEY
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24
 
+    # The single admin login. There is no users table and no signup.
+    ADMIN_EMAIL: str = "admin@stomatalworld.local"
+    # Plaintext fallback for convenience. Prefer ADMIN_PASSWORD_HASH: set that
+    # and the plaintext one is ignored, so no readable password sits in the
+    # hosting dashboard. Generate with scripts/hash_password.py
+    ADMIN_PASSWORD: str = "changeme123"
+    ADMIN_PASSWORD_HASH: str = ""
+
+    # Supabase Storage. When unset, uploads fall back to local disk (dev only).
+    SUPABASE_URL: str = ""
+    SUPABASE_SERVICE_KEY: str = ""
+    SUPABASE_BUCKET: str = "plant-images"
+
+    # Uploaded photos are resized and re-encoded before storage; a 4MB phone
+    # photo is unusable on store Wi-Fi.
+    IMAGE_MAX_DIMENSION: int = 1600
+    IMAGE_QUALITY: int = 80
+
     # Origins allowed to call this API (the Vercel frontend, plus local dev).
     CORS_ORIGINS: list[str] = [
         "http://localhost:5173",
@@ -58,7 +76,17 @@ class Settings(BaseSettings):
                 f"in production (got {len(self.SECRET_KEY)})."
             )
 
+        if not self.ADMIN_PASSWORD_HASH and self.ADMIN_PASSWORD == "changeme123":
+            raise ValueError(
+                "Set ADMIN_PASSWORD (or better, ADMIN_PASSWORD_HASH) before "
+                "running in production."
+            )
+
         return self
+
+    @property
+    def uses_supabase_storage(self) -> bool:
+        return bool(self.SUPABASE_URL and self.SUPABASE_SERVICE_KEY)
 
 
 @lru_cache

@@ -2,10 +2,10 @@ import pytest
 
 
 @pytest.fixture
-def plant(client, editor_headers):
+def plant(client, admin_headers):
     response = client.post(
         "/api/v1/plants",
-        headers=editor_headers,
+        headers=admin_headers,
         json={
             "slug": "monstera-deliciosa",
             "common_name": "Monstera",
@@ -17,10 +17,10 @@ def plant(client, editor_headers):
 
 
 @pytest.fixture
-def draft(client, editor_headers):
+def draft(client, admin_headers):
     response = client.post(
         "/api/v1/plants",
-        headers=editor_headers,
+        headers=admin_headers,
         json={"slug": "secret-fern", "common_name": "Secret Fern", "is_published": False},
     )
     assert response.status_code == 201
@@ -37,8 +37,8 @@ def test_anonymous_cannot_read_a_draft(client, draft):
     assert client.get("/api/v1/plants/secret-fern").status_code == 404
 
 
-def test_editor_can_preview_a_draft(client, editor_headers, draft):
-    response = client.get("/api/v1/plants/secret-fern", headers=editor_headers)
+def test_editor_can_preview_a_draft(client, admin_headers, draft):
+    response = client.get("/api/v1/plants/secret-fern", headers=admin_headers)
     assert response.status_code == 200
 
 
@@ -48,9 +48,9 @@ def test_draft_is_hidden_from_the_public_list(client, plant, draft):
     assert "secret-fern" not in slugs
 
 
-def test_editor_can_list_drafts(client, editor_headers, plant, draft):
+def test_editor_can_list_drafts(client, admin_headers, plant, draft):
     response = client.get(
-        "/api/v1/plants", params={"include_drafts": True}, headers=editor_headers
+        "/api/v1/plants", params={"include_drafts": True}, headers=admin_headers
     )
     assert "secret-fern" in [p["slug"] for p in response.json()]
 
@@ -68,20 +68,20 @@ def test_creating_a_plant_requires_auth(client):
     assert response.status_code == 401
 
 
-def test_duplicate_slug_is_rejected(client, editor_headers, plant):
+def test_duplicate_slug_is_rejected(client, admin_headers, plant):
     response = client.post(
         "/api/v1/plants",
-        headers=editor_headers,
+        headers=admin_headers,
         json={"slug": "monstera-deliciosa", "common_name": "Another"},
     )
     assert response.status_code == 409
 
 
-def test_slug_cannot_be_changed(client, editor_headers, plant):
+def test_slug_cannot_be_changed(client, admin_headers, plant):
     """Printed QR labels depend on the slug never moving."""
     client.patch(
         "/api/v1/plants/monstera-deliciosa",
-        headers=editor_headers,
+        headers=admin_headers,
         json={"slug": "something-else", "common_name": "Renamed"},
     )
     assert client.get("/api/v1/plants/monstera-deliciosa").status_code == 200

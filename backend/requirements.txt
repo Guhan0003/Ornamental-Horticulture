@@ -8,3 +8,6 @@ python-multipart>=0.0.12
 bcrypt>=4.2
 pyjwt>=2.9
 alembic>=1.14
+pillow>=11.0
+httpx>=0.28
+psycopg[binary]>=3.2

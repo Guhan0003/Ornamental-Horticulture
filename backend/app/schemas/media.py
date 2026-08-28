@@ -11,4 +11,5 @@ class MediaRead(BaseModel):
     url: str
     content_type: str | None = None
     size_bytes: int | None = None
+    uploaded_by: str | None = None
     created_at: datetime

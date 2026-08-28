@@ -1,3 +1,4 @@
+import hmac
 from datetime import datetime, timedelta, timezone
 
 import bcrypt
@@ -28,8 +29,29 @@ def verify_password(plain: str, hashed: str) -> bool:
     try:
         return bcrypt.checkpw(encoded, hashed.encode("utf-8"))
     except ValueError:
-        # Malformed hash in the database — treat as a failed login, never a 500.
+        # Malformed hash in config — treat as a failed login, never a 500.
         return False
+
+
+def authenticate(email: str, password: str) -> bool:
+    """
+    Check credentials against the single configured admin login.
+
+    Both comparisons are constant-time: bcrypt is by construction, and the
+    email uses compare_digest so a wrong address can't be distinguished from
+    a wrong password by timing.
+    """
+    email_ok = hmac.compare_digest(
+        email.strip().lower(), settings.ADMIN_EMAIL.strip().lower()
+    )
+
+    if settings.ADMIN_PASSWORD_HASH:
+        password_ok = verify_password(password, settings.ADMIN_PASSWORD_HASH)
+    else:
+        password_ok = hmac.compare_digest(password, settings.ADMIN_PASSWORD)
+
+    # Evaluate both before returning so the result doesn't leak which failed.
+    return email_ok and password_ok
 
 
 def create_access_token(subject: str) -> str:
