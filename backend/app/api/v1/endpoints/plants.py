@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, status
 from sqlalchemy.orm import joinedload
 
-from app.api.deps import CurrentUser, DbSession
+from app.api.deps import CurrentUser, DbSession, OptionalUser
 from app.models.plant import Plant
 from app.schemas.plant import PlantCreate, PlantDetail, PlantListItem, PlantUpdate
 
@@ -9,26 +9,32 @@ router = APIRouter()
 
 
 @router.get("", response_model=list[PlantListItem])
-def list_plants(db: DbSession, published_only: bool = True):
+def list_plants(db: DbSession, user: OptionalUser, include_drafts: bool = False):
     query = db.query(Plant)
-    if published_only:
+
+    # Drafts are only ever visible to a signed-in editor.
+    if not (include_drafts and user is not None):
         query = query.filter(Plant.is_published.is_(True))
+
     return query.order_by(Plant.common_name).all()
 
 
 @router.get("/{slug}", response_model=PlantDetail)
-def get_plant(slug: str, db: DbSession):
+def get_plant(slug: str, db: DbSession, user: OptionalUser):
     """
     The QR-code target. Returns the plant with its ordered content blocks —
     everything needed to render the page in one request, because the visitor
     is standing in a store on poor Wi-Fi.
     """
-    plant = (
-        db.query(Plant)
-        .options(joinedload(Plant.blocks), joinedload(Plant.category))
-        .filter(Plant.slug == slug, Plant.is_published.is_(True))
-        .first()
+    query = db.query(Plant).options(
+        joinedload(Plant.blocks), joinedload(Plant.category)
     )
+
+    # A signed-in editor can preview a draft; everyone else sees published only.
+    if user is None:
+        query = query.filter(Plant.is_published.is_(True))
+
+    plant = query.filter(Plant.slug == slug).first()
 
     if plant is None:
         raise HTTPException(

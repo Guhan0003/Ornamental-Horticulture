@@ -24,3 +24,9 @@ class UserRead(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
+
+
+class UserUpdate(BaseModel):
+    full_name: str | None = None
+    role: Role | None = None
+    is_active: bool | None = None

@@ -17,6 +17,26 @@ uvicorn app.main:app --reload
 - Interactive docs: http://localhost:8000/docs
 - Health check: http://localhost:8000/health
 
+## Creating the first account
+
+There is **no public signup** — only a few trusted people should ever get in. Create
+the first admin from the command line:
+
+```bash
+python scripts/create_admin.py
+```
+
+After that, admins can add other accounts from the admin panel (or `POST /api/v1/users`).
+
+## Tests
+
+```bash
+pip install -r requirements-dev.txt
+pytest
+```
+
+Each test runs against a fresh in-memory database, so they are isolated and fast.
+
 ## Structure
 
 ```
@@ -64,6 +84,8 @@ of section costs one component plus one registry entry.
   Alembic migrations before production.
 - Uploaded images go to local disk. Most hosts give containers an ephemeral
   filesystem, so move media to S3 or Cloudinary before launch.
-- `SECRET_KEY` must be overridden in production. Rotating it logs everyone out.
+- `SECRET_KEY` must be overridden in production. With `ENVIRONMENT=production` the
+  app refuses to start on a default or short key rather than signing tokens with
+  something readable in the source. Rotating it logs everyone out.
 - Plant `slug` is deliberately not editable via the API — printed QR labels
   depend on it never changing.
