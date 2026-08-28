@@ -21,3 +21,10 @@ npm-debug.log*
 # Editors
 .vscode/
 .idea/
+
+# Build output
+dist/
+.vercel/
+
+# Local tooling
+.claude/
