@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="StomatalWorld">
+  <rect width="64" height="64" rx="14" fill="#0c1f14"/>
+  <g transform="translate(8 8)">
+    <path d="M40 8C40 8 38 30 26 38C18 43.3 10 40 10 40C10 40 12 18 24 10C32 4.7 40 8 40 8Z" stroke="#7fd6a2" stroke-width="2.8" stroke-linejoin="round" fill="none"/>
+    <path d="M34 14C34 14 20 24 8 44" stroke="#7fd6a2" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+  </g>
+</svg>
