@@ -19,7 +19,7 @@ export default function AdminLayout() {
         </nav>
 
         <div className="admin__account">
-          <span className="admin__who">{user?.full_name || user?.email}</span>
+          <span className="admin__who">{user?.email}</span>
           <button type="button" className="btn btn--ghost" onClick={signOut}>
             Sign out
           </button>

@@ -32,10 +32,29 @@ src/
 │       ├── Gallery.jsx
 │       └── Facts.jsx     care details (light, water, soil, pet safety)
 ├── lib/
-│   └── api.js            backend client
+│   └── api.js            backend client + token handling
+├── admin/                the admin panel (not linked from anywhere public)
+│   ├── AuthContext.jsx   session state
+│   ├── RequireAuth.jsx   route guard
+│   ├── admin.css
+│   ├── pages/
+│   │   ├── Login.jsx
+│   │   ├── PlantList.jsx
+│   │   ├── PlantEditor.jsx   details + block editor
+│   │   └── Categories.jsx
+│   └── components/
+│       ├── AdminLayout.jsx
+│       ├── ImageUpload.jsx
+│       ├── BlockEditor.jsx   add / edit / reorder / delete blocks
+│       └── blockforms/       one form per block type
 └── styles/
     └── index.css
 ```
+
+## Admin
+
+At `/admin`, behind a single login. It is deliberately not linked from any public page.
+Sign in with the `ADMIN_EMAIL` / `ADMIN_PASSWORD` configured on the backend.
 
 ## The dynamic page format
 
