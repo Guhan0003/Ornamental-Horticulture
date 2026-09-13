@@ -66,4 +66,4 @@ Deep Dive points — so a sparse plant still reads as a finished page.
 ## Deploying
 
 Vercel, with **Root Directory set to `frontend`**.
-`vercel.json` rewrites all routes to `index.html` so `/plant/:slug` resolves.
+`frontend/vercel.json` rewrites all routes to `index.html` so plant addresses like `/peace-lily` resolve. There is no vercel.json at the repository root: the backend is a separate Vercel project with Root Directory `backend`.

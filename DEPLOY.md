@@ -3,7 +3,7 @@
 Two Vercel projects from this one repository, and one Supabase project:
 
 ```
-stomatalworld.vercel.app          frontend   Vercel project (already exists)
+stomatalworld.vercel.app          frontend   Vercel project, Root Directory: frontend (already exists)
 <backend>.vercel.app              backend    Vercel project, Root Directory: backend  (new)
 Supabase                          Postgres database + plant-images bucket
 ```
@@ -84,7 +84,7 @@ Both are safe to run again.
 The code must be on GitHub first (`git push`).
 
 1. [vercel.com/new](https://vercel.com/new) → import **Guhan0003/Ornamental-Horticulture**.
-2. **Root Directory:** `backend`. Vercel detects FastAPI; leave build settings as they are.
+2. **Root Directory:** `backend`. Vercel detects FastAPI. Under Build and Output Settings, all overrides must be off.
 3. **Environment Variables** — the same values as `.env.production`, except
    `DATABASE_URL` uses the **transaction pooler (port 6543)**:
 
@@ -108,7 +108,10 @@ Supabase storage and a Postgres database.
 
 ## 4. Point the frontend at the backend
 
-1. Open the existing **frontend** project on Vercel → Settings → Environment Variables.
+1. Open the existing **frontend** project on Vercel → Settings → Build and Deployment.
+   **Root Directory** must be `frontend`, and the Install, Build and Output overrides off.
+   Each project builds only its own folder; there is no vercel.json at the repository root.
+   Then go to Settings → Environment Variables.
 2. Add `VITE_API_URL` = the backend address from step 3, e.g.
    `https://ornamental-horticulture-api.vercel.app` (no trailing slash).
 3. **Deployments → latest → Redeploy.** The value is read at build time, so this is needed.
