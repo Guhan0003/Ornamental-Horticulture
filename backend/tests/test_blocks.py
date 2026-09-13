@@ -81,3 +81,10 @@ def test_deleting_a_plant_removes_its_blocks(client, admin_headers, plant_id, db
     client.delete("/api/v1/plants/fiddle-leaf-fig", headers=admin_headers)
 
     assert db_session.query(ContentBlock).filter_by(plant_id=plant_id).count() == 0
+
+
+def test_reorder_for_an_unknown_plant_is_404(client, admin_headers):
+    response = client.put(
+        "/api/v1/blocks/plant/999/reorder", headers=admin_headers, json={"block_ids": []}
+    )
+    assert response.status_code == 404

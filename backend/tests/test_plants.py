@@ -90,3 +90,62 @@ def test_slug_cannot_be_changed(client, admin_headers, plant):
 
 def test_unknown_slug_is_404(client):
     assert client.get("/api/v1/plants/does-not-exist").status_code == 404
+
+
+@pytest.mark.parametrize(
+    "slug",
+    ["", "My Plant", "a/b", "monstera?x=1", "trailing-", "double--hyphen", "x" * 161],
+)
+def test_malformed_slug_is_rejected(client, admin_headers, slug):
+    """A bad slug would be printed into a QR code and could never be fixed."""
+    response = client.post(
+        "/api/v1/plants", headers=admin_headers, json={"slug": slug, "common_name": "X"}
+    )
+    assert response.status_code == 422
+
+
+def test_blank_common_name_is_rejected(client, admin_headers):
+    response = client.post(
+        "/api/v1/plants", headers=admin_headers, json={"slug": "fern", "common_name": "  "}
+    )
+    assert response.status_code == 422
+
+
+def test_required_fields_cannot_be_nulled(client, admin_headers, plant):
+    for field in ("common_name", "is_published"):
+        response = client.patch(
+            "/api/v1/plants/monstera-deliciosa", headers=admin_headers, json={field: None}
+        )
+        assert response.status_code == 422, field
+
+
+def test_optional_fields_can_be_cleared(client, admin_headers, plant):
+    response = client.patch(
+        "/api/v1/plants/monstera-deliciosa",
+        headers=admin_headers,
+        json={"summary": None, "category_id": None},
+    )
+    assert response.status_code == 200
+
+
+def test_over_long_text_is_rejected(client, admin_headers, plant):
+    response = client.patch(
+        "/api/v1/plants/monstera-deliciosa",
+        headers=admin_headers,
+        json={"summary": "x" * 501},
+    )
+    assert response.status_code == 422
+
+
+def test_unknown_category_is_rejected(client, admin_headers, plant):
+    created = client.post(
+        "/api/v1/plants",
+        headers=admin_headers,
+        json={"slug": "fern", "common_name": "Fern", "category_id": 999},
+    )
+    assert created.status_code == 400
+
+    updated = client.patch(
+        "/api/v1/plants/monstera-deliciosa", headers=admin_headers, json={"category_id": 999}
+    )
+    assert updated.status_code == 400

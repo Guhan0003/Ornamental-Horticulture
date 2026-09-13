@@ -64,6 +64,11 @@ def reorder_blocks(
     plant_id: int, payload: ReorderRequest, db: DbSession, user: CurrentUser
 ):
     """Drag-and-drop reordering in the admin panel lands here."""
+    if db.get(Plant, plant_id) is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Plant not found"
+        )
+
     blocks = db.query(ContentBlock).filter(ContentBlock.plant_id == plant_id).all()
     by_id = {block.id: block for block in blocks}
 

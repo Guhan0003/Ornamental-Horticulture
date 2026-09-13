@@ -8,6 +8,31 @@ from app.schemas.category import CategoryCreate, CategoryRead, CategoryUpdate
 router = APIRouter()
 
 
+def _check_parent(db: DbSession, parent_id: int | None, category_id: int | None = None):
+    """The parent must exist and must not be the category itself or its descendant."""
+    if parent_id is None:
+        return
+
+    parent = db.get(Category, parent_id)
+    if parent is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Parent category not found"
+        )
+
+    # Walk up from the new parent. Meeting ourselves means the move would make
+    # a loop, and a looped category belongs to no tree the admin can display.
+    seen = set()
+    while parent is not None and parent.id not in seen:
+        if parent.id == category_id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="A category cannot be placed inside itself or one of its own "
+                "sub-categories.",
+            )
+        seen.add(parent.id)
+        parent = parent.parent
+
+
 @router.get("", response_model=list[CategoryRead])
 def list_categories(db: DbSession):
     return db.query(Category).order_by(Category.name).all()
@@ -19,6 +44,8 @@ def create_category(payload: CategoryCreate, db: DbSession, user: CurrentUser):
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT, detail="That slug is already taken"
         )
+
+    _check_parent(db, payload.parent_id)
 
     category = Category(**payload.model_dump())
     db.add(category)
@@ -37,7 +64,23 @@ def update_category(
             status_code=status.HTTP_404_NOT_FOUND, detail="Category not found"
         )
 
-    for field, value in payload.model_dump(exclude_unset=True).items():
+    changes = payload.model_dump(exclude_unset=True)
+
+    if "slug" in changes:
+        taken = (
+            db.query(Category)
+            .filter(Category.slug == changes["slug"], Category.id != category_id)
+            .first()
+        )
+        if taken:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT, detail="That slug is already taken"
+            )
+
+    if "parent_id" in changes:
+        _check_parent(db, changes["parent_id"], category_id)
+
+    for field, value in changes.items():
         setattr(category, field, value)
 
     db.commit()
