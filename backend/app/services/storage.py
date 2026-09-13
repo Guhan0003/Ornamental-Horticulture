@@ -25,7 +25,7 @@ class SupabaseStorage:
     """
     Supabase Storage over its REST API.
 
-    Deliberately not using the supabase client library — this is one HTTP PUT
+    Deliberately not using the supabase client library — this is one HTTP POST
     and one URL to build, and the library pulls in a large dependency tree.
     """
 
@@ -33,6 +33,15 @@ class SupabaseStorage:
         self.base = settings.SUPABASE_URL.rstrip("/")
         self.bucket = settings.SUPABASE_BUCKET
         self.key = settings.SUPABASE_SERVICE_KEY
+
+    def _auth_headers(self) -> dict[str, str]:
+        # New secret keys (sb_secret_...) aren't JWTs and belong only in `apikey`;
+        # sending one as a Bearer token fails JWT verification. The legacy
+        # service_role key is a JWT and is sent both ways.
+        headers = {"apikey": self.key}
+        if self.key.startswith("eyJ"):
+            headers["Authorization"] = f"Bearer {self.key}"
+        return headers
 
     def save(self, data: bytes, extension: str, content_type: str) -> str:
         name = f"{uuid.uuid4().hex}{extension}"
@@ -43,7 +52,7 @@ class SupabaseStorage:
                 url,
                 content=data,
                 headers={
-                    "Authorization": f"Bearer {self.key}",
+                    **self._auth_headers(),
                     "Content-Type": content_type,
                     "cache-control": "public, max-age=31536000, immutable",
                 },

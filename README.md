@@ -42,12 +42,26 @@ A private area at `/admin` for adding and maintaining plants.
 **One login only.** A single username and password, set on the server. There is no
 signup and no way to create another account, so nobody else can get in.
 
-Inside, two pages:
+Inside, two tabs:
 
-| Page | What it does |
+| Tab | What it does |
 |---|---|
-| **Add plant** | Upload the photo, then fill in each section of the page: names, quick profile, the snap and the deep dive. Save, and the plant's page goes live at its address. |
-| **All plants** | Everything in the database, with the image and name of each plant. Open any plant to view it, edit its details, replace its image, or delete it. |
+| **All plants** | Every plant as a card with its photo, name and address. Open one to edit it, view its live page, or delete it. |
+| **Add plant** | One form, laid out in the same order as the plant page. Save, and the page is live at its address. |
+
+### What the form asks for
+
+| # | Section | Fields | Required? |
+|---|---|---|---|
+| 1 | **Photo** | the photo (tap to choose, or drag and drop), and a one-line description of it | photo required |
+| 2 | **Identity** | common name, scientific name, page address (filled in from the name) | common name and address |
+| 3 | **Quick Profile** | environment: tap *Indoor*, *Outdoor* or *Indoor & outdoor* · light need: a summary, a tolerance note, and a 4-step light scale (tap each step: ideal → tolerates → clear) · landscape uses and home uses: type each one and press Enter · an optional note under each | all optional; empty cards are hidden on the page |
+| 4 | **The Snap** | one or two sentences, up to 600 characters | required |
+| 5 | **The Deep Dive** | titled points, each with an icon picked from 8. A new plant starts with *Origin & Habit*, *Key Care Rule*, *Special Feature* and *Pet Safety*; add more, remove any, or reorder them. Points left blank are skipped. | at least one point |
+
+Every plant uses the same page design; only the content changes. A plant without pet
+information simply has no Pet Safety point, and a plant that needs an extra point, say
+*Pruning*, gets one.
 
 ---
 
@@ -55,22 +69,23 @@ Inside, two pages:
 
 ### A plant
 
-The first plant, the Peace Lily, is live at `/peace-lily` with its content hardcoded in
-[`frontend/src/data/plants.js`](frontend/src/data/plants.js). That file defines the
-shape every plant follows; the database and admin dashboard will be built to match it.
+Plants live in the database and are served by the API; the page and the admin form
+both follow the same shape. The Peace Lily is loaded by `backend/scripts/seed.py` from
+[`backend/seed/peace-lily.json`](backend/seed/peace-lily.json), which is a complete
+example. The exact API format is in [backend/README.md](backend/README.md#a-plant).
 
 | Field | Example |
 |---|---|
 | `slug` | `peace-lily`, the address. **Set once, never changed** (see below). |
-| `commonName` | Peace Lily |
-| `scientificName` | *Spathiphyllum wallisii* |
-| `image` | the photo, with alt text |
+| `common_name` | Peace Lily |
+| `scientific_name` | *Spathiphyllum wallisii* |
+| `image` | the photo, its description, a blurred preview and a backdrop colour |
 | `profile.environment` | Indoor |
 | `profile.light` | a label (*Medium to bright indirect light*), a note (*Tolerates low light*), and where it sits on the scale Low → Medium → Bright indirect → Direct sun, drawn as a meter |
-| `profile.landscapeUse` | a list (*Shaded tropical borders, Mass groundcover*) and an optional note (*Frost-free zones*) |
-| `profile.homeUse` | a list (*Tabletop accent, Floor plant, Air-purifying space cleaner*) |
+| `profile.landscape_use` | a list (*Shaded tropical borders, Mass groundcover*) and an optional note (*Frost-free zones*) |
+| `profile.home_use` | a list (*Tabletop accent, Floor plant, Air-purifying space cleaner*) |
 | `snap` | the short description |
-| `deepDive` | the long description, as titled points, each with an icon: origin & habit, key care rule, special feature, pet safety |
+| `deep_dive` | the long description, as titled points, each with an icon |
 
 ### The address is permanent
 
@@ -94,16 +109,13 @@ removed. Pages load fast even on a poor mobile connection.
 
 ### Phase 1 — plant pages and admin dashboard *(now)*
 
-1. ~~**Plant page template** at `/<slug>`~~, done with the Peace Lily hardcoded.
-   Mobile-first, animated, pinned photo on wide screens, "not found" page for unknown
-   addresses.
-2. **Data model and API** matching the template. The current backend uses a more
-   complex block-based page builder with categories; that is removed, and the page
-   reads from the API instead of the hardcoded file.
-3. **Admin: Add plant** page.
-4. **Admin: All plants** page: browse, view, edit, delete.
-5. **Database migrations** (Alembic) so the schema can change safely once there is real
-   data.
+1. ~~**Plant page template** at `/<slug>`~~: mobile-first, animated, pinned photo on
+   wide screens, "not found" page for unknown addresses.
+2. ~~**Data model and API** matching the template~~, replacing the block-based page
+   builder and categories. Pages and the home search read from the API.
+3. ~~**Admin: Add plant** tab~~
+4. ~~**Admin: All plants** tab~~: browse, edit, delete.
+5. ~~**Database migrations** (Alembic)~~
 6. **Deploy** the frontend to Vercel and the backend to a host, with Supabase for the
    database and images.
 
@@ -124,7 +136,7 @@ otherwise.
 | A **Notes** section for extra remarks? (in the first idea, not in the Peace Lily sample) | Not shown |
 | **Draft / published** switch, so a half-written plant isn't public? | No, a plant is live as soon as it's saved |
 | **Formatting** in the long description (bold, lists, headings)? | No, plain text with paragraphs |
-| Where does the **backend** run? (Render, Railway, Fly…) | Not decided |
+| Where does the **backend** run? | Vercel, as a second project (free plan for now) |
 
 ---
 
@@ -148,6 +160,8 @@ cd backend
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env        # set ADMIN_EMAIL and ADMIN_PASSWORD
+alembic upgrade head        # create the tables
+python scripts/seed.py      # add the Peace Lily
 uvicorn app.main:app --reload
 ```
 
@@ -165,9 +179,5 @@ npm run dev
 
 ## Deploying
 
-**Frontend** — Vercel. Set `VITE_API_URL` to the deployed backend URL.
-
-**Backend** — any container host. Set `ENVIRONMENT=production`, a real `SECRET_KEY`,
-`ADMIN_PASSWORD_HASH` (from `python scripts/hash_password.py`), and the Supabase
-`DATABASE_URL`, `SUPABASE_URL` and `SUPABASE_SERVICE_KEY`. The backend refuses to start
-in production with a default key or password. See [backend/README.md](backend/README.md).
+Frontend and backend are two Vercel projects from this repository, with Supabase for the
+database and photos. Step-by-step: **[DEPLOY.md](DEPLOY.md)**.
