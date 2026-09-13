@@ -1,3 +1,4 @@
+import os
 from functools import lru_cache
 
 from pydantic import model_validator
@@ -47,7 +48,7 @@ class Settings(BaseSettings):
         "https://ornamental-horticulture.vercel.app",
     ]
 
-    # Where uploaded plant images go. Swap for S3/Cloudinary before launch.
+    # Local-disk uploads, used only when Supabase Storage isn't configured.
     MEDIA_ROOT: str = "./media"
     MEDIA_URL: str = "/media"
 
@@ -82,6 +83,18 @@ class Settings(BaseSettings):
                 "running in production."
             )
 
+        if not self.uses_supabase_storage:
+            # Local disk is wiped on redeploy, and read-only on Vercel.
+            raise ValueError(
+                "Set SUPABASE_URL and SUPABASE_SERVICE_KEY in production; "
+                "photos can't be stored on the server's own disk."
+            )
+
+        if self.DATABASE_URL.startswith("sqlite"):
+            raise ValueError(
+                "Set DATABASE_URL to the Supabase Postgres connection string in production."
+            )
+
         return self
 
     @property
@@ -89,9 +102,16 @@ class Settings(BaseSettings):
         return bool(self.SUPABASE_URL and self.SUPABASE_SERVICE_KEY)
 
 
+def load_settings() -> Settings:
+    # ENV_FILE picks a different file for one-off commands, e.g. running the
+    # migrations against Supabase with `ENV_FILE=.env.production alembic upgrade head`,
+    # so production keys never have to be typed into the shell.
+    return Settings(_env_file=os.environ.get("ENV_FILE", ".env"))
+
+
 @lru_cache
 def get_settings() -> Settings:
-    return Settings()
+    return load_settings()
 
 
 settings = get_settings()
