@@ -39,6 +39,9 @@ body {
   gap: 2.5rem;
   padding: 2rem 1.5rem calc(2rem + env(safe-area-inset-bottom));
   overflow: hidden;
+  /* clip, not just hidden: a hidden box can still be scrolled sideways when an
+     input inside it takes focus, which shifted the page under the glow */
+  overflow: clip;
 }
 
 /* soft light behind the card */
@@ -105,6 +108,12 @@ body {
   font-size: 0.85rem;
   color: var(--ink);
   background: rgba(242, 239, 228, 0.04);
+}
+
+button.status {
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
 }
 
 .dot {
@@ -211,21 +220,11 @@ body {
   stroke-linecap: round;
 }
 
-/* Doubled class to outrank the admin panel's global input styles, which load later. */
-.search .search__field input,
-.search .search__field input:focus {
-  width: auto;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  outline: 0;
-  background: transparent;
-}
-
 .search__field input {
   flex: 1;
   min-width: 0;
   height: 2.9rem;
+  padding: 0;
   border: 0;
   outline: 0;
   background: transparent;

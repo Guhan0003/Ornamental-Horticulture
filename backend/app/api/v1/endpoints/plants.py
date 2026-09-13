@@ -1,69 +1,44 @@
 from fastapi import APIRouter, HTTPException, status
-from sqlalchemy.orm import joinedload
 
-from app.api.deps import CurrentUser, DbSession, OptionalUser
-from app.models.category import Category
-from app.models.plant import Plant
-from app.schemas.plant import PlantCreate, PlantDetail, PlantListItem, PlantUpdate
+from app.api.deps import CurrentUser, DbSession
+from app.models.plant import Plant, RetiredSlug
+from app.schemas.plant import PlantCreate, PlantRead, PlantSummary, PlantUpdate
 
 router = APIRouter()
 
 
-def _check_category(db: DbSession, category_id: int | None):
-    # SQLite doesn't enforce foreign keys but Postgres does, so without this a
-    # bad id passes every local test and then fails in production as a 500.
-    if category_id is not None and db.get(Category, category_id) is None:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="Category not found"
-        )
-
-
-@router.get("", response_model=list[PlantListItem])
-def list_plants(db: DbSession, user: OptionalUser, include_drafts: bool = False):
-    query = db.query(Plant)
-
-    # Drafts are only ever visible to a signed-in editor.
-    if not (include_drafts and user is not None):
-        query = query.filter(Plant.is_published.is_(True))
-
-    return query.order_by(Plant.common_name).all()
-
-
-@router.get("/{slug}", response_model=PlantDetail)
-def get_plant(slug: str, db: DbSession, user: OptionalUser):
-    """
-    The QR-code target. Returns the plant with its ordered content blocks —
-    everything needed to render the page in one request, because the visitor
-    is standing in a store on poor Wi-Fi.
-    """
-    query = db.query(Plant).options(
-        joinedload(Plant.blocks), joinedload(Plant.category)
-    )
-
-    # A signed-in editor can preview a draft; everyone else sees published only.
-    if user is None:
-        query = query.filter(Plant.is_published.is_(True))
-
-    plant = query.filter(Plant.slug == slug).first()
-
+def _get_or_404(db: DbSession, slug: str) -> Plant:
+    plant = db.query(Plant).filter(Plant.slug == slug).first()
     if plant is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Plant not found"
-        )
-
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Plant not found")
     return plant
 
 
-@router.post("", response_model=PlantDetail, status_code=status.HTTP_201_CREATED)
+@router.get("", response_model=list[PlantSummary])
+def list_plants(db: DbSession):
+    """Every plant, A–Z. Feeds the home page search and the admin list."""
+    return db.query(Plant).order_by(Plant.common_name).all()
+
+
+@router.get("/{slug}", response_model=PlantRead)
+def get_plant(slug: str, db: DbSession):
+    """Everything needed to render one plant page, in a single request."""
+    return _get_or_404(db, slug)
+
+
+@router.post("", response_model=PlantRead, status_code=status.HTTP_201_CREATED)
 def create_plant(payload: PlantCreate, db: DbSession, user: CurrentUser):
     if db.query(Plant).filter(Plant.slug == payload.slug).first():
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail="That slug is already taken. Slugs are permanent once a QR "
-            "label is printed, so they cannot be reused.",
+            detail="Another plant already uses that address.",
         )
-
-    _check_category(db, payload.category_id)
+    if db.get(RetiredSlug, payload.slug):
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="That address belonged to a deleted plant and can't be reused — "
+            "an old QR label may still point at it.",
+        )
 
     plant = Plant(**payload.model_dump())
     db.add(plant)
@@ -72,19 +47,11 @@ def create_plant(payload: PlantCreate, db: DbSession, user: CurrentUser):
     return plant
 
 
-@router.patch("/{slug}", response_model=PlantDetail)
+@router.patch("/{slug}", response_model=PlantRead)
 def update_plant(slug: str, payload: PlantUpdate, db: DbSession, user: CurrentUser):
-    plant = db.query(Plant).filter(Plant.slug == slug).first()
-    if plant is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Plant not found"
-        )
+    plant = _get_or_404(db, slug)
 
-    changes = payload.model_dump(exclude_unset=True)
-    if "category_id" in changes:
-        _check_category(db, changes["category_id"])
-
-    for field, value in changes.items():
+    for field, value in payload.model_dump(exclude_unset=True).items():
         setattr(plant, field, value)
 
     db.commit()
@@ -94,11 +61,8 @@ def update_plant(slug: str, payload: PlantUpdate, db: DbSession, user: CurrentUs
 
 @router.delete("/{slug}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_plant(slug: str, db: DbSession, user: CurrentUser):
-    plant = db.query(Plant).filter(Plant.slug == slug).first()
-    if plant is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Plant not found"
-        )
+    plant = _get_or_404(db, slug)
 
     db.delete(plant)
+    db.add(RetiredSlug(slug=slug))
     db.commit()

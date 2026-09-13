@@ -6,13 +6,8 @@ from fastapi.staticfiles import StaticFiles
 
 from app.api.v1.router import api_router
 from app.core.config import settings
-from app.db.base import Base
-from app.db.session import engine
 
-# Fine for development. Switch to Alembic migrations before production.
-import app.models  # noqa: F401  (registers models on Base.metadata)
-
-Base.metadata.create_all(bind=engine)
+# The schema is managed by Alembic: run `alembic upgrade head` before starting.
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -30,10 +25,13 @@ app.add_middleware(
 
 app.include_router(api_router, prefix=settings.API_V1_PREFIX)
 
-# Serve uploaded images locally; a CDN takes over in production.
-media_root = Path(settings.MEDIA_ROOT)
-media_root.mkdir(parents=True, exist_ok=True)
-app.mount(settings.MEDIA_URL, StaticFiles(directory=media_root), name="media")
+# Local development stores uploads on disk and serves them from here. With
+# Supabase Storage the photos have their own public URLs, and on Vercel the disk
+# is read-only, so creating the folder would crash the app at startup.
+if not settings.uses_supabase_storage:
+    media_root = Path(settings.MEDIA_ROOT)
+    media_root.mkdir(parents=True, exist_ok=True)
+    app.mount(settings.MEDIA_URL, StaticFiles(directory=media_root), name="media")
 
 
 @app.get("/health", tags=["meta"])

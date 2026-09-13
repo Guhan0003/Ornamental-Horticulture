@@ -1,15 +1,12 @@
-from datetime import datetime
-
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
 
 
-class MediaRead(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+class UploadedImage(BaseModel):
+    """An optimised upload, ready to drop into a plant's `image`."""
 
-    id: int
-    filename: str
     url: str
-    content_type: str | None = None
-    size_bytes: int | None = None
-    uploaded_by: str | None = None
-    created_at: datetime
+    placeholder: str
+    background: str
+    width: int
+    height: int
+    size_bytes: int

@@ -1,6 +1,3 @@
-from app.models.block import BlockType, ContentBlock
-from app.models.category import Category
-from app.models.media import MediaAsset
-from app.models.plant import Plant
+from app.models.plant import Plant, RetiredSlug
 
-__all__ = ["BlockType", "Category", "ContentBlock", "MediaAsset", "Plant"]
+__all__ = ["Plant", "RetiredSlug"]

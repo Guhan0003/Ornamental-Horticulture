@@ -1,0 +1,48 @@
+{
+  "slug": "peace-lily",
+  "common_name": "Peace Lily",
+  "scientific_name": "Spathiphyllum wallisii",
+  "image": {
+    "file": "peace-lily.jpg",
+    "alt": "A peace lily in a white pot, with glossy dark leaves and white flowers"
+  },
+  "profile": {
+    "environment": "Indoor",
+    "light": {
+      "label": "Medium to bright indirect light",
+      "note": "Tolerates low light",
+      "ideal": [1, 2],
+      "tolerates": [0]
+    },
+    "landscape_use": {
+      "items": ["Shaded tropical borders", "Mass groundcover"],
+      "note": "Frost-free zones"
+    },
+    "home_use": {
+      "items": ["Tabletop accent", "Floor plant", "Air-purifying space cleaner"]
+    }
+  },
+  "snap": "An elegant indoor staple known for glossy dark leaves and striking white spathes that signal thirst by gently drooping before springing back after watering.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "Native to tropical rainforests of Central and South America; forms dense clumps of dark green foliage up to 1–3 feet tall."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Keep soil consistently moist but never waterlogged; drooping leaves mean it is time to water immediately."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "Highly effective at filtering indoor toxins (like benzene and formaldehyde) and blooms continuously in warm, humid conditions."
+    },
+    {
+      "icon": "paw",
+      "title": "Pet Safety",
+      "body": "Toxic to cats and dogs if chewed or swallowed; its calcium oxalate crystals irritate the mouth and stomach. Keep it out of reach of pets and small children."
+    }
+  ]
+}

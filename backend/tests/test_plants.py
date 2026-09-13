@@ -1,151 +1,227 @@
+import copy
+
 import pytest
+
+PEACE_LILY = {
+    "slug": "peace-lily",
+    "common_name": "Peace Lily",
+    "scientific_name": "Spathiphyllum wallisii",
+    "image": {
+        "url": "https://example.supabase.co/storage/v1/object/public/plant-images/a.webp",
+        "alt": "A peace lily in a white pot",
+        "placeholder": "data:image/webp;base64,UklGRsQAAABXRUJQ",
+        "background": "#c3c4c9",
+    },
+    "profile": {
+        "environment": "Indoor",
+        "light": {
+            "label": "Medium to bright indirect light",
+            "note": "Tolerates low light",
+            "ideal": [1, 2],
+            "tolerates": [0],
+        },
+        "landscape_use": {"items": ["Shaded tropical borders"], "note": "Frost-free zones"},
+        "home_use": {"items": ["Tabletop accent", "Floor plant"]},
+    },
+    "snap": "An elegant indoor staple with glossy dark leaves.",
+    "deep_dive": [
+        {"icon": "origin", "title": "Origin & Habit", "body": "Tropical Americas."},
+        {"icon": "paw", "title": "Pet Safety", "body": "Toxic to cats and dogs."},
+    ],
+}
+
+
+def plant_data(**overrides):
+    data = copy.deepcopy(PEACE_LILY)
+    data.update(overrides)
+    return data
 
 
 @pytest.fixture
 def plant(client, admin_headers):
-    response = client.post(
-        "/api/v1/plants",
-        headers=admin_headers,
-        json={
-            "slug": "monstera-deliciosa",
-            "common_name": "Monstera",
-            "is_published": True,
-        },
-    )
-    assert response.status_code == 201
+    response = client.post("/api/v1/plants", headers=admin_headers, json=plant_data())
+    assert response.status_code == 201, response.text
     return response.json()
 
 
-@pytest.fixture
-def draft(client, admin_headers):
-    response = client.post(
+# ---------------------------------------------------------------- public reads
+
+
+def test_anyone_can_read_a_plant_page(client, plant):
+    response = client.get("/api/v1/plants/peace-lily")
+    assert response.status_code == 200
+    body = response.json()
+    assert body["common_name"] == "Peace Lily"
+    assert body["profile"]["light"]["ideal"] == [1, 2]
+    assert [p["title"] for p in body["deep_dive"]] == ["Origin & Habit", "Pet Safety"]
+
+
+def test_list_is_public_sorted_and_compact(client, admin_headers, plant):
+    client.post(
         "/api/v1/plants",
         headers=admin_headers,
-        json={"slug": "secret-fern", "common_name": "Secret Fern", "is_published": False},
+        json=plant_data(slug="aloe-vera", common_name="Aloe Vera"),
     )
-    assert response.status_code == 201
-    return response.json()
+
+    items = client.get("/api/v1/plants").json()
+    assert [p["common_name"] for p in items] == ["Aloe Vera", "Peace Lily"]
+    # Just enough for a search result or admin card, not the whole page.
+    assert set(items[0]) == {"slug", "common_name", "scientific_name", "image", "updated_at"}
 
 
-def test_anonymous_can_read_a_published_plant(client, plant):
-    response = client.get("/api/v1/plants/monstera-deliciosa")
-    assert response.status_code == 200
-    assert response.json()["common_name"] == "Monstera"
-
-
-def test_anonymous_cannot_read_a_draft(client, draft):
-    assert client.get("/api/v1/plants/secret-fern").status_code == 404
-
-
-def test_editor_can_preview_a_draft(client, admin_headers, draft):
-    response = client.get("/api/v1/plants/secret-fern", headers=admin_headers)
-    assert response.status_code == 200
-
-
-def test_draft_is_hidden_from_the_public_list(client, plant, draft):
-    slugs = [p["slug"] for p in client.get("/api/v1/plants").json()]
-    assert "monstera-deliciosa" in slugs
-    assert "secret-fern" not in slugs
-
-
-def test_editor_can_list_drafts(client, admin_headers, plant, draft):
-    response = client.get(
-        "/api/v1/plants", params={"include_drafts": True}, headers=admin_headers
-    )
-    assert "secret-fern" in [p["slug"] for p in response.json()]
-
-
-def test_anonymous_cannot_request_drafts_via_the_flag(client, plant, draft):
-    """include_drafts must not be a way for the public to read unpublished pages."""
-    response = client.get("/api/v1/plants", params={"include_drafts": True})
-    assert "secret-fern" not in [p["slug"] for p in response.json()]
-
-
-def test_creating_a_plant_requires_auth(client):
-    response = client.post(
-        "/api/v1/plants", json={"slug": "x", "common_name": "X"}
-    )
-    assert response.status_code == 401
-
-
-def test_duplicate_slug_is_rejected(client, admin_headers, plant):
-    response = client.post(
-        "/api/v1/plants",
-        headers=admin_headers,
-        json={"slug": "monstera-deliciosa", "common_name": "Another"},
-    )
-    assert response.status_code == 409
-
-
-def test_slug_cannot_be_changed(client, admin_headers, plant):
-    """Printed QR labels depend on the slug never moving."""
-    client.patch(
-        "/api/v1/plants/monstera-deliciosa",
-        headers=admin_headers,
-        json={"slug": "something-else", "common_name": "Renamed"},
-    )
-    assert client.get("/api/v1/plants/monstera-deliciosa").status_code == 200
-    assert client.get("/api/v1/plants/something-else").status_code == 404
-
-
-def test_unknown_slug_is_404(client):
+def test_unknown_plant_is_404(client):
     assert client.get("/api/v1/plants/does-not-exist").status_code == 404
 
 
+# ---------------------------------------------------------------- auth
+
+
+def test_writes_require_the_admin_login(client, plant):
+    assert client.post("/api/v1/plants", json=plant_data(slug="x")).status_code == 401
+    assert client.patch("/api/v1/plants/peace-lily", json={"snap": "x"}).status_code == 401
+    assert client.delete("/api/v1/plants/peace-lily").status_code == 401
+
+
+# ---------------------------------------------------------------- create
+
+
+def test_optional_sections_can_be_left_out(client, admin_headers):
+    minimal = {
+        "slug": "fern",
+        "common_name": "Fern",
+        "image": {"url": "/media/fern.webp"},
+        "snap": "A fern.",
+        "deep_dive": [{"title": "Care", "body": "Keep it humid."}],
+    }
+    response = client.post("/api/v1/plants", headers=admin_headers, json=minimal)
+    assert response.status_code == 201, response.text
+    assert response.json()["profile"]["home_use"]["items"] == []
+
+
 @pytest.mark.parametrize(
-    "slug",
-    ["", "My Plant", "a/b", "monstera?x=1", "trailing-", "double--hyphen", "x" * 161],
+    "field, value",
+    [
+        ("common_name", "   "),
+        ("snap", ""),
+        ("deep_dive", []),
+        ("deep_dive", [{"icon": "origin", "title": "", "body": "x"}]),
+        ("deep_dive", [{"icon": "rocket", "title": "x", "body": "x"}]),
+    ],
+)
+def test_required_content_is_enforced(client, admin_headers, field, value):
+    response = client.post(
+        "/api/v1/plants", headers=admin_headers, json=plant_data(**{field: value})
+    )
+    assert response.status_code == 422
+
+
+def test_image_is_required(client, admin_headers):
+    data = plant_data()
+    del data["image"]
+    assert client.post("/api/v1/plants", headers=admin_headers, json=data).status_code == 422
+
+
+@pytest.mark.parametrize(
+    "image",
+    [
+        {"url": "javascript:alert(1)"},
+        {"url": "data:image/png;base64,AAAA"},
+        {"url": "/media/a.webp", "background": "red; position: fixed"},
+        {"url": "/media/a.webp", "placeholder": 'x") ; background: url("evil'},
+    ],
+)
+def test_image_fields_that_reach_the_page_are_checked(client, admin_headers, image):
+    response = client.post(
+        "/api/v1/plants", headers=admin_headers, json=plant_data(image=image)
+    )
+    assert response.status_code == 422
+
+
+def test_light_levels_are_on_the_scale_and_tidied(client, admin_headers):
+    bad = plant_data()
+    bad["profile"]["light"]["ideal"] = [4]
+    assert client.post("/api/v1/plants", headers=admin_headers, json=bad).status_code == 422
+
+    messy = plant_data()
+    messy["profile"]["light"].update(ideal=[2, 1, 2], tolerates=[1, 0])
+    response = client.post("/api/v1/plants", headers=admin_headers, json=messy)
+    light = response.json()["profile"]["light"]
+    # Duplicates removed, and a level can't be both ideal and merely tolerated.
+    assert light["ideal"] == [1, 2]
+    assert light["tolerates"] == [0]
+
+
+@pytest.mark.parametrize(
+    "slug", ["", "Peace Lily", "a/b", "lily?x=1", "trailing-", "double--hyphen", "x" * 161]
 )
 def test_malformed_slug_is_rejected(client, admin_headers, slug):
-    """A bad slug would be printed into a QR code and could never be fixed."""
-    response = client.post(
-        "/api/v1/plants", headers=admin_headers, json={"slug": slug, "common_name": "X"}
-    )
+    response = client.post("/api/v1/plants", headers=admin_headers, json=plant_data(slug=slug))
     assert response.status_code == 422
 
 
-def test_blank_common_name_is_rejected(client, admin_headers):
-    response = client.post(
-        "/api/v1/plants", headers=admin_headers, json={"slug": "fern", "common_name": "  "}
-    )
+@pytest.mark.parametrize("slug", ["admin", "api", "assets"])
+def test_slug_cannot_shadow_a_site_route(client, admin_headers, slug):
+    """Plant pages live at /<slug>, so /admin must stay the admin."""
+    response = client.post("/api/v1/plants", headers=admin_headers, json=plant_data(slug=slug))
     assert response.status_code == 422
 
 
-def test_required_fields_cannot_be_nulled(client, admin_headers, plant):
-    for field in ("common_name", "is_published"):
-        response = client.patch(
-            "/api/v1/plants/monstera-deliciosa", headers=admin_headers, json={field: None}
-        )
-        assert response.status_code == 422, field
+def test_duplicate_slug_is_a_conflict(client, admin_headers, plant):
+    response = client.post("/api/v1/plants", headers=admin_headers, json=plant_data())
+    assert response.status_code == 409
 
 
-def test_optional_fields_can_be_cleared(client, admin_headers, plant):
+# ---------------------------------------------------------------- update
+
+
+def test_editing_changes_only_what_is_sent(client, admin_headers, plant):
     response = client.patch(
-        "/api/v1/plants/monstera-deliciosa",
+        "/api/v1/plants/peace-lily",
         headers=admin_headers,
-        json={"summary": None, "category_id": None},
+        json={"snap": "Rewritten.", "scientific_name": ""},
     )
     assert response.status_code == 200
+    body = response.json()
+    assert body["snap"] == "Rewritten."
+    assert body["scientific_name"] == ""
+    assert body["common_name"] == "Peace Lily"
+    assert len(body["deep_dive"]) == 2
 
 
-def test_over_long_text_is_rejected(client, admin_headers, plant):
+def test_slug_cannot_be_changed(client, admin_headers, plant):
+    """Printed QR labels depend on the address never moving."""
+    client.patch(
+        "/api/v1/plants/peace-lily", headers=admin_headers, json={"slug": "something-else"}
+    )
+    assert client.get("/api/v1/plants/peace-lily").status_code == 200
+    assert client.get("/api/v1/plants/something-else").status_code == 404
+
+
+@pytest.mark.parametrize("field", ["common_name", "image", "snap", "deep_dive", "profile"])
+def test_sections_cannot_be_nulled(client, admin_headers, plant, field):
     response = client.patch(
-        "/api/v1/plants/monstera-deliciosa",
-        headers=admin_headers,
-        json={"summary": "x" * 501},
+        "/api/v1/plants/peace-lily", headers=admin_headers, json={field: None}
     )
     assert response.status_code == 422
 
 
-def test_unknown_category_is_rejected(client, admin_headers, plant):
-    created = client.post(
-        "/api/v1/plants",
-        headers=admin_headers,
-        json={"slug": "fern", "common_name": "Fern", "category_id": 999},
-    )
-    assert created.status_code == 400
+def test_update_of_unknown_plant_is_404(client, admin_headers):
+    response = client.patch("/api/v1/plants/nope", headers=admin_headers, json={"snap": "x"})
+    assert response.status_code == 404
 
-    updated = client.patch(
-        "/api/v1/plants/monstera-deliciosa", headers=admin_headers, json={"category_id": 999}
-    )
-    assert updated.status_code == 400
+
+# ---------------------------------------------------------------- delete
+
+
+def test_deleted_plant_is_gone(client, admin_headers, plant):
+    assert client.delete("/api/v1/plants/peace-lily", headers=admin_headers).status_code == 204
+    assert client.get("/api/v1/plants/peace-lily").status_code == 404
+
+
+def test_deleted_address_is_never_reused(client, admin_headers, plant):
+    """An old QR label may still point at it."""
+    client.delete("/api/v1/plants/peace-lily", headers=admin_headers)
+
+    response = client.post("/api/v1/plants", headers=admin_headers, json=plant_data())
+    assert response.status_code == 409
+    assert "deleted" in response.json()["detail"]

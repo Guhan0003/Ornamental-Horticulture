@@ -16,56 +16,52 @@ Opens on http://localhost:5173
 
 ```
 src/
-├── main.jsx              entry point, router provider
-├── App.jsx               route table
+├── main.jsx                  entry point, router provider
+├── App.jsx                   route table
 ├── pages/
-│   ├── Home.jsx          landing page
-│   ├── PlantPage.jsx     /plant/:slug — the QR-code target
+│   ├── Home.jsx              landing page with the plant search
+│   ├── PlantPage.jsx         /<slug> — fetches one plant
 │   └── NotFound.jsx
 ├── components/
-│   ├── Leaf.jsx
-│   └── blocks/           renderers for the dynamic page format
-│       ├── BlockRenderer.jsx   dispatches on block.type
-│       ├── Heading.jsx
-│       ├── Text.jsx
-│       ├── Image.jsx
-│       ├── Gallery.jsx
-│       └── Facts.jsx     care details (light, water, soil, pet safety)
+│   ├── PlantView.jsx         the plant page design, rendered from API data
+│   ├── PlantSearch.jsx       search box with photo + name suggestions
+│   ├── Icon.jsx              line icons (quick profile, deep dive)
+│   └── Leaf.jsx
 ├── lib/
-│   └── api.js            backend client + token handling
-├── admin/                the admin panel (not linked from anywhere public)
-│   ├── AuthContext.jsx   session state
-│   ├── RequireAuth.jsx   route guard
+│   ├── api.js                backend client + token handling
+│   └── plantFormat.js        light scale, icons, empty plant — shared by page and admin
+├── admin/                    the dashboard (not linked from anywhere public)
+│   ├── AuthContext.jsx       session state
+│   ├── RequireAuth.jsx       route guard
 │   ├── admin.css
 │   ├── pages/
 │   │   ├── Login.jsx
-│   │   ├── PlantList.jsx
-│   │   ├── PlantEditor.jsx   details + block editor
-│   │   └── Categories.jsx
+│   │   ├── AllPlants.jsx     tab 1: every plant as a card
+│   │   ├── AddPlant.jsx      tab 2: new plant
+│   │   └── EditPlant.jsx     edit or delete one plant
 │   └── components/
 │       ├── AdminLayout.jsx
-│       ├── ImageUpload.jsx
-│       ├── BlockEditor.jsx   add / edit / reorder / delete blocks
-│       └── blockforms/       one form per block type
+│       ├── PlantForm.jsx     the form, section by section like the page
+│       ├── PhotoField.jsx    upload with drag and drop
+│       ├── LightLevels.jsx   the 4-step light scale
+│       ├── ChipsInput.jsx    landscape and home uses
+│       └── DeepDiveEditor.jsx
 └── styles/
-    └── index.css
+    ├── index.css             landing page and search
+    └── plant.css             the plant page
 ```
 
 ## Admin
 
 At `/admin`, behind a single login. It is deliberately not linked from any public page.
-Sign in with the `ADMIN_EMAIL` / `ADMIN_PASSWORD` configured on the backend.
+Sign in with the `ADMIN_EMAIL` / `ADMIN_PASSWORD` configured on the backend. The two tabs
+are **All plants** and **Add plant**.
 
-## The dynamic page format
+## Plant pages
 
-A plant page is **not** a fixed template. The backend returns an ordered list of
-blocks and `BlockRenderer` maps each one to a component. To support a new kind of
-section, add a component in `components/blocks/` and register it in
-`BlockRenderer.jsx` — no page rewrite needed.
-
-Unknown block types are skipped rather than thrown, so an admin saving a block type
-the deployed frontend doesn't know about yet degrades gracefully instead of showing
-a blank page to someone standing in a store.
+Every plant uses the same design. `PlantView` renders whatever the API returns and skips
+sections that are empty — no scientific name, no quick profile cards, a different set of
+Deep Dive points — so a sparse plant still reads as a finished page.
 
 ## Deploying
 

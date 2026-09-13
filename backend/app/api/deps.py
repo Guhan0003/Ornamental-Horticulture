@@ -11,12 +11,6 @@ from app.db.session import get_db
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 
-# Same scheme, but a missing token yields None instead of a 401. Used by
-# endpoints that are public but show more to a signed-in editor.
-oauth2_scheme_optional = OAuth2PasswordBearer(
-    tokenUrl="/api/v1/auth/login", auto_error=False
-)
-
 DbSession = Annotated[Session, Depends(get_db)]
 
 
@@ -49,14 +43,4 @@ def get_current_admin(token: Annotated[str, Depends(oauth2_scheme)]) -> str:
     return email
 
 
-def get_current_admin_optional(
-    token: Annotated[str | None, Depends(oauth2_scheme_optional)],
-) -> str | None:
-    """None for anonymous visitors — never raises."""
-    if not token:
-        return None
-    return _email_from_token(token)
-
-
 CurrentUser = Annotated[str, Depends(get_current_admin)]
-OptionalUser = Annotated[str | None, Depends(get_current_admin_optional)]
