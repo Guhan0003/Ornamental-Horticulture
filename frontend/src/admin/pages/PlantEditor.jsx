@@ -113,7 +113,7 @@ export default function PlantEditor() {
           <h1>{isNew ? 'New plant' : plant.common_name}</h1>
         </div>
         {!isNew && plant.is_published && (
-          <a className="btn btn--ghost" href={`/plant/${plant.slug}`} target="_blank" rel="noreferrer">
+          <a className="btn btn--ghost" href={`/${plant.slug}`} target="_blank" rel="noreferrer">
             View live page
           </a>
         )}
@@ -153,7 +153,7 @@ export default function PlantEditor() {
             </>
           ) : (
             <>
-              <input value={`/plant/${plant.slug}`} readOnly disabled />
+              <input value={`/${plant.slug}`} readOnly disabled />
               <small>Permanent, because QR labels point here.</small>
             </>
           )}

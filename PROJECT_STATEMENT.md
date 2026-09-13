@@ -38,13 +38,9 @@ That single decision drives everything:
 
 ## Current status
 
-Pre-launch. This repository currently contains a placeholder landing page while the plant
-pages are being built. Target: **live within a month.**
+Pre-launch. Target: **live within a month.**
 
 ## Roadmap
 
-1. ~~Placeholder landing page~~ — done
-2. Plant page template — the core deliverable, one page per plant
-3. Plant data model and content for the initial set of plants
-4. QR code generation, one per plant, pointing at its page URL
-5. Print-ready QR labels for the store
+The build plan now lives in the [README](README.md#phases): Phase 1 is the plant pages and
+the admin dashboard, Phase 2 is QR codes and printable labels.

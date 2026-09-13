@@ -47,7 +47,7 @@ export default function PlantList() {
                   {plant.scientific_name && (
                     <em className="plant-row__latin">{plant.scientific_name}</em>
                   )}
-                  <code className="plant-row__slug">/plant/{plant.slug}</code>
+                  <code className="plant-row__slug">/{plant.slug}</code>
                 </div>
                 <span
                   className={`pill ${plant.is_published ? 'pill--live' : 'pill--draft'}`}
