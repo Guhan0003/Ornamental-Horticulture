@@ -1,10 +1,16 @@
 /**
  * Client for the FastAPI backend.
  *
- * Set VITE_API_URL in frontend/.env.local for local development, and in the
- * Vercel project's environment variables for production.
+ * Production builds talk to the deployed API and development builds to a
+ * local one. Set VITE_API_URL (frontend/.env.local, or the Vercel project's
+ * environment variables) to point somewhere else.
  */
-const BASE_URL = (import.meta.env.VITE_API_URL ?? 'http://localhost:8000').replace(/\/$/, '')
+const PRODUCTION_API = 'https://stomatalworld-api.vercel.app'
+const DEVELOPMENT_API = 'http://localhost:8000'
+
+const BASE_URL = (
+  import.meta.env.VITE_API_URL || (import.meta.env.PROD ? PRODUCTION_API : DEVELOPMENT_API)
+).replace(/\/$/, '')
 
 const TOKEN_KEY = 'stomatalworld.token'
 
