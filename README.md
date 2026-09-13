@@ -25,8 +25,9 @@ That page shows, for that plant, in this order:
 | **The Snap** | one or two sentences: the plant at a glance |
 | **The Deep Dive** | titled points: origin & habit, key care rule, special feature, pet safety |
 
-That is the whole public site. No categories, no search, no accounts, nothing to
-browse. A visitor opens a link and reads about one plant.
+The home page has a **search bar** at the top: tap it to see each plant as a small photo
+and its name, type to narrow the list, and tap a plant to open its page. Beyond that
+there are no categories, no accounts and nothing to browse.
 
 Later, every plant gets a **QR code** that points at its page (see [Phases](#phases)).
 Because a printed QR code can never be changed, the page address is designed to be

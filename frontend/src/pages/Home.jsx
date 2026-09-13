@@ -1,9 +1,14 @@
 import Leaf from '../components/Leaf.jsx'
+import PlantSearch from '../components/PlantSearch.jsx'
 
 export default function Home() {
   return (
     <main className="page">
       <div className="glow" aria-hidden="true" />
+
+      <header className="home-top">
+        <PlantSearch />
+      </header>
 
       <section className="card">
         <Leaf />

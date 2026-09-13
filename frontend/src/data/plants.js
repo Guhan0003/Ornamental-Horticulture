@@ -71,3 +71,6 @@ export const plants = {
 }
 
 export const getPlant = (slug) => plants[slug] ?? null
+
+export const listPlants = () =>
+  Object.values(plants).sort((a, b) => a.commonName.localeCompare(b.commonName))
