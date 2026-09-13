@@ -2,5 +2,6 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "fastapi",
   "installCommand": "",
-  "buildCommand": "true"
+  "buildCommand": "true",
+  "regions": ["syd1"]
 }
