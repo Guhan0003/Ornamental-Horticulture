@@ -16,8 +16,6 @@ export default function App() {
       <Routes>
         {/* public */}
         <Route path="/" element={<Home />} />
-        {/* the QR-code target: one plant, one URL */}
-        <Route path="/plant/:slug" element={<PlantPage />} />
 
         {/* admin — not linked from anywhere public */}
         <Route path="/admin/login" element={<Login />} />
@@ -34,6 +32,9 @@ export default function App() {
           <Route path="plants/:slug" element={<PlantEditor />} />
           <Route path="categories" element={<Categories />} />
         </Route>
+
+        {/* one plant, one permanent URL: /peace-lily. Static routes above win. */}
+        <Route path="/:slug" element={<PlantPage />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>

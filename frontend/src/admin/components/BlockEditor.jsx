@@ -9,8 +9,8 @@ import TextForm from './blockforms/TextForm.jsx'
 /**
  * Editing surface for the dynamic page format.
  *
- * Mirrors the public BlockRenderer: adding a block type means adding a form
- * here, a renderer there, and a value to BlockType on the backend.
+ * One form per block type: adding a block type means adding a form
+ * here and a value to BlockType on the backend.
  */
 const TYPES = [
   { type: 'heading', label: 'Heading', blank: { text: '', level: 2 }, Form: HeadingForm },
