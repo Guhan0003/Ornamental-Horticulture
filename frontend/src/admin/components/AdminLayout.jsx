@@ -13,14 +13,16 @@ export default function AdminLayout() {
           <span>StomatalWorld</span>
         </div>
 
-        <nav className="admin__nav">
-          <NavLink to="/admin" end>Plants</NavLink>
-          <NavLink to="/admin/categories">Categories</NavLink>
+        <nav className="admin__nav" aria-label="Admin">
+          <NavLink to="/admin" end>
+            All plants
+          </NavLink>
+          <NavLink to="/admin/new">Add plant</NavLink>
         </nav>
 
         <div className="admin__account">
           <span className="admin__who">{user?.email}</span>
-          <button type="button" className="btn btn--ghost" onClick={signOut}>
+          <button type="button" className="btn btn--ghost btn--small" onClick={signOut}>
             Sign out
           </button>
         </div>

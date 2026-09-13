@@ -1,6 +1,6 @@
-import { useId, useMemo, useRef, useState } from 'react'
+import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { listPlants } from '../data/plants.js'
+import * as api from '../lib/api.js'
 
 const normalise = (value) =>
   value
@@ -21,16 +21,30 @@ export default function PlantSearch() {
   const [query, setQuery] = useState('')
   const [open, setOpen] = useState(false)
   const [active, setActive] = useState(0)
+  const [plants, setPlants] = useState(null)
+  const [failed, setFailed] = useState(false)
+
+  // One small request for the whole list; filtering happens locally as you type.
+  useEffect(() => {
+    let cancelled = false
+    api
+      .listPlants()
+      .then((list) => !cancelled && setPlants(list))
+      .catch(() => !cancelled && setFailed(true))
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   const results = useMemo(() => {
     const q = normalise(query)
-    const all = listPlants()
+    const all = plants ?? []
     if (!q) return all
     // Scientific names match too, but only the common name is shown.
     return all.filter((plant) =>
-      [plant.commonName, plant.scientificName].some((name) => normalise(name).includes(q)),
+      [plant.common_name, plant.scientific_name].some((name) => normalise(name).includes(q)),
     )
-  }, [query])
+  }, [plants, query])
 
   const go = (plant) => {
     setOpen(false)
@@ -92,8 +106,14 @@ export default function PlantSearch() {
           role="listbox"
           onMouseDown={(e) => e.preventDefault()}
         >
-          {results.length === 0 ? (
-            <li className="search__empty">No plant called “{query.trim()}” yet</li>
+          {failed ? (
+            <li className="search__empty">Couldn’t load plants. Check your connection.</li>
+          ) : plants === null ? (
+            <li className="search__empty">Loading plants…</li>
+          ) : results.length === 0 ? (
+            <li className="search__empty">
+              {query.trim() ? `No plant called “${query.trim()}” yet` : 'No plants yet'}
+            </li>
           ) : (
             results.map((plant, index) => (
               <li
@@ -107,11 +127,16 @@ export default function PlantSearch() {
               >
                 <img
                   className="search__thumb"
-                  src={plant.image.src}
+                  src={api.imageSrc(plant.image.url)}
                   alt=""
-                  style={{ backgroundImage: `url("${plant.image.placeholder}")` }}
+                  loading="lazy"
+                  style={
+                    plant.image.placeholder
+                      ? { backgroundImage: `url("${plant.image.placeholder}")` }
+                      : undefined
+                  }
                 />
-                <span className="search__name">{plant.commonName}</span>
+                <span className="search__name">{plant.common_name}</span>
               </li>
             ))
           )}

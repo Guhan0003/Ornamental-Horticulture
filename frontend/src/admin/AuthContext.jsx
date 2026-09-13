@@ -6,6 +6,8 @@ const AuthContext = createContext(null)
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  // Set when a stored session couldn't be checked because the server was unreachable.
+  const [unreachable, setUnreachable] = useState(false)
 
   // A stored token may be expired or revoked, so verify it against the API
   // rather than trusting its presence.
@@ -20,8 +22,11 @@ export function AuthProvider({ children }) {
       try {
         const me = await api.getMe()
         if (!cancelled) setUser(me)
-      } catch {
-        api.logout()
+      } catch (error) {
+        // Only a rejected token ends the session. A dropped connection or a server
+        // restart must not sign the admin out of a perfectly valid session.
+        if (error.status === 401) api.logout()
+        else if (!cancelled) setUnreachable(true)
       } finally {
         if (!cancelled) setLoading(false)
       }
@@ -46,8 +51,8 @@ export function AuthProvider({ children }) {
   }, [])
 
   const value = useMemo(
-    () => ({ user, loading, signIn, signOut }),
-    [user, loading, signIn, signOut],
+    () => ({ user, loading, unreachable, signIn, signOut }),
+    [user, loading, unreachable, signIn, signOut],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

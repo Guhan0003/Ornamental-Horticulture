@@ -42,7 +42,12 @@ async function request(path, { auth = false, raw, ...options } = {}) {
     if (token) headers.Authorization = `Bearer ${token}`
   }
 
-  const response = await fetch(`${BASE_URL}/api/v1${path}`, { ...options, headers })
+  let response
+  try {
+    response = await fetch(`${BASE_URL}/api/v1${path}`, { ...options, headers })
+  } catch {
+    throw new ApiError(0, 'Could not reach the server. Check your connection and try again.')
+  }
 
   if (!response.ok) {
     let detail = `${response.status} ${response.statusText}`
@@ -51,7 +56,9 @@ async function request(path, { auth = false, raw, ...options } = {}) {
       if (typeof body.detail === 'string') detail = body.detail
       // FastAPI validation errors arrive as a list of field problems
       else if (Array.isArray(body.detail)) {
-        detail = body.detail.map((e) => `${e.loc?.at(-1) ?? 'field'}: ${e.msg}`).join(', ')
+        detail = body.detail
+          .map((e) => `${(e.loc ?? []).filter((part) => part !== 'body').join(' › ')}: ${e.msg}`)
+          .join('\n')
       }
     } catch {
       /* keep the status-line fallback */
@@ -64,26 +71,36 @@ async function request(path, { auth = false, raw, ...options } = {}) {
 
 const body = (data) => JSON.stringify(data)
 
+/**
+ * Where to load an image from. Supabase URLs are already absolute; local
+ * development stores paths like /media/x.webp on the API server. The stored
+ * value is left untouched, so saving never bakes localhost into the database.
+ */
+export const imageSrc = (url) => (!url || /^https?:\/\//.test(url) ? url : `${BASE_URL}${url}`)
+
 /* ---------------- public ---------------- */
 
-/** One plant with its ordered blocks — what a QR scan resolves to. */
-export const getPlant = (slug) => request(`/plants/${slug}`, { auth: true })
+/** One plant, with everything its page needs. */
+export const getPlant = (slug) => request(`/plants/${encodeURIComponent(slug)}`)
 
-export const listPlants = ({ includeDrafts = false } = {}) =>
-  request(`/plants${includeDrafts ? '?include_drafts=true' : ''}`, { auth: true })
-
-export const listCategories = () => request('/categories')
+/** Every plant, A–Z, as small summaries. */
+export const listPlants = () => request('/plants')
 
 /* ---------------- auth ---------------- */
 
 export async function login(email, password) {
   // OAuth2 password flow expects form encoding, not JSON.
   const form = new URLSearchParams({ username: email, password })
-  const response = await fetch(`${BASE_URL}/api/v1/auth/login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: form,
-  })
+  let response
+  try {
+    response = await fetch(`${BASE_URL}/api/v1/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: form,
+    })
+  } catch {
+    throw new ApiError(0, 'Could not reach the server. Check your connection and try again.')
+  }
 
   if (!response.ok) {
     const detail = response.status === 401 ? 'Incorrect email or password' : 'Could not sign in'
@@ -99,64 +116,20 @@ export const logout = () => setToken(null)
 
 export const getMe = () => request('/auth/me', { auth: true })
 
-/* ---------------- admin: plants ---------------- */
+/* ---------------- admin ---------------- */
 
 export const createPlant = (data) =>
   request('/plants', { method: 'POST', body: body(data), auth: true })
 
 export const updatePlant = (slug, data) =>
-  request(`/plants/${slug}`, { method: 'PATCH', body: body(data), auth: true })
+  request(`/plants/${encodeURIComponent(slug)}`, { method: 'PATCH', body: body(data), auth: true })
 
 export const deletePlant = (slug) =>
-  request(`/plants/${slug}`, { method: 'DELETE', auth: true })
+  request(`/plants/${encodeURIComponent(slug)}`, { method: 'DELETE', auth: true })
 
-/* ---------------- admin: blocks ---------------- */
-
-export const addBlock = (plantId, block) =>
-  request(`/blocks/plant/${plantId}`, { method: 'POST', body: body(block), auth: true })
-
-export const updateBlock = (blockId, block) =>
-  request(`/blocks/${blockId}`, { method: 'PATCH', body: body(block), auth: true })
-
-export const deleteBlock = (blockId) =>
-  request(`/blocks/${blockId}`, { method: 'DELETE', auth: true })
-
-export const reorderBlocks = (plantId, blockIds) =>
-  request(`/blocks/plant/${plantId}/reorder`, {
-    method: 'PUT',
-    body: body({ block_ids: blockIds }),
-    auth: true,
-  })
-
-/* ---------------- admin: categories ---------------- */
-
-export const createCategory = (data) =>
-  request('/categories', { method: 'POST', body: body(data), auth: true })
-
-export const updateCategory = (id, data) =>
-  request(`/categories/${id}`, { method: 'PATCH', body: body(data), auth: true })
-
-export const deleteCategory = (id) =>
-  request(`/categories/${id}`, { method: 'DELETE', auth: true })
-
-/* ---------------- admin: media ---------------- */
-
-export async function uploadImage(file) {
+/** Upload a photo; returns { url, placeholder, background, width, height, size_bytes }. */
+export function uploadImage(file) {
   const form = new FormData()
   form.append('file', file)
-  const asset = await request('/media', { method: 'POST', body: form, raw: true, auth: true })
-  // The API returns a path like /media/xyz.jpg — make it absolute for <img src>.
-  return { ...asset, url: asset.url.startsWith('http') ? asset.url : `${BASE_URL}${asset.url}` }
+  return request('/media', { method: 'POST', body: form, raw: true, auth: true })
 }
-
-/* ---------------- admin: users ---------------- */
-
-export const listUsers = () => request('/users', { auth: true })
-
-export const createUser = (data) =>
-  request('/users', { method: 'POST', body: body(data), auth: true })
-
-export const updateUser = (id, data) =>
-  request(`/users/${id}`, { method: 'PATCH', body: body(data), auth: true })
-
-export const deleteUser = (id) => request(`/users/${id}`, { method: 'DELETE', auth: true })
