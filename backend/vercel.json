@@ -1,5 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "",
+  "buildCommand": "",
   "functions": {
     "app/main.py": {
       "excludeFiles": "{tests/**,seed/**,migrations/**,scripts/**,media/**,*.db,.env*,.pytest_cache/**}"
