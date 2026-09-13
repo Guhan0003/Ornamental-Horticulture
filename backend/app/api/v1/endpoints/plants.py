@@ -2,10 +2,20 @@ from fastapi import APIRouter, HTTPException, status
 from sqlalchemy.orm import joinedload
 
 from app.api.deps import CurrentUser, DbSession, OptionalUser
+from app.models.category import Category
 from app.models.plant import Plant
 from app.schemas.plant import PlantCreate, PlantDetail, PlantListItem, PlantUpdate
 
 router = APIRouter()
+
+
+def _check_category(db: DbSession, category_id: int | None):
+    # SQLite doesn't enforce foreign keys but Postgres does, so without this a
+    # bad id passes every local test and then fails in production as a 500.
+    if category_id is not None and db.get(Category, category_id) is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Category not found"
+        )
 
 
 @router.get("", response_model=list[PlantListItem])
@@ -53,6 +63,8 @@ def create_plant(payload: PlantCreate, db: DbSession, user: CurrentUser):
             "label is printed, so they cannot be reused.",
         )
 
+    _check_category(db, payload.category_id)
+
     plant = Plant(**payload.model_dump())
     db.add(plant)
     db.commit()
@@ -68,7 +80,11 @@ def update_plant(slug: str, payload: PlantUpdate, db: DbSession, user: CurrentUs
             status_code=status.HTTP_404_NOT_FOUND, detail="Plant not found"
         )
 
-    for field, value in payload.model_dump(exclude_unset=True).items():
+    changes = payload.model_dump(exclude_unset=True)
+    if "category_id" in changes:
+        _check_category(db, changes["category_id"])
+
+    for field, value in changes.items():
         setattr(plant, field, value)
 
     db.commit()
