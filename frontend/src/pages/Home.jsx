@@ -25,11 +25,6 @@ export default function Home() {
           A page for every plant on the shelf. Scan the code, know exactly what you are
           looking at — what it needs, and how to keep it alive.
         </p>
-
-        <div className="status">
-          <span className="dot" aria-hidden="true" />
-          Building now — live within a month
-        </div>
       </section>
 
       <footer className="footer">© {new Date().getFullYear()} StomatalWorld</footer>
