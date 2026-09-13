@@ -111,7 +111,8 @@ body.is-plant {
   position: relative;
   z-index: 1;
   margin-top: -1.75rem;
-  padding: 2rem 1.25rem calc(2.5rem + env(safe-area-inset-bottom));
+  /* extra room at the bottom so the contact button never covers the footer */
+  padding: 2rem 1.25rem calc(6rem + env(safe-area-inset-bottom));
   border-radius: 1.75rem 1.75rem 0 0;
   background: var(--pl-cream);
   box-shadow: 0 -12px 32px rgba(12, 31, 20, 0.06);

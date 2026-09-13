@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom'
 import Home from './pages/Home.jsx'
 import PlantPage from './pages/PlantPage.jsx'
 import NotFound from './pages/NotFound.jsx'
+import ContactButton from './components/ContactButton.jsx'
 import { AuthProvider } from './admin/AuthContext.jsx'
 import RequireAuth from './admin/RequireAuth.jsx'
 import AdminLayout from './admin/components/AdminLayout.jsx'
@@ -37,6 +38,9 @@ export default function App() {
 
         <Route path="*" element={<NotFound />} />
       </Routes>
+
+      {/* bottom-left contact button on every public page; hidden in the admin */}
+      <ContactButton />
     </AuthProvider>
   )
 }

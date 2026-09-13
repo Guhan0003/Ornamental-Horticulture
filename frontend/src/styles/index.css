@@ -116,14 +116,6 @@ button.status {
   cursor: pointer;
 }
 
-.dot {
-  width: 0.45rem;
-  height: 0.45rem;
-  border-radius: 50%;
-  background: var(--accent);
-  animation: pulse 2.2s ease-in-out infinite;
-}
-
 .footer {
   position: relative;
   font-size: 0.75rem;
