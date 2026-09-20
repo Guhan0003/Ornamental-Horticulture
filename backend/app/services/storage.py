@@ -34,6 +34,18 @@ class SupabaseStorage:
         self.bucket = settings.SUPABASE_BUCKET
         self.key = settings.SUPABASE_SERVICE_KEY
 
+    def _check_key(self) -> None:
+        # Supabase hands out two keys. The publishable one is meant for
+        # browsers and is blocked by row-level security, so an upload fails
+        # with "new row violates row-level security policy". Name the real
+        # problem instead of passing that through.
+        if self.key.startswith("sb_publishable_"):
+            raise StorageError(
+                "SUPABASE_SERVICE_KEY is Supabase's publishable key, which cannot "
+                "write to storage. Use a secret key (sb_secret_...) from "
+                "Project Settings -> API Keys."
+            )
+
     def _auth_headers(self) -> dict[str, str]:
         # New secret keys (sb_secret_...) aren't JWTs and belong only in `apikey`;
         # sending one as a Bearer token fails JWT verification. The legacy
@@ -44,6 +56,7 @@ class SupabaseStorage:
         return headers
 
     def save(self, data: bytes, extension: str, content_type: str) -> str:
+        self._check_key()
         name = f"{uuid.uuid4().hex}{extension}"
         url = f"{self.base}/storage/v1/object/{self.bucket}/{name}"
 

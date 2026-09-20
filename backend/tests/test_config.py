@@ -71,3 +71,4 @@ def test_env_file_can_be_chosen_for_one_off_commands(tmp_path, monkeypatch):
     monkeypatch.setenv("ENV_FILE", str(env_file))
 
     assert load_settings().ADMIN_EMAIL == "owner@example.com"
+
