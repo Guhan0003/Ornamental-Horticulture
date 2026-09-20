@@ -119,3 +119,22 @@ def test_uploaded_image_is_accepted_by_a_plant(client, admin_headers):
         },
     )
     assert response.status_code == 201, response.text
+
+
+def test_browser_prepared_webp_is_accepted(client, admin_headers):
+    """The admin shrinks big photos to WebP in the browser before uploading."""
+    buffer = io.BytesIO()
+    Image.open(io.BytesIO(photo(2400, 1800))).save(buffer, format="WEBP", quality=85)
+
+    response = client.post(
+        "/api/v1/media",
+        headers=admin_headers,
+        files={"file": ("IMG_2043.webp", buffer.getvalue(), "image/webp")},
+    )
+
+    assert response.status_code == 201, response.text
+    asset = response.json()
+    assert max(asset["width"], asset["height"]) == settings.IMAGE_MAX_DIMENSION
+    # Vercel refuses request bodies over ~4.5MB, so what the browser sends must
+    # stay well under that after its own resize.
+    assert asset["size_bytes"] < 3.5 * 1024 * 1024
