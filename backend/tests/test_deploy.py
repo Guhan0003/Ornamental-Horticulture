@@ -7,11 +7,12 @@ import sys
 from pathlib import Path
 
 import httpx
+import pytest
 from sqlalchemy.pool import NullPool
 
 from app.core.config import settings
 from app.db.session import engine_options
-from app.services.storage import SupabaseStorage
+from app.services.storage import StorageError, SupabaseStorage
 
 POOLER_URL = "postgresql+psycopg://user:pw@aws-0-x.pooler.supabase.com:6543/postgres"
 
@@ -57,6 +58,20 @@ def test_new_secret_key_is_sent_only_as_apikey(monkeypatch):
     assert headers["apikey"] == "sb_secret_abc123"
     assert "Authorization" not in headers
     assert url.startswith("https://x.supabase.co/storage/v1/object/public/plant-images/")
+
+
+def test_publishable_key_is_refused_with_a_useful_message(monkeypatch):
+    """It is blocked by row-level security; the raw error is unhelpful."""
+    monkeypatch.setattr(settings, "SUPABASE_URL", "https://x.supabase.co")
+    monkeypatch.setattr(settings, "SUPABASE_SERVICE_KEY", "sb_publishable_abc123")
+
+    def fail(*args, **kwargs):
+        raise AssertionError("should not reach Supabase")
+
+    monkeypatch.setattr(httpx, "post", fail)
+
+    with pytest.raises(StorageError, match="publishable"):
+        SupabaseStorage().save(b"data", ".webp", "image/webp")
 
 
 def test_legacy_service_role_jwt_is_also_sent_as_bearer(monkeypatch):

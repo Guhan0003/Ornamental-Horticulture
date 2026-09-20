@@ -24,7 +24,7 @@ one).
    | Name | Where to find it |
    |---|---|
    | `SUPABASE_URL` | Project Settings → Data API → Project URL, e.g. `https://abcd.supabase.co` |
-   | `SUPABASE_SERVICE_KEY` | Project Settings → API Keys → a **secret** key (`sb_secret_…`) |
+   | `SUPABASE_SERVICE_KEY` | Project Settings → API Keys → a **secret** key (`sb_secret_…`). **Not** the publishable key (`sb_publishable_…`): that one is for browsers and cannot save photos. |
    | Session pooler URL | **Connect** (top bar) → Session pooler. Port **5432**. For step 2. |
    | Transaction pooler URL | **Connect** → Transaction pooler. Port **6543**. For step 3. |
 
@@ -129,6 +129,10 @@ Then check on a phone:
   code that needs it.
 - **Custom domain:** add it to the frontend project, then add it to the backend's
   allowed origins, e.g. `CORS_ORIGINS=["https://plants.example.com","https://stomatalworld.vercel.app"]`.
+- **Replacing the Supabase key:** copy a **secret** key (`sb_secret_…`), not the
+  publishable one, into both `backend/.env.production` and the backend's
+  `SUPABASE_SERVICE_KEY` on Vercel, then redeploy. With the wrong one, pages still
+  load but adding a photo fails with "row-level security policy".
 - **Free-plan limits:** Vercel Hobby is for non-commercial use; move to Pro when the
   site is used in the shop. Supabase free projects pause after a week with no activity —
   restore from the dashboard if that happens, or upgrade.
