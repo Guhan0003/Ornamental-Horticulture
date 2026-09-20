@@ -24,7 +24,7 @@ export const contact = {
   // Pre-filled message when someone opens WhatsApp.
   whatsappMessage: 'Hi! I saw your plants at StomatalWorld and have a question.',
 
-  email: 'gowshikks45@gmail.com',
+  email: 'stomatalworldd@gmail.com',
 
   // The handle only, without @ or the full link.
   instagram: '',
