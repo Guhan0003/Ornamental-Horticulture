@@ -40,7 +40,9 @@ permanent from day one.
 A private area at `/admin` for adding and maintaining plants.
 
 **One login only.** A single username and password, set on the server. There is no
-signup and no way to create another account, so nobody else can get in.
+signup and no way to create another account, so nobody else can get in. Five wrong
+passwords in a row and that device has to wait fifteen minutes, so the one password
+can't be guessed at by a machine.
 
 Inside, two tabs:
 
