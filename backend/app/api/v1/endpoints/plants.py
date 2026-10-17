@@ -3,6 +3,7 @@ from fastapi import APIRouter, HTTPException, status
 from app.api.deps import CurrentUser, DbSession
 from app.models.plant import Plant, RetiredSlug
 from app.schemas.plant import PlantCreate, PlantRead, PlantSummary, PlantUpdate
+from app.services.photos import discard_if_unused
 
 router = APIRouter()
 
@@ -50,19 +51,29 @@ def create_plant(payload: PlantCreate, db: DbSession, user: CurrentUser):
 @router.patch("/{slug}", response_model=PlantRead)
 def update_plant(slug: str, payload: PlantUpdate, db: DbSession, user: CurrentUser):
     plant = _get_or_404(db, slug)
+    previous_photo = plant.image.get("url", "")
 
     for field, value in payload.model_dump(exclude_unset=True).items():
         setattr(plant, field, value)
 
     db.commit()
     db.refresh(plant)
+
+    # A swapped-in photo leaves the old one behind, unused.
+    if plant.image.get("url") != previous_photo:
+        discard_if_unused(db, previous_photo)
+
     return plant
 
 
 @router.delete("/{slug}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_plant(slug: str, db: DbSession, user: CurrentUser):
     plant = _get_or_404(db, slug)
+    photo = plant.image.get("url", "")
 
     db.delete(plant)
     db.add(RetiredSlug(slug=slug))
     db.commit()
+
+    # The row is gone either way; the photo is tidied up afterwards.
+    discard_if_unused(db, photo)
