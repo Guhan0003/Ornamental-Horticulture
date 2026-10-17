@@ -23,6 +23,18 @@ class Settings(BaseSettings):
     SECRET_KEY: str = DEV_SECRET_KEY
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24
 
+    # Failed-login lockout. One password guards the whole dashboard, so a
+    # client that keeps guessing is made to wait instead of being allowed to
+    # work through a wordlist. The same span is both the lockout and the
+    # window a failure is remembered for.
+    LOGIN_MAX_FAILURES: int = 5
+    LOGIN_LOCKOUT_MINUTES: int = 15
+    # Whether to believe X-Forwarded-For when deciding who a failed attempt
+    # belongs to. Only true behind a proxy that sets it — Vercel does; a
+    # server reached directly does not, and there the header is a forgery
+    # waiting to hand a guesser a fresh allowance per request.
+    TRUST_PROXY_HEADERS: bool = bool(os.environ.get("VERCEL"))
+
     # The single admin login. There is no users table and no signup.
     ADMIN_EMAIL: str = "admin@stomatalworld.local"
     # Plaintext fallback for convenience. Prefer ADMIN_PASSWORD_HASH: set that
@@ -42,11 +54,15 @@ class Settings(BaseSettings):
     IMAGE_QUALITY: int = 80
 
     # Origins allowed to call this API (the Vercel frontend, plus local dev).
+    # Override with a JSON list to add a custom domain without a code change.
     CORS_ORIGINS: list[str] = [
         "http://localhost:5173",
         "https://stomatalworld.vercel.app",
         "https://ornamental-horticulture.vercel.app",
     ]
+    # Preview deployments get a new hostname every push, so they are matched
+    # by pattern instead of being listed one by one.
+    CORS_ORIGIN_REGEX: str = r"https://.*-stomatalworld\.vercel\.app"
 
     # Local-disk uploads, used only when Supabase Storage isn't configured.
     MEDIA_ROOT: str = "./media"

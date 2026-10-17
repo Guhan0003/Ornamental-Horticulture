@@ -109,7 +109,19 @@ export async function login(email, password) {
   }
 
   if (!response.ok) {
-    const detail = response.status === 401 ? 'Incorrect email or password' : 'Could not sign in'
+    if (response.status === 401) throw new ApiError(401, 'Incorrect email or password')
+
+    // The lockout after repeated wrong guesses says how long to wait, which
+    // is the one thing worth repeating back; anything else gets a plain line.
+    let detail = 'Could not sign in'
+    if (response.status === 429) {
+      try {
+        const body = await response.json()
+        if (typeof body.detail === 'string') detail = body.detail
+      } catch {
+        detail = 'Too many failed sign-in attempts. Try again later.'
+      }
+    }
     throw new ApiError(response.status, detail)
   }
 
