@@ -57,6 +57,8 @@ class Settings(BaseSettings):
     # Override with a JSON list to add a custom domain without a code change.
     CORS_ORIGINS: list[str] = [
         "http://localhost:5173",
+        # `npm run preview` — a production build, checked locally.
+        "http://localhost:4173",
         "https://stomatalworld.vercel.app",
         "https://ornamental-horticulture.vercel.app",
     ]
