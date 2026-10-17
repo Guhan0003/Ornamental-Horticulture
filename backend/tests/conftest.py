@@ -41,8 +41,15 @@ def db_session():
 
 
 @pytest.fixture
-def client(db_session):
+def client(db_session, monkeypatch):
     app.dependency_overrides[get_db] = lambda: db_session
+
+    # Work done after a response — counting a view — opens its own session,
+    # because the request's own one is closed by then. Point that at the test
+    # database too, or it would reach for the real one.
+    monkeypatch.setattr("app.services.views.SessionLocal", lambda: db_session)
+    monkeypatch.setattr(db_session, "close", lambda: None, raising=False)
+
     with TestClient(app) as test_client:
         yield test_client
     app.dependency_overrides.clear()

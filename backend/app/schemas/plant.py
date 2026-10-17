@@ -118,6 +118,9 @@ class PlantRead(PlantFields):
     slug: str
     created_at: datetime
     updated_at: datetime
+    # Filled in when a page is read. They travel with the plant rather than in
+    # a second request: one round trip is the whole game on shop Wi-Fi.
+    related: list["PlantSummary"] = Field(default_factory=list)
 
 
 class PlantSummary(BaseModel):
@@ -130,3 +133,6 @@ class PlantSummary(BaseModel):
     scientific_name: str
     image: PlantImage
     updated_at: datetime
+
+
+PlantRead.model_rebuild()

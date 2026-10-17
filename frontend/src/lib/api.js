@@ -86,8 +86,47 @@ export const imageSrc = (url) => (!url || /^https?:\/\//.test(url) ? url : `${BA
 
 /* ---------------- public ---------------- */
 
+/**
+ * Plants already fetched this visit, so tapping a suggestion shows the page
+ * at once instead of spending another round trip on a bad connection.
+ * Cleared on reload, which is as long as anyone's shop visit lasts.
+ */
+const visited = new Map()
+
 /** One plant, with everything its page needs. */
-export const getPlant = (slug) => request(`/plants/${encodeURIComponent(slug)}`)
+export function getPlant(slug) {
+  const cached = visited.get(slug)
+  if (cached) return Promise.resolve(cached)
+
+  return request(`/plants/${encodeURIComponent(slug)}`).then((plant) => {
+    visited.set(slug, plant)
+    return plant
+  })
+}
+
+/**
+ * Warm the cache for a plant we expect to be opened next, quietly.
+ *
+ * Skipped when the phone says the connection is slow or the visitor asked to
+ * save data: on those exact connections an extra request is the problem, not
+ * the fix. Failures are ignored — this is an optimisation, not a feature.
+ */
+export function prefetchPlant(slug) {
+  if (visited.has(slug)) return
+
+  const link = navigator.connection
+  if (link?.saveData || /2g/.test(link?.effectiveType ?? '')) return
+
+  // Marked so the backend doesn't count it as somebody looking at the plant.
+  // Without this, opening one page would count a view for all three
+  // suggestions and the scan numbers would be fiction.
+  request(`/plants/${encodeURIComponent(slug)}`, { headers: { 'X-Prefetch': '1' } })
+    .then((plant) => visited.set(slug, plant))
+    .catch(() => {})
+}
+
+/** A plant's page changed, so what we remembered about it is stale. */
+export const forgetPlant = (slug) => visited.delete(slug)
 
 /** Every plant, A–Z, as small summaries. */
 export const listPlants = () => request('/plants')
@@ -139,11 +178,23 @@ export const getMe = () => request('/auth/me', { auth: true })
 export const createPlant = (data) =>
   request('/plants', { method: 'POST', body: body(data), auth: true })
 
-export const updatePlant = (slug, data) =>
-  request(`/plants/${encodeURIComponent(slug)}`, { method: 'PATCH', body: body(data), auth: true })
+export function updatePlant(slug, data) {
+  // What we remembered about this plant is now out of date.
+  forgetPlant(slug)
+  return request(`/plants/${encodeURIComponent(slug)}`, {
+    method: 'PATCH',
+    body: body(data),
+    auth: true,
+  })
+}
 
-export const deletePlant = (slug) =>
-  request(`/plants/${encodeURIComponent(slug)}`, { method: 'DELETE', auth: true })
+export function deletePlant(slug) {
+  forgetPlant(slug)
+  return request(`/plants/${encodeURIComponent(slug)}`, { method: 'DELETE', auth: true })
+}
+
+/** How often each plant has been looked at. Admin only. */
+export const listViewCounts = (days = 30) => request(`/views?days=${days}`, { auth: true })
 
 /** Upload a photo; returns { url, placeholder, background, width, height, size_bytes }. */
 export function uploadImage(file) {

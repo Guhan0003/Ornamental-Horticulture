@@ -7,6 +7,12 @@ const matches = (plant, query) =>
     value.toLowerCase().includes(query),
   )
 
+/** "34 scans in 30 days", or today's number when the page is being watched. */
+const viewsLabel = ({ recent, today }) =>
+  today > 0
+    ? `${recent} scan${recent === 1 ? '' : 's'} in 30 days · ${today} today`
+    : `${recent} scan${recent === 1 ? '' : 's'} in 30 days`
+
 const updatedLabel = (iso) =>
   new Date(iso).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })
 
@@ -15,12 +21,20 @@ export default function AllPlants() {
   const [plants, setPlants] = useState(null)
   const [error, setError] = useState(null)
   const [query, setQuery] = useState('')
+  const [views, setViews] = useState({})
 
   useEffect(() => {
     api
       .listPlants()
       .then(setPlants)
       .catch((e) => setError(e.message))
+
+    // Scan counts are a nice-to-have on this page: if they don't arrive, the
+    // list still works and simply doesn't mention them.
+    api
+      .listViewCounts()
+      .then((rows) => setViews(Object.fromEntries(rows.map((row) => [row.slug, row]))))
+      .catch(() => {})
   }, [])
 
   const visible = useMemo(() => {
@@ -86,6 +100,14 @@ export default function AllPlants() {
                       )}
                       <span className="plant-card__meta">
                         /{plant.slug} · edited {updatedLabel(plant.updated_at)}
+                        {views[plant.slug] && (
+                          <>
+                            {' · '}
+                            <strong className="plant-card__views">
+                              {viewsLabel(views[plant.slug])}
+                            </strong>
+                          </>
+                        )}
                       </span>
                     </span>
                   </Link>

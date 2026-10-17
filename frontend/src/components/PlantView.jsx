@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import Icon from './Icon.jsx'
 import Leaf from './Leaf.jsx'
-import { imageSrc } from '../lib/api.js'
+import { imageSrc, prefetchPlant } from '../lib/api.js'
 import { LIGHT_SCALE } from '../lib/plantFormat.js'
 import '../styles/plant.css'
 
@@ -116,6 +117,8 @@ export default function PlantView({ plant }) {
           </ol>
         </section>
 
+        {plant.related?.length > 0 && <AlsoLike plants={plant.related} />}
+
         <footer className="pl-footer" data-reveal>
           <Leaf className="pl-footer__leaf" />
           <span>StomatalWorld</span>
@@ -123,6 +126,86 @@ export default function PlantView({ plant }) {
         </footer>
       </main>
     </div>
+  )
+}
+
+/**
+ * Pass the travelling name from the hero to the card being tapped.
+ *
+ * Only one element on a page may carry a view-transition name, so the hero
+ * gives it up as the card takes it: the browser then matches that card to the
+ * next page's hero and moves the photo between them, instead of the page
+ * flashing white and fetching it again.
+ */
+function handOver(event) {
+  if (!document.startViewTransition) return
+
+  const hero = document.querySelector('.pl-hero__img')
+  if (hero) hero.style.viewTransitionName = 'none'
+
+  const photo = event.currentTarget.querySelector('img')
+  if (photo) photo.style.viewTransitionName = 'plant-photo'
+}
+
+/**
+ * Three plants like this one.
+ *
+ * A QR scan lands here and used to end here. These are shown as photos
+ * because that is how anyone recognises a plant — the name underneath is
+ * confirmation, not the hook.
+ */
+function AlsoLike({ plants }) {
+  const ref = useRef(null)
+
+  // Fetch them once the shelf is actually on screen, so tapping one opens it
+  // immediately. Nobody hovers on a phone, so there is no earlier signal.
+  useEffect(() => {
+    const shelf = ref.current
+    if (!shelf) return
+
+    const warm = () => plants.forEach((plant) => prefetchPlant(plant.slug))
+
+    if (!('IntersectionObserver' in window)) return warm()
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return
+        warm()
+        observer.disconnect()
+      },
+      { rootMargin: '200px' },
+    )
+    observer.observe(shelf)
+    return () => observer.disconnect()
+  }, [plants])
+
+  return (
+    <section className="pl-section" aria-labelledby="also-title" ref={ref}>
+      <h2 id="also-title" className="pl-label" data-reveal>
+        You may also like
+      </h2>
+
+      <ul className="pl-also" data-reveal>
+        {plants.map((plant) => (
+          <li key={plant.slug}>
+            <Link className="pl-also__card" to={`/${plant.slug}`} viewTransition onClick={handOver}>
+              <span
+                className="pl-also__frame"
+                style={{
+                  backgroundColor: plant.image.background || undefined,
+                  backgroundImage: plant.image.placeholder
+                    ? `url("${plant.image.placeholder}")`
+                    : undefined,
+                }}
+              >
+                <img src={imageSrc(plant.image.url)} alt="" loading="lazy" decoding="async" />
+              </span>
+              <span className="pl-also__name">{plant.common_name}</span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </section>
   )
 }
 
@@ -168,6 +251,7 @@ function Hero({ image }) {
       <img
         ref={imgRef}
         className="pl-hero__img"
+        style={{ viewTransitionName: 'plant-photo' }}
         src={imageSrc(image.url)}
         alt={image.alt}
         fetchPriority="high"

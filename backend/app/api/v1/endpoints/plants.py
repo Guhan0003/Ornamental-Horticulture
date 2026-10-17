@@ -1,9 +1,11 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, BackgroundTasks, HTTPException, Request, status
 
 from app.api.deps import CurrentUser, DbSession
 from app.models.plant import Plant, RetiredSlug
 from app.schemas.plant import PlantCreate, PlantRead, PlantSummary, PlantUpdate
 from app.services.photos import discard_if_unused
+from app.services.related import find_related
+from app.services.views import record_view
 
 router = APIRouter()
 
@@ -22,9 +24,19 @@ def list_plants(db: DbSession):
 
 
 @router.get("/{slug}", response_model=PlantRead)
-def get_plant(slug: str, db: DbSession):
+def get_plant(slug: str, db: DbSession, request: Request, background: BackgroundTasks):
     """Everything needed to render one plant page, in a single request."""
-    return _get_or_404(db, slug)
+    plant = _get_or_404(db, slug)
+
+    page = PlantRead.model_validate(plant)
+    page.related = [PlantSummary.model_validate(other) for other in find_related(db, plant)]
+
+    # Counted after the response has gone out: someone on a shop's Wi-Fi
+    # should never wait on our analytics. A page we fetched ahead of time, in
+    # case a suggestion gets tapped, is not somebody looking at a plant.
+    if not request.headers.get("x-prefetch"):
+        background.add_task(record_view, slug, request.headers.get("user-agent", ""))
+    return page
 
 
 @router.post("", response_model=PlantRead, status_code=status.HTTP_201_CREATED)
