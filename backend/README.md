@@ -81,6 +81,47 @@ python scripts/hash_password.py
 Paste the result as `ADMIN_PASSWORD_HASH` and leave `ADMIN_PASSWORD` empty — the hash
 takes precedence when both are set.
 
+### Guessing the password
+
+One password guards the whole dashboard, so the login endpoint counts failures per
+client: **5 wrong guesses and that client waits 15 minutes**, with a `429` and a
+`Retry-After` header. The lock refuses the correct password too, so it can't be used
+to tell a guesser when they have found it. A successful sign-in clears the count, and
+a client that goes quiet for the same 15 minutes is forgotten.
+
+| Setting | Default | |
+|---|---|---|
+| `LOGIN_MAX_FAILURES` | `5` | wrong guesses before the lock |
+| `LOGIN_LOCKOUT_MINUTES` | `15` | how long the lock lasts, and how long a failure is remembered |
+| `TRUST_PROXY_HEADERS` | on Vercel | read the client's address from `X-Forwarded-For` |
+
+Counts live in `login_attempts` rather than in memory because the API runs as serverless
+functions: a process-local counter would reset whenever a new instance answered the
+request. `TRUST_PROXY_HEADERS` matters for the same reason — the real address only
+arrives in a header behind Vercel, but a forged header anywhere else would hand a
+guesser a fresh allowance per request, so it is off unless a proxy is known to be in
+front. It defaults on when `VERCEL` is set.
+
+### What the API gives away
+
+The interactive docs map the whole admin API, so `/docs`, `/redoc` and
+`/openapi.json` are **development-only** — with `ENVIRONMENT=production` they
+return 404. Every response also carries `X-Content-Type-Options: nosniff`,
+`X-Frame-Options: DENY` and `Referrer-Policy: strict-origin-when-cross-origin`.
+
+`CORS_ORIGINS` lists the sites allowed to call the API, and
+`CORS_ORIGIN_REGEX` matches preview deployments, whose hostname changes every
+push. Both are environment variables, so a custom domain needs no code change.
+
+## Photos clean up after themselves
+
+Every upload is a new object in storage, so replacing a plant's photo or
+deleting the plant would otherwise strand the old file forever.
+`services/photos.py` deletes it — but only after checking no other plant still
+shows it, and only when the URL is one we stored, since the photo field accepts
+any address an admin pastes. Storage trouble is logged, never raised: the
+plant really was deleted, and a stranded file is the smaller problem.
+
 ## Database migrations
 
 The schema is managed by Alembic, in `migrations/`. After changing a model:
@@ -95,6 +136,8 @@ version (`plants`, `content_blocks`, `categories`, `media_assets`) are **renamed
 `legacy_*`, not dropped**, so nothing is lost. Delete them by hand once you're sure they
 aren't needed.
 
+Migration `0002` adds `login_attempts`, which holds the failed-login counts.
+
 ## Tests
 
 ```bash
@@ -108,12 +151,14 @@ Each test runs against a fresh in-memory database, so they are isolated and fast
 
 ```
 app/
-├── main.py               app setup, CORS, static media, health
+├── main.py               create_app: CORS, security headers, media, health
 ├── core/
 │   ├── config.py         settings from environment
 │   └── security.py       password hashing + JWT
 ├── db/                   declarative base, engine, get_db
-├── models/plant.py       Plant and RetiredSlug
+├── models/
+│   ├── plant.py          Plant and RetiredSlug
+│   └── login_attempt.py  failed-login counts, per client
 ├── schemas/              request/response shapes and validation
 ├── api/v1/endpoints/
 │   ├── auth.py           login, me
@@ -121,6 +166,8 @@ app/
 │   └── media.py          photo upload
 └── services/
     ├── images.py         resize, WebP, blurred preview, backdrop colour
+    ├── login_guard.py    failed-login lockout
+    ├── photos.py         delete a photo nothing points at any more
     └── storage.py        Supabase Storage, or local disk in development
 migrations/               Alembic
 scripts/

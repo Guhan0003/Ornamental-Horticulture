@@ -127,8 +127,17 @@ Then check on a phone:
 - **Schema changes:** after pulling a new migration, run
   `ENV_FILE=.env.production alembic upgrade head` from `backend/` *before* pushing the
   code that needs it.
+- **Locked out of `/admin`:** five wrong passwords from one address and that address
+  waits 15 minutes; the message on the sign-in form says how long is left. To clear it
+  early, delete the row in Supabase → Table editor → `login_attempts`.
 - **Custom domain:** add it to the frontend project, then add it to the backend's
   allowed origins, e.g. `CORS_ORIGINS=["https://plants.example.com","https://stomatalworld.vercel.app"]`.
+  Preview deployments are already covered by `CORS_ORIGIN_REGEX`.
+- **If the API ever moves off `*.vercel.app`:** the frontend's
+  `Content-Security-Policy` in `vercel.json` allows `connect-src https:`, so a new
+  API host keeps working — but tighten it to the exact origin once the address
+  settles. `/assets/*` is cached for a year, which is safe because Vite puts a
+  content hash in every filename.
 - **Replacing the Supabase key:** copy a **secret** key (`sb_secret_…`), not the
   publishable one, into both `backend/.env.production` and the backend's
   `SUPABASE_SERVICE_KEY` on Vercel, then redeploy. With the wrong one, pages still
