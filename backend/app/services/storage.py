@@ -1,9 +1,13 @@
+import re
 import uuid
 from pathlib import Path
 
 import httpx
 
 from app.core.config import settings
+
+# What save() writes: uuid4().hex, then the extension.
+_OBJECT_NAME = re.compile(r"[0-9a-f]{32}\.[A-Za-z0-9]{1,8}")
 
 
 class StorageError(RuntimeError):
@@ -19,6 +23,12 @@ class LocalStorage:
         root.mkdir(parents=True, exist_ok=True)
         (root / name).write_bytes(data)
         return f"{settings.MEDIA_URL}/{name}"
+
+    def delete(self, url: str) -> None:
+        name = _own_object_name(url, f"{settings.MEDIA_URL}/")
+        if name is None:
+            return
+        Path(settings.MEDIA_ROOT, name).unlink(missing_ok=True)
 
 
 class SupabaseStorage:
@@ -82,6 +92,47 @@ class SupabaseStorage:
 
         # Bucket must be public for these URLs to resolve.
         return f"{self.base}/storage/v1/object/public/{self.bucket}/{name}"
+
+    def delete(self, url: str) -> None:
+        name = _own_object_name(
+            url, f"{self.base}/storage/v1/object/public/{self.bucket}/"
+        )
+        if name is None:
+            return
+
+        self._check_key()
+        try:
+            response = httpx.delete(
+                f"{self.base}/storage/v1/object/{self.bucket}/{name}",
+                headers=self._auth_headers(),
+                timeout=30,
+            )
+        except httpx.HTTPError as exc:
+            raise StorageError(f"Could not reach Supabase Storage: {exc}") from exc
+
+        # 404 means it is already gone, which is the outcome we wanted.
+        if response.status_code >= 400 and response.status_code != 404:
+            raise StorageError(
+                f"Supabase Storage refused to delete {name} "
+                f"({response.status_code}): {response.text[:200]}"
+            )
+
+
+def _own_object_name(url: str, prefix: str) -> str | None:
+    """
+    The object this URL names, but only if we are the ones who stored it.
+
+    A plant's image URL is whatever was saved on it, and an admin can paste
+    any address into that field, so this matches the exact shape `save()`
+    writes — a uuid4 and an extension — instead of trying to guess which
+    stray characters would be dangerous in a path. Anything else is left
+    alone, which at worst leaves a file nobody reads.
+    """
+    if not url.startswith(prefix):
+        return None
+
+    name = url[len(prefix) :]
+    return name if _OBJECT_NAME.fullmatch(name) else None
 
 
 def get_storage():
