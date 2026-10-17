@@ -1,37 +1,31 @@
+import { Suspense, lazy } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Home from './pages/Home.jsx'
 import PlantPage from './pages/PlantPage.jsx'
 import NotFound from './pages/NotFound.jsx'
 import ContactButton from './components/ContactButton.jsx'
-import { AuthProvider } from './admin/AuthContext.jsx'
-import RequireAuth from './admin/RequireAuth.jsx'
-import AdminLayout from './admin/components/AdminLayout.jsx'
-import Login from './admin/pages/Login.jsx'
-import AllPlants from './admin/pages/AllPlants.jsx'
-import AddPlant from './admin/pages/AddPlant.jsx'
-import EditPlant from './admin/pages/EditPlant.jsx'
+import ErrorBoundary from './components/ErrorBoundary.jsx'
+
+// Loaded only when an admin route is opened. A customer in a shop is on a
+// phone and a weak connection; the dashboard has no business in that download.
+const AdminRoutes = lazy(() => import('./admin/AdminRoutes.jsx'))
 
 export default function App() {
   return (
-    <AuthProvider>
+    <ErrorBoundary>
       <Routes>
         {/* public */}
         <Route path="/" element={<Home />} />
 
         {/* admin — not linked from anywhere public */}
-        <Route path="/admin/login" element={<Login />} />
         <Route
-          path="/admin"
+          path="/admin/*"
           element={
-            <RequireAuth>
-              <AdminLayout />
-            </RequireAuth>
+            <Suspense fallback={<div className="admin-loading">Loading…</div>}>
+              <AdminRoutes />
+            </Suspense>
           }
-        >
-          <Route index element={<AllPlants />} />
-          <Route path="new" element={<AddPlant />} />
-          <Route path="plants/:slug" element={<EditPlant />} />
-        </Route>
+        />
 
         {/* one plant, one permanent URL: /peace-lily. Static routes above win. */}
         <Route path="/:slug" element={<PlantPage />} />
@@ -41,6 +35,6 @@ export default function App() {
 
       {/* bottom-left contact button on every public page; hidden in the admin */}
       <ContactButton />
-    </AuthProvider>
+    </ErrorBoundary>
   )
 }
