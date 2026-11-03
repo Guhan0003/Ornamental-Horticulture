@@ -93,6 +93,13 @@ export const imageSrc = (url) => (!url || /^https?:\/\//.test(url) ? url : `${BA
  */
 const visited = new Map()
 
+/**
+ * A plant already fetched this visit, or undefined. Synchronous, so the page
+ * can render it in the same frame as the tap — which is what lets the photo
+ * travel from the suggestion card to the next page's hero.
+ */
+export const peekPlant = (slug) => visited.get(slug)
+
 /** One plant, with everything its page needs. */
 export function getPlant(slug) {
   const cached = visited.get(slug)

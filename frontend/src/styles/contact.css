@@ -131,11 +131,6 @@
   background: rgba(8, 20, 13, 0.38);
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
-  animation: contact-fade 0.3s var(--c-ease) both;
-}
-
-.contact-backdrop.is-closing {
-  animation: contact-fade-out 0.25s var(--c-ease) both;
 }
 
 /* ---------- card ---------- */
@@ -158,12 +153,30 @@
     0 1px 0 rgba(255, 255, 255, 0.8) inset,
     0 24px 60px rgba(8, 20, 13, 0.35),
     0 4px 14px rgba(8, 20, 13, 0.12);
+  /* grows out of, and shrinks back into, the button below it */
   transform-origin: 1.75rem calc(100% + 2.5rem);
-  animation: contact-pop 0.45s var(--c-spring) both;
 }
 
-.contact-card.is-closing {
-  animation: contact-unpop 0.24s var(--c-ease) both;
+/* Swipe the card down to put it away. The handle shows only on touch
+   screens, where the gesture is natural; a mouse has the close button. */
+.contact-card__grab {
+  display: none;
+}
+
+@media (pointer: coarse) {
+  .contact-card__grab {
+    display: block;
+    width: 2.25rem;
+    height: 0.3rem;
+    margin: -0.5rem auto 0.75rem;
+    border-radius: 999px;
+    background: var(--c-line);
+    touch-action: none;
+  }
+
+  .contact-card__head {
+    touch-action: none;
+  }
 }
 
 .contact-card:focus {
@@ -211,6 +224,9 @@
 }
 
 .contact-card__head {
+  /* it is also the drag handle; a swipe shouldn't select the name */
+  user-select: none;
+  -webkit-user-select: none;
   display: flex;
   align-items: center;
   gap: 0.85rem;
@@ -298,14 +314,6 @@
   margin: 0;
   padding: 0;
   list-style: none;
-}
-
-.contact-card__list li {
-  animation: contact-rise 0.45s calc(0.12s + var(--i) * 0.06s) var(--c-ease) both;
-}
-
-.contact-card.is-closing .contact-card__list li {
-  animation: none;
 }
 
 /* ---------- a link row ---------- */
@@ -437,65 +445,9 @@
   }
 }
 
-@keyframes contact-pop {
-  from {
-    opacity: 0;
-    transform: translateY(0.75rem) scale(0.35);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@keyframes contact-unpop {
-  from {
-    opacity: 1;
-    transform: none;
-  }
-  to {
-    opacity: 0;
-    transform: translateY(0.5rem) scale(0.6);
-  }
-}
-
-@keyframes contact-rise {
-  from {
-    opacity: 0;
-    transform: translateY(0.6rem);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@keyframes contact-fade {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes contact-fade-out {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .contact-fab,
-  .contact-fab::before,
-  .contact-card,
-  .contact-card.is-closing,
-  .contact-card__list li,
-  .contact-backdrop,
-  .contact-backdrop.is-closing {
+  .contact-fab::before {
     animation: none;
   }
 

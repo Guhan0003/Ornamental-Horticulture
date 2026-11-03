@@ -1,6 +1,8 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
+import { AnimatePresence, LazyMotion, m, useDragControls } from 'motion/react'
 import Leaf from './Leaf.jsx'
+import { pop, rise, stagger } from '../lib/motion.js'
 import { contact } from '../data/contact.js'
 import '../styles/contact.css'
 
@@ -53,6 +55,14 @@ function channels(details) {
   return list
 }
 
+// Dragging is the one feature the public pages don't otherwise need, so it
+// is fetched the first time the card opens rather than with the page.
+const loadDrag = () => import('../lib/motionDrag.js').then((module) => module.default)
+
+// How far down, or how fast, a swipe has to go to put the card away.
+const DISMISS_DISTANCE = 70
+const DISMISS_VELOCITY = 450
+
 /**
  * Round button at the bottom left of every public page. It opens a small
  * card with a description and links to call, WhatsApp, email and Instagram.
@@ -61,30 +71,19 @@ export default function ContactButton() {
   const location = useLocation()
   const titleId = useId()
   const [open, setOpen] = useState(false)
-  // Keeps the card mounted while its closing animation plays.
-  const [rendered, setRendered] = useState(false)
   const buttonRef = useRef(null)
   const panelRef = useRef(null)
+  const drag = useDragControls()
 
   const onAdmin = location.pathname.startsWith('/admin')
 
   // Close when navigating to another page.
   useEffect(() => setOpen(false), [location.pathname])
 
-  useEffect(() => {
-    if (open) {
-      setRendered(true)
-      return
-    }
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const timer = setTimeout(() => setRendered(false), reduced ? 0 : 260)
-    return () => clearTimeout(timer)
-  }, [open])
-
   // Move focus into the card once it is on screen, for keyboard and screen readers.
   useEffect(() => {
-    if (open && rendered) panelRef.current?.focus({ preventScroll: true })
-  }, [open, rendered])
+    if (open) panelRef.current?.focus({ preventScroll: true })
+  }, [open])
 
   useEffect(() => {
     if (!open) return
@@ -102,23 +101,55 @@ export default function ContactButton() {
   if (onAdmin) return null
 
   const items = channels(contact)
-  const state = open ? 'is-open' : 'is-closing'
+
+  function onDragEnd(_, { offset, velocity }) {
+    if (offset.y > DISMISS_DISTANCE || velocity.y > DISMISS_VELOCITY) setOpen(false)
+  }
 
   return (
-    <>
-      {rendered && (
-        <div className={`contact-backdrop ${state}`} onClick={() => setOpen(false)} aria-hidden="true" />
-      )}
+    <LazyMotion features={loadDrag}>
+      <AnimatePresence>
+        {open && (
+          <m.div
+            key="backdrop"
+            className="contact-backdrop"
+            onClick={() => setOpen(false)}
+            aria-hidden="true"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+          />
+        )}
 
-      {rendered && (
-        <div
+        {open && (
+        <m.div
+          key="card"
           ref={panelRef}
-          className={`contact-card ${state}`}
+          className="contact-card"
           role="dialog"
           aria-modal="true"
           aria-labelledby={titleId}
           tabIndex={-1}
+          // Grows out of the button, with a little overshoot, and shrinks back into it.
+          initial={{ opacity: 0, scale: 0.35, y: 14 }}
+          animate={{ opacity: 1, scale: 1, y: 0, transition: pop }}
+          exit={{ opacity: 0, scale: 0.6, y: 10, transition: { duration: 0.2, ease: [0.4, 0, 1, 1] } }}
+          // Swipe it down to put it away. Only from the handle and header, so
+          // a long card can still be scrolled.
+          drag="y"
+          dragControls={drag}
+          dragListener={false}
+          dragConstraints={{ top: 0, bottom: 0 }}
+          dragElastic={{ top: 0.05, bottom: 0.7 }}
+          onDragEnd={onDragEnd}
         >
+          <span
+            className="contact-card__grab"
+            onPointerDown={(event) => drag.start(event)}
+            aria-hidden="true"
+          />
+
           <button
             type="button"
             className="contact-card__close"
@@ -128,7 +159,7 @@ export default function ContactButton() {
             <Glyph name="close" />
           </button>
 
-          <header className="contact-card__head">
+          <header className="contact-card__head" onPointerDown={(event) => drag.start(event)}>
             <span className="contact-card__avatar">
               {contact.avatar ? <img src={contact.avatar} alt="" /> : <Leaf className="contact-card__leaf" />}
             </span>
@@ -148,9 +179,14 @@ export default function ContactButton() {
             </div>
           )}
 
-          <ul className="contact-card__list">
-            {items.map((item, index) => (
-              <li key={item.key} style={{ '--i': index }}>
+          <m.ul
+            className="contact-card__list"
+            variants={stagger(0.06, 0.1)}
+            initial="hidden"
+            animate="shown"
+          >
+            {items.map((item) => (
+              <m.li key={item.key} variants={rise}>
                 <a
                   className={`contact-link contact-link--${item.key}`}
                   href={item.href}
@@ -165,11 +201,12 @@ export default function ContactButton() {
                   </span>
                   <Glyph name="arrow" className="contact-link__arrow" />
                 </a>
-              </li>
+              </m.li>
             ))}
-          </ul>
-        </div>
-      )}
+          </m.ul>
+        </m.div>
+        )}
+      </AnimatePresence>
 
       <button
         ref={buttonRef}
@@ -187,7 +224,7 @@ export default function ContactButton() {
           <Glyph name="close" />
         </span>
       </button>
-    </>
+    </LazyMotion>
   )
 }
 

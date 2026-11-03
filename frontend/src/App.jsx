@@ -1,5 +1,6 @@
 import { Suspense, lazy } from 'react'
 import { Routes, Route } from 'react-router-dom'
+import { LazyMotion, MotionConfig, domAnimation } from 'motion/react'
 import Home from './pages/Home.jsx'
 import PlantPage from './pages/PlantPage.jsx'
 import NotFound from './pages/NotFound.jsx'
@@ -11,6 +12,20 @@ import ErrorBoundary from './components/ErrorBoundary.jsx'
 const AdminRoutes = lazy(() => import('./admin/AdminRoutes.jsx'))
 
 export default function App() {
+  return (
+    // `m` components with only the animation features the public pages use,
+    // instead of the full `motion` bundle; `strict` stops a stray `motion.div`
+    // from quietly pulling the rest back in. Phones set to reduce motion get
+    // fades only, with nothing sliding or scaling.
+    <LazyMotion features={domAnimation} strict>
+      <MotionConfig reducedMotion="user">
+        <AppRoutes />
+      </MotionConfig>
+    </LazyMotion>
+  )
+}
+
+function AppRoutes() {
   return (
     <ErrorBoundary>
       <Routes>

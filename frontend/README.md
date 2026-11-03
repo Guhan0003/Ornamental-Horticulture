@@ -29,6 +29,8 @@ src/
 │   └── Leaf.jsx
 ├── lib/
 │   ├── api.js                backend client + token handling
+│   ├── motion.js             shared springs and reveal presets (Motion)
+│   ├── motionDrag.js         Motion's drag feature, loaded when the contact card opens
 │   └── plantFormat.js        light scale, icons, empty plant — shared by page and admin
 ├── admin/                    the dashboard (not linked from anywhere public)
 │   ├── AuthContext.jsx       session state
@@ -56,6 +58,14 @@ src/
 At `/admin`, behind a single login. It is deliberately not linked from any public page.
 Sign in with the `ADMIN_EMAIL` / `ADMIN_PASSWORD` configured on the backend. The two tabs
 are **All plants** and **Add plant**.
+
+## Animation
+
+[Motion](https://motion.dev) (`motion/react`), loaded as `LazyMotion` with `m` components
+and only the `domAnimation` features, in `strict` mode so a stray `motion.div` can't pull
+in the full bundle. Shared springs and presets live in `lib/motion.js`. `MotionConfig
+reducedMotion="user"` turns movement into plain fades for anyone whose phone asks for
+reduced motion.
 
 ## Plant pages
 

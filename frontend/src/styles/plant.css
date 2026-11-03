@@ -29,7 +29,6 @@ body.is-plant {
 /* ---------- hero photo ---------- */
 
 .pl-hero {
-  --scroll: 0;
   position: relative;
   height: min(74svh, 46rem);
   overflow: hidden;
@@ -54,28 +53,22 @@ body.is-plant {
   height: 100%;
   object-fit: cover;
   object-position: center 35%;
-  opacity: 0;
-  transform: translate3d(0, calc(var(--scroll) * 0.35px), 0) scale(1.08);
-  filter: blur(12px);
-  transition:
-    opacity 0.9s var(--pl-ease),
-    filter 1.1s var(--pl-ease),
-    transform 1.6s var(--pl-ease);
+}
+
+/* Carries the scroll parallax, so the photo's own fade-in can scale freely. */
+.pl-hero__media {
+  position: absolute;
+  inset: 0;
   will-change: transform;
 }
 
-.pl-hero.is-loaded .pl-hero__img {
-  opacity: 1;
-  filter: none;
-  transform: translate3d(0, calc(var(--scroll) * 0.35px), 0) scale(1);
-}
-
-/* Once loaded, scrolling shouldn't lag behind a long transform transition. */
-.pl-hero.is-loaded .pl-hero__img {
-  transition:
-    opacity 0.9s var(--pl-ease),
-    filter 1.1s var(--pl-ease),
-    transform 0.08s linear;
+/* Dims the photo as the sheet covers it. */
+.pl-hero__shade {
+  position: absolute;
+  inset: 0;
+  background: var(--pl-forest);
+  opacity: 0;
+  pointer-events: none;
 }
 
 .pl-hero__brand {
@@ -116,7 +109,6 @@ body.is-plant {
   border-radius: 1.75rem 1.75rem 0 0;
   background: var(--pl-cream);
   box-shadow: 0 -12px 32px rgba(12, 31, 20, 0.06);
-  animation: pl-sheet 0.9s 0.1s var(--pl-ease) both;
 }
 
 .pl-sheet > * {
@@ -128,10 +120,6 @@ body.is-plant {
 
 .pl-identity {
   margin-bottom: 2.5rem;
-}
-
-.pl-rise {
-  animation: pl-rise 0.8s calc(0.35s + var(--i, 0) * 0.09s) var(--pl-ease) both;
 }
 
 .pl-chip {
@@ -159,6 +147,11 @@ body.is-plant {
   line-height: 1;
   letter-spacing: -0.03em;
   font-variation-settings: 'opsz' 144;
+}
+
+/* Each word rises on its own. */
+.pl-name__word {
+  display: inline-block;
 }
 
 .pl-latin {
@@ -220,14 +213,11 @@ body.is-plant {
   border: 1px solid var(--pl-line);
   border-radius: 1.1rem;
   background: var(--pl-paper);
-  transition:
-    transform 0.35s var(--pl-ease),
-    box-shadow 0.35s var(--pl-ease);
+  transition: box-shadow 0.35s var(--pl-ease);
 }
 
 @media (hover: hover) {
   .pl-tile:hover {
-    transform: translateY(-2px);
     box-shadow: 0 10px 28px rgba(12, 31, 20, 0.07);
   }
 }
@@ -316,9 +306,7 @@ body.is-plant {
   height: 0.55rem;
   border-radius: 999px;
   background: var(--pl-line);
-  transform: scaleX(0);
   transform-origin: left;
-  transition: transform 0.6s calc(0.25s + var(--i) * 0.12s) var(--pl-ease);
 }
 
 .pl-meter__seg--ideal {
@@ -333,10 +321,6 @@ body.is-plant {
     var(--pl-mint-soft) 3px,
     var(--pl-mint-soft) 6px
   );
-}
-
-.is-visible .pl-meter__seg {
-  transform: none;
 }
 
 .pl-meter__labels {
@@ -434,22 +418,33 @@ body.is-plant {
   padding-bottom: 1.6rem;
 }
 
-/* the line joining one step to the next, drawn as each step appears */
-.pl-dive__item:not(:last-child)::before {
+/* The line joining the markers. A faint track, and over it the line that
+   grows as you read down the list. Both sit behind the markers. */
+.pl-dive::before,
+.pl-dive__line {
   content: '';
   position: absolute;
-  top: 2.9rem;
-  bottom: 0.3rem;
-  left: 1.3rem;
+  top: var(--line-top, 1.3rem);
+  left: calc(1.3rem - 0.5px);
   width: 1px;
-  background: var(--pl-line);
-  transform: scaleY(0);
-  transform-origin: top;
-  transition: transform 0.8s 0.3s var(--pl-ease);
+  height: var(--line-length, 0px);
 }
 
-.pl-dive__item.is-visible::before {
-  transform: none;
+.pl-dive::before {
+  background: var(--pl-line);
+}
+
+.pl-dive__line {
+  width: 2px;
+  left: calc(1.3rem - 1px);
+  border-radius: 1px;
+  background: linear-gradient(var(--pl-leaf), var(--pl-mint));
+  transform-origin: top;
+}
+
+.pl-dive__marker {
+  position: relative;
+  z-index: 1;
 }
 
 .pl-dive__marker {
@@ -527,9 +522,6 @@ body.is-plant {
   display: block;
   text-decoration: none;
   color: inherit;
-  /* The card lifts on press rather than on hover: a phone has no hover, and
-     this is the only feedback a thumb ever gets. */
-  transition: transform 0.3s var(--pl-ease);
 }
 
 .pl-also__frame {
@@ -557,10 +549,6 @@ body.is-plant {
   font-size: 0.82rem;
   line-height: 1.3;
   color: var(--pl-forest-2);
-}
-
-.pl-also__card:active {
-  transform: scale(0.96);
 }
 
 .pl-also__card:active .pl-also__frame {
@@ -683,26 +671,6 @@ body.is-plant {
   }
 }
 
-/* ---------- scroll reveal ---------- */
-
-[data-reveal] {
-  opacity: 0;
-  transform: translateY(1.25rem);
-  transition:
-    opacity 0.7s var(--pl-ease),
-    transform 0.7s var(--pl-ease);
-}
-
-[data-reveal].is-visible {
-  opacity: 1;
-  transform: none;
-}
-
-/* tiles in the same row arrive one after another */
-.pl-profile > :nth-child(2) { transition-delay: 0.06s; }
-.pl-profile > :nth-child(3) { transition-delay: 0.12s; }
-.pl-profile > :nth-child(4) { transition-delay: 0.18s; }
-
 /* ---------- wide screens: photo pinned left ---------- */
 
 @media (min-width: 900px) {
@@ -717,20 +685,11 @@ body.is-plant {
     height: 100svh;
   }
 
-  .pl-hero__img {
-    transform: scale(1.06);
-  }
-
-  .pl-hero.is-loaded .pl-hero__img {
-    transform: none;
-  }
-
   .pl-sheet {
     margin-top: 0;
     padding: 4.5rem clamp(2rem, 5vw, 5rem) 3rem;
     border-radius: 0;
     box-shadow: none;
-    animation-name: pl-fade;
   }
 
   .pl-hero__brand {
@@ -741,50 +700,12 @@ body.is-plant {
 
 /* ---------- motion ---------- */
 
-@keyframes pl-sheet {
-  from {
-    transform: translateY(3rem);
-  }
-  to {
-    transform: none;
-  }
-}
-
-@keyframes pl-rise {
-  from {
-    opacity: 0;
-    transform: translateY(0.9rem);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
 @keyframes pl-fade {
   from {
     opacity: 0;
   }
   to {
     opacity: 1;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  [data-reveal] {
-    opacity: 1;
-    transform: none;
-  }
-
-  .pl-hero__img,
-  .pl-hero.is-loaded .pl-hero__img {
-    transform: none;
-    filter: none;
-  }
-
-  .pl-meter__seg,
-  .pl-dive__item::before {
-    transform: none;
   }
 }
 
@@ -795,12 +716,8 @@ body.is-plant {
    the only way the page can say it felt the tap, so anything tappable gets
    one. Kept short: past about 150ms it reads as lag, not as feedback. */
 
-.pl-chip,
-.pl-chips li,
-.pl-tile {
-  transition:
-    transform 0.14s var(--pl-ease),
-    box-shadow 0.3s var(--pl-ease);
+.pl-chips li {
+  transition: transform 0.14s var(--pl-ease);
 }
 
 .pl-chips li:active {
@@ -814,8 +731,6 @@ body.is-plant {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pl-also__card,
-  .pl-also__card:active,
   .pl-chips li:active {
     transform: none;
   }

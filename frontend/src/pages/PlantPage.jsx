@@ -1,8 +1,15 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { AnimatePresence, m } from 'motion/react'
 import PlantView from '../components/PlantView.jsx'
 import * as api from '../lib/api.js'
 import NotFound from './NotFound.jsx'
+
+/** What to show for a slug before any request: the plant, if we already have it. */
+function fromCache(slug) {
+  const plant = api.peekPlant(slug)
+  return plant ? { slug, status: 'ready', plant } : { slug, status: 'loading' }
+}
 
 /**
  * /<slug> — almost always the first and only page a visitor sees, so it has
@@ -10,23 +17,37 @@ import NotFound from './NotFound.jsx'
  */
 export default function PlantPage() {
   const { slug } = useParams()
-  const [state, setState] = useState({ status: 'loading' })
+  const [state, setState] = useState(() => fromCache(slug))
   const [attempt, setAttempt] = useState(0)
 
-  useEffect(() => {
-    let cancelled = false
-    setState({ status: 'loading' })
+  // Moving to another plant re-renders this same component with a new slug.
+  // A plant already fetched (every suggestion is, once it's on screen) shows
+  // in that very render, with no loading frame in between.
+  const current = state.slug === slug ? state : fromCache(slug)
 
-    // Suggestions sit at the bottom of the page, and the router keeps the
-    // scroll position, so without this the next plant opens halfway down.
+  // Suggestions sit at the bottom of the page, and the router keeps the
+  // scroll position, so without this the next plant opens halfway down.
+  // Before paint, so the photo hand-over captures the top of the new page.
+  useLayoutEffect(() => {
     window.scrollTo(0, 0)
+  }, [slug])
+
+  useEffect(() => {
+    const cached = fromCache(slug)
+    if (cached.status === 'ready') {
+      setState(cached)
+      return
+    }
+
+    let cancelled = false
+    setState(cached)
 
     api
       .getPlant(slug)
-      .then((plant) => !cancelled && setState({ status: 'ready', plant }))
+      .then((plant) => !cancelled && setState({ slug, status: 'ready', plant }))
       .catch((error) => {
         if (cancelled) return
-        setState({ status: error.status === 404 ? 'missing' : 'failed', error })
+        setState({ slug, status: error.status === 404 ? 'missing' : 'failed', error })
       })
 
     return () => {
@@ -34,10 +55,29 @@ export default function PlantPage() {
     }
   }, [slug, attempt])
 
-  if (state.status === 'ready') return <PlantView plant={state.plant} />
-  if (state.status === 'missing') return <NotFound />
-  if (state.status === 'loading') return <PlantSkeleton />
+  // The skeleton fades out before the page arrives, rather than being cut
+  // away. Moving between two plants keeps the same key, so nothing waits.
+  return (
+    <AnimatePresence mode="wait" initial={false}>
+      {current.status === 'loading' ? (
+        <PlantSkeleton key="loading" />
+      ) : (
+        <m.div
+          key={current.status}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.25 }}
+        >
+          {current.status === 'ready' && <PlantView key={slug} plant={current.plant} />}
+          {current.status === 'missing' && <NotFound />}
+          {current.status === 'failed' && <LoadFailed onRetry={() => setAttempt((n) => n + 1)} />}
+        </m.div>
+      )}
+    </AnimatePresence>
+  )
+}
 
+function LoadFailed({ onRetry }) {
   return (
     <main className="page">
       <section className="card">
@@ -45,7 +85,7 @@ export default function PlantPage() {
         <p className="lede">
           The connection dropped while fetching this plant. It’s usually the signal.
         </p>
-        <button type="button" className="status" onClick={() => setAttempt((n) => n + 1)}>
+        <button type="button" className="status" onClick={onRetry}>
           Try again
         </button>
       </section>
@@ -67,7 +107,12 @@ function PlantSkeleton() {
   }, [])
 
   return (
-    <div className="pl pl-skeleton" role="status" aria-label="Loading plant">
+    <m.div
+      className="pl pl-skeleton"
+      role="status"
+      aria-label="Loading plant"
+      exit={{ opacity: 0, transition: { duration: 0.2 } }}
+    >
       <div className="pl-hero pl-skeleton__hero" />
       <div className="pl-sheet">
         <span className="pl-skeleton__line pl-skeleton__line--chip" />
@@ -81,6 +126,6 @@ function PlantSkeleton() {
         <span className="pl-skeleton__line" />
         <span className="pl-skeleton__line pl-skeleton__line--short" />
       </div>
-    </div>
+    </m.div>
   )
 }
