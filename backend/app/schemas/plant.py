@@ -12,6 +12,24 @@ DeepDiveIcon = Literal["origin", "water", "sparkle", "paw", "sun", "home", "land
 
 LightLevel = Annotated[int, Field(ge=0, le=LIGHT_LEVELS - 1)]
 
+# Keep in step with frontend/src/lib/commerce.js.
+Availability = Literal["in_stock", "ask", "sold_out"]
+
+# Paise. A price of nothing is "no price" (null), never 0; the ceiling is ₹10 lakh,
+# far past any plant and comfortably inside a Postgres integer.
+PriceMinor = Annotated[int, Field(ge=1, le=100_000_000)]
+
+
+def price_problem(price: int | None, original: int | None) -> str | None:
+    """Why this pair of prices makes no sense, or None if it is fine."""
+    if original is None:
+        return None
+    if price is None:
+        return "Add a price before an original price."
+    if original <= price:
+        return "The original price must be higher than the price."
+    return None
+
 _IMAGE_URL = re.compile(r"^(https?://|/)\S+$")
 _PLACEHOLDER = re.compile(r"^data:image/(webp|jpeg|png);base64,[A-Za-z0-9+/]+=*$")
 _HEX_COLOUR = re.compile(r"^#[0-9a-fA-F]{6}$")
@@ -86,10 +104,24 @@ class PlantFields(BaseModel):
     profile: Profile = Field(default_factory=Profile)
     snap: Text(600, required=True)
     deep_dive: list[DeepDivePoint] = Field(min_length=1, max_length=12)
+    price_minor: PriceMinor | None = None
+    original_price_minor: PriceMinor | None = None
+    price_note: Text(120) = ""
+    availability: Availability = "in_stock"
 
 
 class PlantCreate(PlantFields):
     slug: Slug(160)
+
+    @model_validator(mode="after")
+    def _prices(self) -> "PlantCreate":
+        problem = price_problem(self.price_minor, self.original_price_minor)
+        if problem:
+            raise ValueError(problem)
+        return self
+
+
+CLEARABLE = frozenset({"price_minor", "original_price_minor"})
 
 
 class PlantUpdate(BaseModel):
@@ -101,12 +133,17 @@ class PlantUpdate(BaseModel):
     profile: Profile | None = None
     snap: Text(600, required=True) | None = None
     deep_dive: list[DeepDivePoint] | None = Field(default=None, min_length=1, max_length=12)
+    # Unlike the sections above, a price can be taken away by sending null.
+    price_minor: PriceMinor | None = None
+    original_price_minor: PriceMinor | None = None
+    price_note: Text(120) | None = None
+    availability: Availability | None = None
 
     @field_validator("*")
     @classmethod
-    def _not_null(cls, value):
+    def _not_null(cls, value, info):
         # Sending null explicitly would wipe a required section.
-        if value is None:
+        if value is None and info.field_name not in CLEARABLE:
             raise ValueError("cannot be null; omit the field to leave it unchanged")
         return value
 
@@ -116,6 +153,7 @@ class PlantRead(PlantFields):
 
     id: int
     slug: str
+    currency: str = "INR"
     created_at: datetime
     updated_at: datetime
     # Filled in when a page is read. They travel with the plant rather than in
@@ -124,7 +162,7 @@ class PlantRead(PlantFields):
 
 
 class PlantSummary(BaseModel):
-    """What the home search and the admin list need: enough to show a card."""
+    """What the home page, its search and the admin list need: enough to show a card."""
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -132,6 +170,11 @@ class PlantSummary(BaseModel):
     common_name: str
     scientific_name: str
     image: PlantImage
+    price_minor: int | None
+    original_price_minor: int | None
+    currency: str
+    price_note: str
+    availability: str
     updated_at: datetime
 
 

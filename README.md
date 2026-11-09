@@ -2,8 +2,10 @@
 
 **by StomatalWorld**
 
-A Wikipedia-style website for ornamental plants: one simple page per plant, and a private
-admin dashboard to manage them.
+A Wikipedia-style website for ornamental plants, and the shop front for selling them: one
+simple page per plant, a home page that lists every plant with its price, and a private
+admin dashboard to manage them. Ordering is a WhatsApp message to the shop for now;
+see [COMMERCE.md](COMMERCE.md).
 
 ---
 
@@ -21,13 +23,15 @@ That page shows, for that plant, in this order:
 |---|---|
 | **Photo** | one photo of the plant |
 | **Identity** | common name and scientific name |
+| **Price** | the price (with the original struck through and "% off" when there is a discount), what it includes, whether it is in stock, and an **Order on WhatsApp** button that already names the plant |
 | **Quick Profile** | environment, light need, landscape use, home use |
 | **The Snap** | one or two sentences: the plant at a glance |
 | **The Deep Dive** | titled points: origin & habit, key care rule, special feature, pet safety |
 
-The home page has a **search bar** at the top: tap it to see each plant as a small photo
-and its name, type to narrow the list, and tap a plant to open its page. Beyond that
-there are no categories, no accounts and nothing to browse.
+The home page is the shop: a **search bar** at the top, then every plant as a card with
+its photo, name and price, two to a row on a phone. Sold-out plants sink to the end, and
+the list can be sorted A–Z or by price. Tap a plant to open its page. There are no
+categories and no accounts.
 
 Later, every plant gets a **QR code** that points at its page (see [Phases](#phases)).
 Because a printed QR code can never be changed, the page address is designed to be
@@ -57,9 +61,10 @@ Inside, two tabs:
 |---|---|---|---|
 | 1 | **Photo** | the photo (tap to choose, or drag and drop), and a one-line description of it | photo required |
 | 2 | **Identity** | common name, scientific name, page address (filled in from the name) | common name and address |
-| 3 | **Quick Profile** | environment: tap *Indoor*, *Outdoor* or *Indoor & outdoor* · light need: a summary, a tolerance note, and a 4-step light scale (tap each step: ideal → tolerates → clear) · landscape uses and home uses: type each one and press Enter · an optional note under each | all optional; empty cards are hidden on the page |
-| 4 | **The Snap** | one or two sentences, up to 600 characters | required |
-| 5 | **The Deep Dive** | titled points, each with an icon picked from 8. A new plant starts with *Origin & Habit*, *Key Care Rule*, *Special Feature* and *Pet Safety*; add more, remove any, or reorder them. Points left blank are skipped. | at least one point |
+| 3 | **Price & availability** | price in rupees · an optional original price (shows the discount) · what the price includes, e.g. *with white decor pot* · *In stock*, *Ask us* or *Sold out* | all optional; with no price the page says "Ask for the price" |
+| 4 | **Quick Profile** | environment: tap *Indoor*, *Outdoor* or *Indoor & outdoor* · light need: a summary, a tolerance note, and a 4-step light scale (tap each step: ideal → tolerates → clear) · landscape uses and home uses: type each one and press Enter · an optional note under each | all optional; empty cards are hidden on the page |
+| 5 | **The Snap** | one or two sentences, up to 600 characters | required |
+| 6 | **The Deep Dive** | titled points, each with an icon picked from 8. A new plant starts with *Origin & Habit*, *Key Care Rule*, *Special Feature* and *Pet Safety*; add more, remove any, or reorder them. Points left blank are skipped. | at least one point |
 
 Every plant uses the same page design; only the content changes. A plant without pet
 information simply has no Pet Safety point, and a plant that needs an extra point, say
@@ -86,6 +91,8 @@ example. The exact API format is in [backend/README.md](backend/README.md#a-plan
 | `profile.light` | a label (*Medium to bright indirect light*), a note (*Tolerates low light*), and where it sits on the scale Low → Medium → Bright indirect → Direct sun, drawn as a meter |
 | `profile.landscape_use` | a list (*Shaded tropical borders, Mass groundcover*) and an optional note (*Frost-free zones*) |
 | `profile.home_use` | a list (*Tabletop accent, Floor plant, Air-purifying space cleaner*) |
+| `price_minor` | `39900`, the price in **paise**, so ₹399. Empty means "ask for the price". |
+| `original_price_minor` · `price_note` · `availability` | the price before a discount · *with white decor pot* · `in_stock`, `ask` or `sold_out` |
 | `snap` | the short description |
 | `deep_dive` | the long description, as titled points, each with an icon |
 

@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from typing import Any
 
-from sqlalchemy import JSON, DateTime, String, Text
+from sqlalchemy import JSON, DateTime, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
@@ -42,6 +42,19 @@ class Plant(Base):
 
     # The Deep Dive — [{"icon", "title", "body"}, ...]
     deep_dive: Mapped[list[dict[str, Any]]] = mapped_column(JSON)
+
+    # What it costs, in paise. Money as a float is a rounding bug waiting for a
+    # customer to find it, so it is a whole number of the smallest unit. Null
+    # means "no price shown" — the page says to ask instead.
+    price_minor: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    # The price before a discount, drawn struck through. Always above price_minor.
+    original_price_minor: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    # Stored from day one so adding a second currency never means backfilling.
+    currency: Mapped[str] = mapped_column(String(3), default="INR")
+    # What the price includes: "with white decor pot", "6-inch pot".
+    price_note: Mapped[str] = mapped_column(String(120), default="")
+    # in_stock / ask / sold_out. "Ask us" is a real answer a boolean cannot give.
+    availability: Mapped[str] = mapped_column(String(20), default="in_stock")
 
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
     updated_at: Mapped[datetime] = mapped_column(

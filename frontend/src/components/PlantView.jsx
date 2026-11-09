@@ -1,8 +1,16 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { Glyph } from './ContactButton.jsx'
 import Icon from './Icon.jsx'
 import Leaf from './Leaf.jsx'
 import { imageSrc, prefetchPlant } from '../lib/api.js'
+import {
+  availabilityLabel,
+  buyAction,
+  discountPercent,
+  formatPrice,
+  isSoldOut,
+} from '../lib/commerce.js'
 import { LIGHT_SCALE } from '../lib/plantFormat.js'
 import '../styles/plant.css'
 
@@ -19,6 +27,8 @@ export default function PlantView({ plant }) {
 
   usePageChrome(plant.common_name, backdrop)
   const rootRef = useReveal(plant.slug)
+  const buyRef = useRef(null)
+  const pastBuy = useScrolledPast(buyRef)
 
   const { light, landscape_use: landscape, home_use: home } = profile
   const hasLight = light.label || light.ideal.length > 0
@@ -45,6 +55,7 @@ export default function PlantView({ plant }) {
               {plant.scientific_name}
             </p>
           )}
+          <BuyPanel plant={plant} panelRef={buyRef} />
         </header>
 
         {hasProfile && (
@@ -125,8 +136,97 @@ export default function PlantView({ plant }) {
           <span className="pl-footer__sub">Ornamental Horticulture</span>
         </footer>
       </main>
+
+      <BuyBar plant={plant} shown={pastBuy} />
     </div>
   )
+}
+
+/** The link to the shop's WhatsApp, already naming the plant and its price. */
+function OrderLink({ plant, className }) {
+  const action = buyAction(plant, `${window.location.origin}/${plant.slug}`)
+  if (!action) return null
+
+  return (
+    <a className={className} href={action.href} target="_blank" rel="noreferrer">
+      <Glyph name="whatsapp" className="pl-cta__icon" />
+      {action.label}
+    </a>
+  )
+}
+
+/**
+ * What it costs and whether it can be had, directly under the name — the
+ * second thing anyone in a shop wants to know after what the plant is.
+ */
+function BuyPanel({ plant, panelRef }) {
+  const { price_minor: price, original_price_minor: original, currency } = plant
+  const off = discountPercent(price, original)
+  const sold = isSoldOut(plant)
+
+  return (
+    <section className="pl-buy pl-rise" style={{ '--i': 3 }} ref={panelRef} aria-label="Price">
+      <div className="pl-buy__row">
+        {price == null ? (
+          <p className="pl-buy__ask">Price on request</p>
+        ) : (
+          <p className={`pl-buy__price${sold ? ' is-sold' : ''}`}>
+            <span className="pl-buy__amount">{formatPrice(price, currency)}</span>
+            {off > 0 && !sold && (
+              <>
+                <s className="pl-buy__was">{formatPrice(original, currency)}</s>
+                <span className="pl-buy__off">{off}% off</span>
+              </>
+            )}
+          </p>
+        )}
+        <span className={`pl-stock pl-stock--${plant.availability}`}>
+          {availabilityLabel(plant.availability)}
+        </span>
+      </div>
+
+      {plant.price_note && <p className="pl-buy__note">{plant.price_note}</p>}
+
+      <OrderLink plant={plant} className="pl-cta" />
+    </section>
+  )
+}
+
+/**
+ * The same button, kept in reach once the panel above has scrolled away. It
+ * floats to the right of the contact button instead of covering it, so the
+ * page never has two things competing for the bottom-left corner.
+ */
+function BuyBar({ plant, shown }) {
+  if (!buyAction(plant)) return null
+  const price = plant.price_minor
+
+  return (
+    <div className={`pl-buybar${shown ? ' is-shown' : ''}`} inert={!shown}>
+      <span className="pl-buybar__price">
+        {price == null ? 'Ask for price' : formatPrice(price, plant.currency)}
+      </span>
+      <OrderLink plant={plant} className="pl-cta pl-cta--bar" />
+    </div>
+  )
+}
+
+/** True once an element has scrolled off the top of the screen — not while it is still below. */
+function useScrolledPast(ref) {
+  const [past, setPast] = useState(false)
+
+  useEffect(() => {
+    const element = ref.current
+    if (!element || !('IntersectionObserver' in window)) return
+
+    const observer = new IntersectionObserver(([entry]) => {
+      setPast(!entry.isIntersecting && entry.boundingClientRect.top < 0)
+    })
+    observer.observe(element)
+    return () => observer.disconnect()
+  }, [ref])
+
+  return past
 }
 
 /**
@@ -137,7 +237,7 @@ export default function PlantView({ plant }) {
  * next page's hero and moves the photo between them, instead of the page
  * flashing white and fetching it again.
  */
-function handOver(event) {
+export function handOver(event) {
   if (!document.startViewTransition) return
 
   const hero = document.querySelector('.pl-hero__img')
@@ -201,6 +301,9 @@ function AlsoLike({ plants }) {
                 <img src={imageSrc(plant.image.url)} alt="" loading="lazy" decoding="async" />
               </span>
               <span className="pl-also__name">{plant.common_name}</span>
+              {plant.price_minor != null && !isSoldOut(plant) && (
+                <span className="pl-also__price">{formatPrice(plant.price_minor, plant.currency)}</span>
+              )}
             </Link>
           </li>
         ))}

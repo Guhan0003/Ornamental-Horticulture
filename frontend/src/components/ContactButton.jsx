@@ -191,7 +191,7 @@ export default function ContactButton() {
   )
 }
 
-function Glyph({ name, className }) {
+export function Glyph({ name, className }) {
   const common = {
     className,
     viewBox: '0 0 24 24',

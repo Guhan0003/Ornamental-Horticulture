@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import * as api from '../../lib/api.js'
+import { formatPrice, isSoldOut } from '../../lib/commerce.js'
 
 const matches = (plant, query) =>
   [plant.common_name, plant.scientific_name, plant.slug].some((value) =>
@@ -98,6 +99,18 @@ export default function AllPlants() {
                       {plant.scientific_name && (
                         <em className="plant-card__latin">{plant.scientific_name}</em>
                       )}
+                      <span className="plant-card__price">
+                        {isSoldOut(plant) ? (
+                          <span className="plant-card__sold">Sold out</span>
+                        ) : plant.price_minor == null ? (
+                          <span className="plant-card__noprice">No price yet</span>
+                        ) : (
+                          <>
+                            <strong>{formatPrice(plant.price_minor, plant.currency)}</strong>
+                            {plant.price_note && <small>{plant.price_note}</small>}
+                          </>
+                        )}
+                      </span>
                       <span className="plant-card__meta">
                         /{plant.slug} · edited {updatedLabel(plant.updated_at)}
                         {views[plant.slug] && (

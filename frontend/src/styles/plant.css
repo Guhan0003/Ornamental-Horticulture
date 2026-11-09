@@ -169,6 +169,201 @@ body.is-plant {
   color: var(--pl-muted);
 }
 
+/* ---------- price, stock and the order button ---------- */
+
+.pl-buy {
+  margin-top: 1.4rem;
+  padding: 1rem 1.1rem 1.1rem;
+  border: 1px solid var(--pl-line);
+  border-radius: 1.25rem;
+  background: var(--pl-paper);
+  box-shadow: 0 8px 24px rgba(12, 31, 20, 0.05);
+}
+
+.pl-buy__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.pl-buy__price,
+.pl-buy__ask {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.6rem;
+  margin: 0;
+}
+
+.pl-buy__amount {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  font-size: 2.1rem;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variation-settings: 'opsz' 144;
+}
+
+.pl-buy__price.is-sold .pl-buy__amount {
+  color: var(--pl-muted);
+}
+
+.pl-buy__was {
+  font-size: 1rem;
+  color: var(--pl-muted);
+}
+
+.pl-buy__off {
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background: var(--pl-mint-soft);
+  color: var(--pl-forest-2);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.pl-buy__ask {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  font-size: 1.4rem;
+}
+
+.pl-buy__note {
+  margin: 0.6rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--pl-muted);
+}
+
+/* the stock pill: a dot and a word, never colour alone */
+.pl-stock {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.7rem 0.3rem 0.6rem;
+  border-radius: 999px;
+  background: var(--pl-mint-soft);
+  color: var(--pl-forest-2);
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.pl-stock::before {
+  content: '';
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--pl-leaf);
+}
+
+.pl-stock--ask {
+  background: #f8e9c8;
+  color: #6d4e0e;
+}
+
+.pl-stock--ask::before {
+  background: #c28a1b;
+}
+
+.pl-stock--sold_out {
+  background: #e7e4da;
+  color: var(--pl-muted);
+}
+
+.pl-stock--sold_out::before {
+  background: var(--pl-muted);
+}
+
+/* The order button is WhatsApp's own green, so it reads as "this opens WhatsApp". */
+.pl-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-height: 3.1rem;
+  margin-top: 1rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 999px;
+  background: #1f9b55;
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform 0.14s var(--pl-ease),
+    background-color 0.2s;
+}
+
+.pl-cta:active {
+  transform: scale(0.97);
+}
+
+@media (hover: hover) {
+  .pl-cta:hover {
+    background: #188449;
+  }
+}
+
+.pl-cta:focus-visible {
+  outline: 2px solid var(--pl-forest);
+  outline-offset: 3px;
+}
+
+.pl-cta__icon {
+  width: 1.3rem;
+  height: 1.3rem;
+  flex: none;
+}
+
+/* Kept in reach once the panel has scrolled away. It sits to the right of the
+   contact button (3.5rem wide, 1rem in) rather than over it. */
+.pl-buybar {
+  position: fixed;
+  z-index: 55;
+  bottom: calc(1rem + env(safe-area-inset-bottom));
+  left: calc(5.25rem + env(safe-area-inset-left));
+  right: calc(0.75rem + env(safe-area-inset-right));
+  max-width: 24rem;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.35rem 0.35rem 0.35rem 1.1rem;
+  border-radius: 999px;
+  background: var(--pl-forest);
+  color: #f2efe4;
+  box-shadow: 0 12px 30px rgba(12, 31, 20, 0.3);
+  transform: translateY(calc(100% + 2rem));
+  opacity: 0;
+  transition:
+    transform 0.45s var(--pl-ease),
+    opacity 0.3s;
+}
+
+.pl-buybar.is-shown {
+  transform: none;
+  opacity: 1;
+}
+
+.pl-buybar__price {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  font-size: 1.2rem;
+  white-space: nowrap;
+}
+
+.pl-cta--bar {
+  margin-top: 0;
+  min-height: 2.7rem;
+  padding: 0.4rem 1rem;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
 /* ---------- sections ---------- */
 
 .pl-section {
@@ -559,6 +754,14 @@ body.is-plant {
   color: var(--pl-forest-2);
 }
 
+.pl-also__price {
+  display: block;
+  margin-top: 0.1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--pl-leaf);
+}
+
 .pl-also__card:active {
   transform: scale(0.96);
 }
@@ -784,6 +987,11 @@ body.is-plant {
 
   .pl-meter__seg,
   .pl-dive__item::before {
+    transform: none;
+  }
+
+  .pl-buybar {
+    transition: opacity 0.2s;
     transform: none;
   }
 }

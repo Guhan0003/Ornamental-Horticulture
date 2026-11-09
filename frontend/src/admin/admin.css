@@ -448,6 +448,34 @@
   color: var(--ink-dim);
 }
 
+.plant-card__price {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.15rem 0.5rem;
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+}
+
+.plant-card__price strong {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.plant-card__price small {
+  font-size: 0.75rem;
+  color: var(--ink-dim);
+}
+
+.plant-card__sold {
+  color: var(--danger);
+}
+
+.plant-card__noprice {
+  color: var(--warn);
+}
+
 .plant-card__meta {
   margin-top: 0.3rem;
   font-size: 0.75rem;
@@ -569,7 +597,10 @@
 
 /* page address */
 
-.address-input {
+/* a money field shares the address field's shape: a fixed prefix, then the input */
+
+.address-input,
+.money-input {
   display: flex;
   align-items: stretch;
   overflow: hidden;
@@ -578,13 +609,23 @@
   background: rgba(12, 31, 20, 0.6);
 }
 
-.address-input:focus-within {
+.address-input:focus-within,
+.money-input:focus-within {
   outline: 2px solid var(--accent);
   outline-offset: 1px;
 }
 
-.address-input.is-invalid {
+.address-input.is-invalid,
+.money-input.is-invalid {
   border-color: rgba(255, 150, 150, 0.7);
+}
+
+.money-input__symbol {
+  display: flex;
+  align-items: center;
+  padding: 0 0.1rem 0 0.8rem;
+  font-size: 1rem;
+  color: var(--ink-dim);
 }
 
 .address-input__host {
@@ -596,7 +637,8 @@
   white-space: nowrap;
 }
 
-.admin .address-input input {
+.admin .address-input input,
+.admin .money-input input {
   border: 0;
   outline: 0;
   background: transparent;

@@ -22,7 +22,14 @@ Every plant in the store carries a **QR code** on or below it. The customer scan
 their phone and lands directly on that plant's page: name, description, care instructions,
 and the details that matter.
 
-## What this is NOT
+## Update, 2026-11-09: it is also a shop
+
+The site now sells the plants. Every plant has a price, the home page lists them all
+with prices, and each plant page has an **Order on WhatsApp** button. The QR code is
+still the way most people arrive and the plant page still has to stand on its own;
+the home page just stopped being a bare search box. See [COMMERCE.md](COMMERCE.md).
+
+## What this is NOT (as first written)
 
 This is deliberately **not** a browse-first website. Nobody is expected to visit the
 homepage and search through a catalogue. The entry point is physical — a plant in a store,

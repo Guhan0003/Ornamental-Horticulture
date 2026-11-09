@@ -1,4 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
+import {
+  AVAILABILITY,
+  MAX_PRICE,
+  discountPercent,
+  formatPrice,
+  toMinor,
+  toRupees,
+} from '../../lib/commerce.js'
 import { ENVIRONMENTS, LIMITS, slugify } from '../../lib/plantFormat.js'
 import ChipsInput from './ChipsInput.jsx'
 import DeepDiveEditor from './DeepDiveEditor.jsx'
@@ -76,6 +84,12 @@ export default function PlantForm({ initial, isNew, onSave, footer }) {
 
   const host = typeof window !== 'undefined' ? window.location.host : ''
 
+  // What the page will say about the discount, so the effect of the two
+  // numbers is visible before saving.
+  const priceNow = toMinor(plant.price)
+  const priceWas = toMinor(plant.original_price)
+  const off = discountPercent(priceNow, priceWas)
+
   return (
     <form className="plant-form" onSubmit={submit} noValidate>
       {/* 1 ─ Photo */}
@@ -150,8 +164,90 @@ export default function PlantForm({ initial, isNew, onSave, footer }) {
         </div>
       </FormSection>
 
-      {/* 3 ─ Quick profile */}
-      <FormSection number="3" title="Quick Profile" hint="All optional. Empty cards are hidden on the page.">
+      {/* 3 ─ Price */}
+      <FormSection
+        number="3"
+        title="Price & availability"
+        hint="Shown right under the name. With no price, the page says “Ask for the price”."
+      >
+        <div className="form-grid">
+          <label className="field">
+            <span>Price</span>
+            <div className={`money-input${errors.price ? ' is-invalid' : ''}`}>
+              <span className="money-input__symbol">₹</span>
+              <input
+                value={plant.price}
+                onChange={(e) => set({ price: e.target.value })}
+                inputMode="decimal"
+                placeholder="399"
+                maxLength={10}
+                aria-invalid={Boolean(errors.price)}
+              />
+            </div>
+            {errors.price && <em className="field__error">{errors.price}</em>}
+          </label>
+
+          <label className="field">
+            <span>Original price (optional)</span>
+            <div className={`money-input${errors.original_price ? ' is-invalid' : ''}`}>
+              <span className="money-input__symbol">₹</span>
+              <input
+                value={plant.original_price}
+                onChange={(e) => set({ original_price: e.target.value })}
+                inputMode="decimal"
+                placeholder="499"
+                maxLength={10}
+                aria-invalid={Boolean(errors.original_price)}
+              />
+            </div>
+            {errors.original_price ? (
+              <em className="field__error">{errors.original_price}</em>
+            ) : (
+              <small>
+                {off > 0
+                  ? `Shows ${formatPrice(priceWas)} struck through, and “${off}% off”.`
+                  : 'Fill this in to show a discount.'}
+              </small>
+            )}
+          </label>
+        </div>
+
+        <label className="field">
+          <span>What the price includes</span>
+          <input
+            value={plant.price_note}
+            onChange={(e) => set({ price_note: e.target.value })}
+            placeholder="with white decor pot"
+            maxLength={120}
+          />
+          <small>Shown beside the price: the pot, the size, anything the buyer should know.</small>
+        </label>
+
+        <div className="field">
+          <span>Availability</span>
+          <div className="segmented" role="radiogroup" aria-label="Availability">
+            {AVAILABILITY.map(({ value, label }) => (
+              <button
+                key={value}
+                type="button"
+                role="radio"
+                aria-checked={plant.availability === value}
+                className={plant.availability === value ? 'is-selected' : ''}
+                onClick={() => set({ availability: value })}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          <small>
+            “Ask us” turns the order button into “Check availability”. “Sold out” keeps the page
+            up, moves the plant to the end of the shop, and offers “Ask when it’s back”.
+          </small>
+        </div>
+      </FormSection>
+
+      {/* 4 ─ Quick profile */}
+      <FormSection number="4" title="Quick Profile" hint="All optional. Empty cards are hidden on the page.">
         <div className="field">
           <span>Environment</span>
           <div className="segmented" role="radiogroup" aria-label="Environment">
@@ -244,8 +340,8 @@ export default function PlantForm({ initial, isNew, onSave, footer }) {
         </div>
       </FormSection>
 
-      {/* 4 ─ The Snap */}
-      <FormSection number="4" title="The Snap" hint="The short description: what the plant is, at a glance.">
+      {/* 5 ─ The Snap */}
+      <FormSection number="5" title="The Snap" hint="The short description: what the plant is, at a glance.">
         <label className="field">
           <span className="visually-hidden">The Snap</span>
           <textarea
@@ -265,8 +361,8 @@ export default function PlantForm({ initial, isNew, onSave, footer }) {
         </label>
       </FormSection>
 
-      {/* 5 ─ The Deep Dive */}
-      <FormSection number="5" title="The Deep Dive" hint="The long description, as titled points. Blank points are skipped.">
+      {/* 6 ─ The Deep Dive */}
+      <FormSection number="6" title="The Deep Dive" hint="The long description, as titled points. Blank points are skipped.">
         {errors.deep_dive && <em className="field__error">{errors.deep_dive}</em>}
         <DeepDiveEditor
           points={plant.deep_dive}
@@ -320,6 +416,26 @@ function validate(plant, isNew) {
   if (isNew && !plant.slug) errors.slug = 'The page needs an address.'
   if (!plant.snap.trim()) errors.snap = 'Write a sentence or two.'
 
+  const price = toMinor(plant.price)
+  const original = toMinor(plant.original_price)
+  const moneyProblem = (minor) =>
+    Number.isNaN(minor)
+      ? 'Use numbers only, like 399 or 399.50.'
+      : minor !== null && (minor < 1 || minor > MAX_PRICE * 100)
+        ? `Use an amount between ₹1 and ₹${MAX_PRICE.toLocaleString('en-IN')}.`
+        : null
+
+  const priceProblem = moneyProblem(price)
+  if (priceProblem) errors.price = priceProblem
+
+  const originalProblem = moneyProblem(original)
+  if (originalProblem) errors.original_price = originalProblem
+  else if (original !== null && price === null) {
+    errors.original_price = 'Add the price first.'
+  } else if (original !== null && original <= price) {
+    errors.original_price = 'Must be higher than the price.'
+  }
+
   plant.deep_dive.forEach((point, index) => {
     if (isBlankPoint(point)) return
     if (!point.title.trim()) errors[`deep_dive.${index}.title`] = 'Add a title, or clear the text.'
@@ -354,6 +470,11 @@ function toPayload(plant, isNew) {
         note: profile.home_use.note.trim(),
       },
     },
+    // Always sent, even when empty: null is how a price is taken away.
+    price_minor: toMinor(plant.price),
+    original_price_minor: toMinor(plant.original_price),
+    price_note: plant.price_note.trim(),
+    availability: plant.availability,
     snap: plant.snap.trim(),
     deep_dive: plant.deep_dive
       .filter((point) => !isBlankPoint(point))
@@ -365,5 +486,18 @@ function toPayload(plant, isNew) {
 /** The fields the form edits, from a plant as the API returns it. */
 export function pickEditable(plant) {
   const { slug, common_name, scientific_name, image, profile, snap, deep_dive } = plant
-  return { slug, common_name, scientific_name, image, profile, snap, deep_dive }
+  return {
+    slug,
+    common_name,
+    scientific_name,
+    image,
+    profile,
+    // The API speaks paise; the form types rupees.
+    price: toRupees(plant.price_minor),
+    original_price: toRupees(plant.original_price_minor),
+    price_note: plant.price_note ?? '',
+    availability: plant.availability ?? 'in_stock',
+    snap,
+    deep_dive,
+  }
 }

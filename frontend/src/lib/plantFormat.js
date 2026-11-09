@@ -32,6 +32,11 @@ export const emptyPlant = () => ({
     landscape_use: { items: [], note: '' },
     home_use: { items: [], note: '' },
   },
+  // Typed as rupees ("399"); the API takes paise. See lib/commerce.js.
+  price: '',
+  original_price: '',
+  price_note: '',
+  availability: 'in_stock',
   snap: '',
   deep_dive: [
     { icon: 'origin', title: 'Origin & Habit', body: '' },

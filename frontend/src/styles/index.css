@@ -288,6 +288,20 @@ button.status {
   color: var(--ink-dim);
 }
 
+.search__price {
+  margin-left: auto;
+  padding-left: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+.search__price.is-sold {
+  color: var(--ink-dim);
+  font-weight: 400;
+}
+
 @keyframes search-drop {
   from {
     opacity: 0;
@@ -302,4 +316,265 @@ button.status {
 /* keep the centred card clear of the search bar on short screens */
 .page:has(> .home-top) {
   padding-top: 5.5rem;
+}
+
+/* ---------- home: the shop ---------- */
+
+/* The home page is a shop that scrolls, not one card centred on the screen. */
+.page--home {
+  justify-content: flex-start;
+  gap: 2rem;
+}
+
+.home-hero .leaf {
+  margin-bottom: 1.1rem;
+}
+
+.home-hero .title {
+  margin-bottom: 1rem;
+  font-size: clamp(2.1rem, 10vw, 3.1rem);
+}
+
+.home-hero .lede {
+  margin-bottom: 0;
+}
+
+.shop {
+  position: relative;
+  width: min(100%, 64rem);
+}
+
+.shop__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.shop__title {
+  margin: 0;
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 400;
+  font-size: 1.6rem;
+  letter-spacing: -0.02em;
+}
+
+.shop__count {
+  margin: 0.15rem 0 0;
+  font-size: 0.82rem;
+  color: var(--ink-dim);
+}
+
+.shop__sort select {
+  padding: 0.55rem 2.2rem 0.55rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background-color: rgba(242, 239, 228, 0.06);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a9bcae' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem;
+  color: var(--ink);
+  font: inherit;
+  /* 16px stops iOS zooming the page when the control is used */
+  font-size: 1rem;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+.shop__sort select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.shop__sort option {
+  background: var(--bg-2);
+  color: var(--ink);
+}
+
+.shop__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 640px) {
+  .shop__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 960px) {
+  .shop__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.shop__grid > li {
+  display: flex;
+}
+
+.shop__message {
+  display: grid;
+  justify-items: center;
+  gap: 1rem;
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--ink-dim);
+}
+
+.shop__message p {
+  margin: 0;
+}
+
+.shop-card {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 1.1rem;
+  background: var(--bg-2);
+  color: inherit;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  /* A phone has no hover; the press is the only feedback a thumb gets. */
+  transition:
+    transform 0.14s cubic-bezier(0.2, 0.75, 0.25, 1),
+    border-color 0.2s;
+}
+
+.shop-card:active {
+  transform: scale(0.97);
+}
+
+@media (hover: hover) {
+  .shop-card:hover {
+    border-color: rgba(127, 214, 162, 0.5);
+  }
+}
+
+.shop-card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.shop-card__frame {
+  position: relative;
+  display: block;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background-color: var(--bg);
+  background-size: cover;
+  background-position: center;
+}
+
+.shop-card__frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.shop-card__badge {
+  position: absolute;
+  top: 0.55rem;
+  left: 0.55rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #06150d;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.shop-card__badge--sold {
+  background: rgba(12, 31, 20, 0.88);
+  color: var(--ink);
+  font-weight: 500;
+}
+
+/* Dimmed with a filter, not opacity: the blurred preview sits behind the photo
+   and would show through a see-through one as a double image. */
+.shop-card--sold .shop-card__frame img {
+  filter: grayscale(0.9) brightness(0.65);
+}
+
+.shop-card__body {
+  display: grid;
+  align-content: start;
+  gap: 0.2rem;
+  padding: 0.7rem 0.8rem 0.85rem;
+}
+
+.shop-card__name {
+  display: -webkit-box;
+  overflow: hidden;
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 1.02rem;
+  line-height: 1.2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.shop-card__price,
+.shop-card__ask {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0 0.45rem;
+}
+
+.shop-card__price strong {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.shop-card__price s {
+  font-size: 0.82rem;
+  color: var(--ink-dim);
+}
+
+.shop-card__price.is-sold strong {
+  color: var(--ink-dim);
+}
+
+.shop-card__ask {
+  font-size: 0.88rem;
+  color: var(--ink-dim);
+}
+
+.shop-card__note {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 0.75rem;
+  line-height: 1.35;
+  color: var(--ink-dim);
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* while the list loads: the cards' own shape, pulsing */
+.shop-card--skeleton .shop-card__frame,
+.shop-card__line {
+  background: rgba(242, 239, 228, 0.07);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+.shop-card__line {
+  display: block;
+  height: 0.9rem;
+  border-radius: 0.4rem;
+}
+
+.shop-card__line--short {
+  width: 45%;
 }
