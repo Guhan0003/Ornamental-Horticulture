@@ -1,6 +1,7 @@
 import re
 import uuid
 from pathlib import Path
+from urllib.parse import quote
 
 import httpx
 
@@ -8,6 +9,9 @@ from app.core.config import settings
 
 # What save() writes: uuid4().hex, then the extension.
 _OBJECT_NAME = re.compile(r"[0-9a-f]{32}\.[A-Za-z0-9]{1,8}")
+
+# Supabase returns at most this many objects per listing request.
+_LIST_PAGE = 100
 
 
 class StorageError(RuntimeError):
@@ -116,6 +120,70 @@ class SupabaseStorage:
                 f"Supabase Storage refused to delete {name} "
                 f"({response.status_code}): {response.text[:200]}"
             )
+
+    def list_objects(self, prefix: str = "") -> dict[str, int | None]:
+        """
+        Every object in the bucket, as {name: size in bytes}. Used by the backup.
+
+        Uploads are flat, but the dashboard lets anyone create folders, so
+        those are followed rather than silently left out of the copy.
+        """
+        self._check_key()
+        found: dict[str, int | None] = {}
+        offset = 0
+
+        while True:
+            try:
+                response = httpx.post(
+                    f"{self.base}/storage/v1/object/list/{self.bucket}",
+                    json={
+                        "prefix": prefix,
+                        "limit": _LIST_PAGE,
+                        "offset": offset,
+                        "sortBy": {"column": "name", "order": "asc"},
+                    },
+                    headers=self._auth_headers(),
+                    timeout=30,
+                )
+            except httpx.HTTPError as exc:
+                raise StorageError(f"Could not reach Supabase Storage: {exc}") from exc
+
+            if response.status_code >= 400:
+                raise StorageError(
+                    f"Supabase Storage refused to list the bucket "
+                    f"({response.status_code}): {response.text[:200]}"
+                )
+
+            page = response.json()
+            for entry in page:
+                name = f"{prefix}{entry['name']}"
+                if entry.get("id") is None:
+                    # A folder has no id of its own.
+                    found.update(self.list_objects(f"{name}/"))
+                else:
+                    found[name] = (entry.get("metadata") or {}).get("size")
+
+            if len(page) < _LIST_PAGE:
+                return found
+            offset += _LIST_PAGE
+
+    def download(self, name: str) -> bytes:
+        self._check_key()
+        try:
+            response = httpx.get(
+                f"{self.base}/storage/v1/object/{self.bucket}/{quote(name)}",
+                headers=self._auth_headers(),
+                timeout=60,
+            )
+        except httpx.HTTPError as exc:
+            raise StorageError(f"Could not reach Supabase Storage: {exc}") from exc
+
+        if response.status_code >= 400:
+            raise StorageError(
+                f"Supabase Storage refused to send {name} "
+                f"({response.status_code}): {response.text[:200]}"
+            )
+        return response.content
 
 
 def _own_object_name(url: str, prefix: str) -> str | None:

@@ -23,6 +23,7 @@ venv/
 # App data
 backend/*.db
 backend/media/
+backend/backups/
 
 # Editors / local tooling
 .vscode/
