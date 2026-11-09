@@ -168,10 +168,11 @@ app/
     ├── images.py         resize, WebP, blurred preview, backdrop colour
     ├── login_guard.py    failed-login lockout
     ├── photos.py         delete a photo nothing points at any more
-    └── storage.py        Supabase Storage, or local disk in development
+    └── storage.py        Supabase Storage (upload, delete, list, download), or local disk in development
 migrations/               Alembic
 scripts/
 ├── seed.py               load seed/*.json
+├── backup.py             copy the Supabase database and photos to backups/
 └── hash_password.py      make ADMIN_PASSWORD_HASH
 seed/                     starter plants
 ```
@@ -197,6 +198,35 @@ scheme to `postgresql+psycopg://` and set it as `DATABASE_URL`, then run
 
 The service_role key bypasses row-level security. It belongs on the server only —
 never in the frontend or in a committed file.
+
+## Backing up Supabase
+
+```bash
+python scripts/backup.py
+```
+
+Copies the production database and every photo to this computer. Each run makes a new
+folder under `backups/` (gitignored), named for when it ran:
+
+```
+backups/2026-11-09_153012/
+├── manifest.json     when, from where, row counts, and a checksum per photo
+├── database/         one JSON file per table, every row
+└── images/           every file in the plant-images bucket, under its own name
+```
+
+It reads the settings in `.env.production` (`ENV_FILE=… python scripts/backup.py` picks
+another file) and changes nothing in Supabase: the database is read in a read-only
+transaction and photos are only downloaded. A run that fails part-way removes its
+half-finished folder, so every folder in `backups/` is a whole copy. Any plant whose photo
+the backup could not hold — missing from the bucket, or pasted in from another website —
+is listed as a warning, and in `manifest.json`.
+
+`--out DIR` puts the backup somewhere else, such as a synced or external drive. Old
+backups are never deleted; remove the folders you don't want.
+
+The free Supabase plan pauses a project after a week with no activity, so a backup is
+worth taking before that happens.
 
 ## Image handling
 

@@ -127,6 +127,9 @@ Then check on a phone:
 - **Schema changes:** after pulling a new migration, run
   `ENV_FILE=.env.production alembic upgrade head` from `backend/` *before* pushing the
   code that needs it.
+- **Backups:** `python scripts/backup.py` from `backend/` copies the database and every
+  photo into `backend/backups/`. Run it whenever the content changes, and before any
+  schema change.
 - **Locked out of `/admin`:** five wrong passwords from one address and that address
   waits 15 minutes; the message on the sign-in form says how long is left. To clear it
   early, delete the row in Supabase → Table editor → `login_attempts`.
