@@ -52,9 +52,19 @@ is enforced by the Pydantic schemas in `app/schemas/plant.py`:
     "home_use": { "items": ["…"], "note": "…" }
   },
   "snap": "…",                                // required
-  "deep_dive": [ { "icon": "paw", "title": "Pet Safety", "body": "…" } ]  // 1–12 points
+  "deep_dive": [ { "icon": "paw", "title": "Pet Safety", "body": "…" } ],  // 1–12 points
+  "price_minor": 39900,                       // paise, so ₹399; null = ask for the price
+  "original_price_minor": 49900,              // optional; must be above the price
+  "price_note": "with white decor pot",
+  "availability": "in_stock",                 // in_stock | ask | sold_out
+  "currency": "INR"                           // read-only for now
 }
 ```
+
+Money is a whole number of paise, never a float. Send `price_minor: null` in a
+`PATCH` to take a price away; a patch that would leave the original price at or
+below the price is refused with a `422`. The list endpoint carries the price fields
+too, because the home page shows them without a second request.
 
 Light levels index the scale Low (0), Medium (1), Bright indirect (2), Direct sun (3).
 Deep Dive icons: `origin`, `water`, `sun`, `sparkle`, `paw`, `pot`, `landscape`, `home`.
@@ -137,6 +147,14 @@ version (`plants`, `content_blocks`, `categories`, `media_assets`) are **renamed
 aren't needed.
 
 Migration `0002` adds `login_attempts`, which holds the failed-login counts.
+
+Migration `0004` adds the price columns **and moves data**: a Deep Dive point titled
+like `Price-399/- with white decor pot` becomes `price_minor=39900` and
+`price_note="with white decor pot"`, and the point is removed from the page. Anything
+the point's body said besides "." is kept in the note, and a title that doesn't read
+as a price is left alone and named in the output. Downgrading puts each price back as
+a Deep Dive point. Take a backup first (`python scripts/backup.py`) and run it before
+deploying the code that reads the new columns.
 
 ## Tests
 

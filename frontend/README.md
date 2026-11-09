@@ -24,11 +24,13 @@ src/
 │   └── NotFound.jsx
 ├── components/
 │   ├── PlantView.jsx         the plant page design, rendered from API data
-│   ├── PlantSearch.jsx       search box with photo + name suggestions
+│   ├── PlantSearch.jsx       search box with photo, name and price suggestions
+│   ├── Catalogue.jsx         the home page shop: every plant with its price, sortable
 │   ├── Icon.jsx              line icons (quick profile, deep dive)
 │   └── Leaf.jsx
 ├── lib/
 │   ├── api.js                backend client + token handling
+│   ├── commerce.js           prices, stock, the WhatsApp order link, sorting
 │   └── plantFormat.js        light scale, icons, empty plant — shared by page and admin
 ├── admin/                    the dashboard (not linked from anywhere public)
 │   ├── AuthContext.jsx       session state

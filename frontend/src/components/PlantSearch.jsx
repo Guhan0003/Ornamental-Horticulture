@@ -1,6 +1,7 @@
-import { useEffect, useId, useMemo, useRef, useState } from 'react'
+import { useId, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import * as api from '../lib/api.js'
+import { formatPrice, isSoldOut } from '../lib/commerce.js'
 
 const normalise = (value) =>
   value
@@ -10,10 +11,15 @@ const normalise = (value) =>
     .trim()
 
 /**
- * Search box with plant suggestions: a small photo and the name, linking to
- * the plant's page. Focusing it lists every plant; typing narrows the list.
+ * Search box with plant suggestions: a small photo, the name and the price,
+ * linking to the plant's page. Focusing it lists every plant; typing narrows
+ * the list.
+ *
+ * The list comes from the home page, which fetches it once for this and the
+ * shop grid below; filtering happens locally as you type. `plants` is null
+ * while it loads.
  */
-export default function PlantSearch() {
+export default function PlantSearch({ plants, failed }) {
   const navigate = useNavigate()
   const listId = useId()
   const inputRef = useRef(null)
@@ -21,20 +27,6 @@ export default function PlantSearch() {
   const [query, setQuery] = useState('')
   const [open, setOpen] = useState(false)
   const [active, setActive] = useState(0)
-  const [plants, setPlants] = useState(null)
-  const [failed, setFailed] = useState(false)
-
-  // One small request for the whole list; filtering happens locally as you type.
-  useEffect(() => {
-    let cancelled = false
-    api
-      .listPlants()
-      .then((list) => !cancelled && setPlants(list))
-      .catch(() => !cancelled && setFailed(true))
-    return () => {
-      cancelled = true
-    }
-  }, [])
 
   const results = useMemo(() => {
     const q = normalise(query)
@@ -137,6 +129,11 @@ export default function PlantSearch() {
                   }
                 />
                 <span className="search__name">{plant.common_name}</span>
+                {plant.price_minor != null && (
+                  <span className={`search__price${isSoldOut(plant) ? ' is-sold' : ''}`}>
+                    {isSoldOut(plant) ? 'Sold out' : formatPrice(plant.price_minor, plant.currency)}
+                  </span>
+                )}
               </li>
             ))
           )}

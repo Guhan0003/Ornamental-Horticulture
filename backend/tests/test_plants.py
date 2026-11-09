@@ -66,7 +66,18 @@ def test_list_is_public_sorted_and_compact(client, admin_headers, plant):
     items = client.get("/api/v1/plants").json()
     assert [p["common_name"] for p in items] == ["Aloe Vera", "Peace Lily"]
     # Just enough for a search result or admin card, not the whole page.
-    assert set(items[0]) == {"slug", "common_name", "scientific_name", "image", "updated_at"}
+    assert set(items[0]) == {
+        "slug",
+        "common_name",
+        "scientific_name",
+        "image",
+        "price_minor",
+        "original_price_minor",
+        "currency",
+        "price_note",
+        "availability",
+        "updated_at",
+    }
 
 
 def test_unknown_plant_is_404(client):

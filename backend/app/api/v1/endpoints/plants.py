@@ -2,7 +2,13 @@ from fastapi import APIRouter, BackgroundTasks, HTTPException, Request, status
 
 from app.api.deps import CurrentUser, DbSession
 from app.models.plant import Plant, RetiredSlug
-from app.schemas.plant import PlantCreate, PlantRead, PlantSummary, PlantUpdate
+from app.schemas.plant import (
+    PlantCreate,
+    PlantRead,
+    PlantSummary,
+    PlantUpdate,
+    price_problem,
+)
 from app.services.photos import discard_if_unused
 from app.services.related import find_related
 from app.services.views import record_view
@@ -64,8 +70,19 @@ def create_plant(payload: PlantCreate, db: DbSession, user: CurrentUser):
 def update_plant(slug: str, payload: PlantUpdate, db: DbSession, user: CurrentUser):
     plant = _get_or_404(db, slug)
     previous_photo = plant.image.get("url", "")
+    changes = payload.model_dump(exclude_unset=True)
 
-    for field, value in payload.model_dump(exclude_unset=True).items():
+    # Checked against what the plant will look like afterwards, and before
+    # anything is changed: a PATCH can send either price on its own.
+    problem = price_problem(
+        changes.get("price_minor", plant.price_minor),
+        changes.get("original_price_minor", plant.original_price_minor),
+    )
+    if problem:
+        # The constant's name changed between Starlette versions; the number did not.
+        raise HTTPException(status_code=422, detail=problem)
+
+    for field, value in changes.items():
         setattr(plant, field, value)
 
     db.commit()

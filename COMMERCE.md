@@ -1,12 +1,24 @@
 # Selling plants — the plan
 
-**Status: not built.** Nothing in this document exists in the code yet. When it
-is built it goes behind a switch that is **off in production** until the whole
-thing has been used in anger locally.
+**Status: stage 1 is built; stages 2 and 3 are not.** The site is now a shop front
+(2026-11-09): every plant has a price, the home page lists them all with prices,
+and each page has an **Order on WhatsApp** button. What exists:
 
-This file is the thinking, written down so the decisions don't have to be made
-twice. It is not a to-do list; the first section is a question that has to be
-answered before any of the rest is worth writing.
+- `plants.price_minor`, `original_price_minor`, `currency`, `price_note`,
+  `availability` (migration `0004`, which also moved the prices the shop had been
+  typing into the last Deep Dive point into these columns).
+- The admin form's *Price & availability* section.
+- The home page shop grid, sortable by name or price, sold-out last.
+- The order button, which adapts: *Order on WhatsApp*, *Check availability*,
+  *Ask for the price* or *Ask when it's back*.
+
+**The switch in §4 was not built.** It was written for a launch that was still
+weeks away; the shop's decision since is that prices are the point of the site,
+so prices ship with the code. If a dark launch is wanted again, §4 still says how.
+
+The rest of this file is the thinking behind it, so the decisions don't have to
+be made twice. §2's questions about sizes, stock counts, several shops and
+delivery are still open, and stage 2 and 3 still wait on them.
 
 ---
 
