@@ -44,7 +44,8 @@ is enforced by the Pydantic schemas in `app/schemas/plant.py`:
   "slug": "peace-lily",                       // permanent address, set once
   "common_name": "Peace Lily",                // required
   "scientific_name": "Spathiphyllum wallisii",
-  "image": { "url": "…", "alt": "…", "placeholder": "data:image/webp;base64,…", "background": "#bebfc4" },
+  "image": { "url": "…", "alt": "…", "placeholder": "data:image/webp;base64,…", "background": "#bebfc4" },  // the cover: the thumbnail everywhere
+  "gallery": [ { "url": "…", "alt": "…", "placeholder": "…", "background": "…" } ],  // more photos, in swiping order, up to 11
   "profile": {                                // every part optional
     "environment": "Indoor",
     "light": { "label": "…", "note": "…", "ideal": [1, 2], "tolerates": [0] },
@@ -132,6 +133,11 @@ shows it, and only when the URL is one we stored, since the photo field accepts
 any address an admin pastes. Storage trouble is logged, never raised: the
 plant really was deleted, and a stranded file is the smaller problem.
 
+That covers the whole gallery, not just the cover: taking a photo out of a plant, or
+deleting the plant, clears every photo no plant shows any more. A photo that only
+moved — made the cover, say, with the old cover joining the gallery — is still shown
+and stays.
+
 ## Database migrations
 
 The schema is managed by Alembic, in `migrations/`. After changing a model:
@@ -155,6 +161,11 @@ the point's body said besides "." is kept in the note, and a title that doesn't 
 as a price is left alone and named in the output. Downgrading puts each price back as
 a Deep Dive point. Take a backup first (`python scripts/backup.py`) and run it before
 deploying the code that reads the new columns.
+
+Migration `0005` adds `plants.gallery` (more photos after the cover) with an empty list
+for every plant that exists, so the site looks the same until someone adds a second photo.
+It only adds a column, so the old code keeps working against it: run it before deploying
+the code that reads it.
 
 ## Tests
 

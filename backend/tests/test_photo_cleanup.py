@@ -89,6 +89,73 @@ def test_storage_trouble_does_not_fail_the_delete(client, admin_headers, plant, 
     assert client.get(f"/api/v1/plants/{plant['slug']}").status_code == 404
 
 
+# --------------------------------------------------- galleries
+
+
+def photo(name):
+    return {"url": f"{BUCKET}{name}.webp", "alt": "", "placeholder": "", "background": ""}
+
+
+@pytest.fixture
+def with_gallery(client, admin_headers):
+    response = client.post(
+        "/api/v1/plants",
+        headers=admin_headers,
+        json=plant_data(gallery=[photo("one"), photo("two")]),
+    )
+    assert response.status_code == 201, response.text
+    return response.json()
+
+
+def test_taking_a_photo_out_of_the_gallery_discards_it(client, admin_headers, with_gallery, deleted):
+    client.patch(
+        "/api/v1/plants/peace-lily", headers=admin_headers, json={"gallery": [photo("one")]}
+    )
+    assert deleted == [photo("two")["url"]]
+
+
+def test_a_photo_that_only_moved_is_not_discarded(client, admin_headers, with_gallery, deleted):
+    """Choosing another cover swaps two photos; none of them has gone."""
+    cover = with_gallery["image"]
+
+    response = client.patch(
+        "/api/v1/plants/peace-lily",
+        headers=admin_headers,
+        json={"image": photo("two"), "gallery": [cover, photo("one")]},
+    )
+
+    assert response.status_code == 200
+    assert deleted == []
+
+
+def test_deleting_a_plant_discards_its_cover_and_its_gallery(
+    client, admin_headers, with_gallery, deleted
+):
+    client.delete("/api/v1/plants/peace-lily", headers=admin_headers)
+    assert sorted(deleted) == sorted(
+        [with_gallery["image"]["url"], photo("one")["url"], photo("two")["url"]]
+    )
+
+
+def test_a_photo_in_another_plants_gallery_is_kept(client, admin_headers, with_gallery, deleted):
+    """Shared photos stay until the last plant that shows them lets go."""
+    client.post(
+        "/api/v1/plants",
+        headers=admin_headers,
+        json=plant_data(
+            slug="zz-plant",
+            common_name="ZZ Plant",
+            image=photo("other"),
+            gallery=[photo("one")],
+        ),
+    )
+
+    client.delete("/api/v1/plants/peace-lily", headers=admin_headers)
+
+    # "one" is still in ZZ Plant's gallery; the rest were only Peace Lily's.
+    assert sorted(deleted) == sorted([with_gallery["image"]["url"], photo("two")["url"]])
+
+
 # --------------------------------------------------- what counts as ours
 
 NAME = "0123456789abcdef0123456789abcdef.webp"

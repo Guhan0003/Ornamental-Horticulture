@@ -11,6 +11,11 @@ and each page has an **Order on WhatsApp** button. What exists:
 - The home page shop grid, sortable by name or price, sold-out last.
 - The order button, which adapts: *Order on WhatsApp*, *Check availability*,
   *Ask for the price* or *Ask when it's back*.
+- A delivery check on the plant page: a pincode in, a date range out (1–3
+  working days to Tamil Nadu, Andhra Pradesh, Kerala and Karnataka, 2–5 anywhere
+  else; Sundays skipped). The pincode goes into the WhatsApp order message. It is
+  pure front-end (`frontend/src/lib/delivery.js`), so it is an estimate, not a
+  promise from a courier. Telangana is not on the short list.
 
 **The switch in §4 was not built.** It was written for a launch that was still
 weeks away; the shop's decision since is that prices are the point of the site,

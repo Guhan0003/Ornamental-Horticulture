@@ -20,12 +20,17 @@ export const DEEP_DIVE_ICONS = [
 
 export const LIMITS = { snap: 600, deepDiveBody: 1500 }
 
+// The cover and the photos after it. Keep in step with MAX_PHOTOS in the backend.
+export const MAX_PHOTOS = 12
+
 /** A new plant starts with the four standard Deep Dive points, ready to fill in. */
 export const emptyPlant = () => ({
   slug: '',
   common_name: '',
   scientific_name: '',
-  image: { url: '', alt: '', placeholder: '', background: '' },
+  // One list, in swiping order. The first photo is the cover (the API's `image`),
+  // the rest are its `gallery`.
+  photos: [],
   profile: {
     environment: '',
     light: { label: '', note: '', ideal: [], tolerates: [] },

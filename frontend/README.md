@@ -12,6 +12,9 @@ npm run dev
 
 Opens on http://localhost:5173
 
+Tests: `npm test` runs the price and delivery maths with Node's built-in runner
+(nothing extra to install).
+
 ## Structure
 
 ```
@@ -24,13 +27,16 @@ src/
 │   └── NotFound.jsx
 ├── components/
 │   ├── PlantView.jsx         the plant page design, rendered from API data
+│   ├── Gallery.jsx           the photos at the top: a scroll-snap row, dots, mouse drag
 │   ├── PlantSearch.jsx       search box with photo, name and price suggestions
 │   ├── Catalogue.jsx         the home page shop: every plant with its price, sortable
+│   ├── DeliveryCheck.jsx     pincode box on the plant page: gives a delivery date range
 │   ├── Icon.jsx              line icons (quick profile, deep dive)
 │   └── Leaf.jsx
 ├── lib/
 │   ├── api.js                backend client + token handling
 │   ├── commerce.js           prices, stock, the WhatsApp order link, sorting
+│   ├── delivery.js           pincode → delivery window (1–3 / 2–5 working days) and dates
 │   └── plantFormat.js        light scale, icons, empty plant — shared by page and admin
 ├── admin/                    the dashboard (not linked from anywhere public)
 │   ├── AuthContext.jsx       session state
@@ -44,7 +50,7 @@ src/
 │   └── components/
 │       ├── AdminLayout.jsx
 │       ├── PlantForm.jsx     the form, section by section like the page
-│       ├── PhotoField.jsx    upload with drag and drop
+│       ├── PhotosField.jsx   many photos: upload, choose the cover, order, describe, remove
 │       ├── LightLevels.jsx   the 4-step light scale
 │       ├── ChipsInput.jsx    landscape and home uses
 │       └── DeepDiveEditor.jsx

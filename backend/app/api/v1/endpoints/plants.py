@@ -9,7 +9,7 @@ from app.schemas.plant import (
     PlantUpdate,
     price_problem,
 )
-from app.services.photos import discard_if_unused
+from app.services.photos import discard_unused, photo_urls
 from app.services.related import find_related
 from app.services.views import record_view
 
@@ -69,7 +69,7 @@ def create_plant(payload: PlantCreate, db: DbSession, user: CurrentUser):
 @router.patch("/{slug}", response_model=PlantRead)
 def update_plant(slug: str, payload: PlantUpdate, db: DbSession, user: CurrentUser):
     plant = _get_or_404(db, slug)
-    previous_photo = plant.image.get("url", "")
+    previous_photos = photo_urls(plant)
     changes = payload.model_dump(exclude_unset=True)
 
     # Checked against what the plant will look like afterwards, and before
@@ -88,9 +88,9 @@ def update_plant(slug: str, payload: PlantUpdate, db: DbSession, user: CurrentUs
     db.commit()
     db.refresh(plant)
 
-    # A swapped-in photo leaves the old one behind, unused.
-    if plant.image.get("url") != previous_photo:
-        discard_if_unused(db, previous_photo)
+    # A photo taken out, or swapped for another, is left behind unused. One that
+    # only moved — from the cover into the gallery, say — is still shown, and stays.
+    discard_unused(db, previous_photos - photo_urls(plant))
 
     return plant
 
@@ -98,11 +98,11 @@ def update_plant(slug: str, payload: PlantUpdate, db: DbSession, user: CurrentUs
 @router.delete("/{slug}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_plant(slug: str, db: DbSession, user: CurrentUser):
     plant = _get_or_404(db, slug)
-    photo = plant.image.get("url", "")
+    photos = photo_urls(plant)
 
     db.delete(plant)
     db.add(RetiredSlug(slug=slug))
     db.commit()
 
-    # The row is gone either way; the photo is tidied up afterwards.
-    discard_if_unused(db, photo)
+    # The row is gone either way; its photos are tidied up afterwards.
+    discard_unused(db, photos)

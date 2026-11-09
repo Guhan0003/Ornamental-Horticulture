@@ -77,9 +77,12 @@ const digits = (value) => value.replace(/[^\d]/g, '')
  * send. It adapts to the plant — sold out, no price, or "ask us" — because
  * "Order" on something that cannot be ordered is a broken promise.
  *
+ * When the customer has checked a delivery pincode it goes in the message too,
+ * so the shop does not have to ask where it is going.
+ *
  * Null when the shop has no WhatsApp number set in data/contact.js.
  */
-export function buyAction(plant, pageUrl) {
+export function buyAction(plant, pageUrl, pincode) {
   if (!contact.whatsapp) return null
 
   const price = formatPrice(plant.price_minor, plant.currency)
@@ -96,9 +99,11 @@ export function buyAction(plant, pageUrl) {
   } else if (plant.availability === 'ask') {
     label = 'Check availability'
     message = `Hi! Is the ${name} available?`
+    if (pincode) message += ` Delivery pincode: ${pincode}.`
   } else {
     label = 'Order on WhatsApp'
     message = `Hi! I’d like to order the ${name} from StomatalWorld.`
+    if (pincode) message += ` Delivery pincode: ${pincode}.`
   }
 
   const text = pageUrl ? `${message} ${pageUrl}` : message

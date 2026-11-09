@@ -131,6 +131,27 @@ def test_photos_the_backup_lacks_are_reported(backup):
     assert problems[1].startswith("pasted: photo is hosted elsewhere")
 
 
+def test_a_gallery_photo_the_backup_lacks_is_reported_too(backup):
+    """A plant's other photos matter as much as its cover."""
+    plants = [
+        {
+            "slug": "lily",
+            "image": {"url": f"{BUCKET}a.webp"},
+            "gallery": [
+                {"url": f"{BUCKET}b.webp"},
+                {"url": f"{BUCKET}missing.webp"},
+                {"url": "https://example.com/elsewhere.jpg"},
+            ],
+        }
+    ]
+
+    problems = backup.photo_problems(plants, {"a.webp", "b.webp"}, BUCKET)
+
+    assert len(problems) == 2
+    assert problems[0].startswith("lily: gallery photo 2 is not in the bucket")
+    assert problems[1].startswith("lily: gallery photo 3 is hosted elsewhere")
+
+
 # ---- the whole run ----
 
 

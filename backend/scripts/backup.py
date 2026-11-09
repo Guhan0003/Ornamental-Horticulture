@@ -113,13 +113,17 @@ def photo_problems(plants: list[dict], names: set[str], prefix: str) -> list[str
     """Plants whose photo this backup does not hold."""
     problems = []
     for plant in plants:
-        url = (plant.get("image") or {}).get("url", "")
-        if not url:
-            continue
-        if not url.startswith(prefix):
-            problems.append(f"{plant['slug']}: photo is hosted elsewhere, not copied ({url})")
-        elif url[len(prefix) :] not in names:
-            problems.append(f"{plant['slug']}: photo is not in the bucket ({url})")
+        # The cover first, then the gallery in swiping order.
+        photos = [plant.get("image") or {}, *(plant.get("gallery") or [])]
+        for number, photo in enumerate(photos):
+            url = photo.get("url", "")
+            if not url:
+                continue
+            label = "photo" if number == 0 else f"gallery photo {number}"
+            if not url.startswith(prefix):
+                problems.append(f"{plant['slug']}: {label} is hosted elsewhere, not copied ({url})")
+            elif url[len(prefix) :] not in names:
+                problems.append(f"{plant['slug']}: {label} is not in the bucket ({url})")
     return problems
 
 

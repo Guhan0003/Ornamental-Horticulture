@@ -11,7 +11,7 @@ import { ENVIRONMENTS, LIMITS, slugify } from '../../lib/plantFormat.js'
 import ChipsInput from './ChipsInput.jsx'
 import DeepDiveEditor from './DeepDiveEditor.jsx'
 import LightLevels from './LightLevels.jsx'
-import PhotoField from './PhotoField.jsx'
+import PhotosField from './PhotosField.jsx'
 
 /**
  * Add and edit share this form. Its sections follow the plant page from top
@@ -44,6 +44,13 @@ export default function PlantForm({ initial, isNew, onSave, footer }) {
   const set = (patch) => setPlant((current) => ({ ...current, ...patch }))
   const setProfile = (patch) =>
     setPlant((current) => ({ ...current, profile: { ...current.profile, ...patch } }))
+  // Takes a list, or a function from the current list to the new one: a photo
+  // that finishes uploading later has to be added to whatever is there by then.
+  const setPhotos = (next) =>
+    setPlant((current) => ({
+      ...current,
+      photos: typeof next === 'function' ? next(current.photos) : next,
+    }))
 
   const { profile } = plant
 
@@ -92,14 +99,18 @@ export default function PlantForm({ initial, isNew, onSave, footer }) {
 
   return (
     <form className="plant-form" onSubmit={submit} noValidate>
-      {/* 1 ─ Photo */}
-      <FormSection number="1" title="Photo" hint="The big picture at the top of the page.">
-        <PhotoField
-          image={plant.image}
-          onChange={(image) => set({ image })}
-          invalid={Boolean(errors.image)}
+      {/* 1 ─ Photos */}
+      <FormSection
+        number="1"
+        title="Photos"
+        hint="The first photo is the cover: the thumbnail in the shop and in search. Visitors swipe through the rest."
+      >
+        <PhotosField
+          photos={plant.photos}
+          onChange={setPhotos}
+          invalid={Boolean(errors.photos)}
         />
-        {errors.image && <em className="field__error">{errors.image}</em>}
+        {errors.photos && <em className="field__error">{errors.photos}</em>}
       </FormSection>
 
       {/* 2 ─ Identity */}
@@ -411,7 +422,7 @@ const isBlankPoint = (point) => !point.title.trim() && !point.body.trim()
 
 function validate(plant, isNew) {
   const errors = {}
-  if (!plant.image.url) errors.image = 'Add a photo.'
+  if (plant.photos.length === 0) errors.photos = 'Add at least one photo.'
   if (!plant.common_name.trim()) errors.common_name = 'Give the plant a name.'
   if (isNew && !plant.slug) errors.slug = 'The page needs an address.'
   if (!plant.snap.trim()) errors.snap = 'Write a sentence or two.'
@@ -448,12 +459,17 @@ function validate(plant, isNew) {
 
 const cleanList = (items) => items.map((item) => item.trim()).filter(Boolean)
 
+const tidyPhoto = (photo) => ({ ...photo, alt: photo.alt.trim() })
+
 function toPayload(plant, isNew) {
   const { profile } = plant
+  // The first photo is the cover (`image`); the rest, in order, are the `gallery`.
+  const [cover, ...rest] = plant.photos
   const payload = {
     common_name: plant.common_name.trim(),
     scientific_name: plant.scientific_name.trim(),
-    image: { ...plant.image, alt: plant.image.alt.trim() },
+    image: tidyPhoto(cover),
+    gallery: rest.map(tidyPhoto),
     profile: {
       environment: profile.environment,
       light: {
@@ -490,7 +506,8 @@ export function pickEditable(plant) {
     slug,
     common_name,
     scientific_name,
-    image,
+    // The API's cover and gallery, as the one list the form edits.
+    photos: [image, ...(plant.gallery ?? [])],
     profile,
     // The API speaks paise; the form types rupees.
     price: toRupees(plant.price_minor),

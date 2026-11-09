@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Glyph } from './ContactButton.jsx'
+import DeliveryCheck from './DeliveryCheck.jsx'
+import Gallery from './Gallery.jsx'
 import Icon from './Icon.jsx'
 import Leaf from './Leaf.jsx'
 import { imageSrc, prefetchPlant } from '../lib/api.js'
@@ -11,6 +13,7 @@ import {
   formatPrice,
   isSoldOut,
 } from '../lib/commerce.js'
+import { savedPincode } from '../lib/delivery.js'
 import { LIGHT_SCALE } from '../lib/plantFormat.js'
 import '../styles/plant.css'
 
@@ -24,11 +27,15 @@ const FALLBACK_BACKDROP = '#dfe2dc'
 export default function PlantView({ plant }) {
   const { profile, image } = plant
   const backdrop = image.background || FALLBACK_BACKDROP
+  // The cover, then the rest in the order a visitor swipes through them.
+  const photos = [image, ...(plant.gallery ?? [])]
 
   usePageChrome(plant.common_name, backdrop)
   const rootRef = useReveal(plant.slug)
   const buyRef = useRef(null)
   const pastBuy = useScrolledPast(buyRef)
+  // The pincode the visitor last checked, so a returning one sees their date at once.
+  const [pincode, setPincode] = useState(savedPincode)
 
   const { light, landscape_use: landscape, home_use: home } = profile
   const hasLight = light.label || light.ideal.length > 0
@@ -37,7 +44,7 @@ export default function PlantView({ plant }) {
 
   return (
     <div className="pl" ref={rootRef} style={{ '--photo-bg': backdrop }}>
-      <Hero image={image} />
+      <Gallery photos={photos} name={plant.common_name} />
 
       <main className="pl-sheet">
         <header className="pl-identity">
@@ -55,7 +62,7 @@ export default function PlantView({ plant }) {
               {plant.scientific_name}
             </p>
           )}
-          <BuyPanel plant={plant} panelRef={buyRef} />
+          <BuyPanel plant={plant} panelRef={buyRef} pincode={pincode} onPincode={setPincode} />
         </header>
 
         {hasProfile && (
@@ -137,14 +144,14 @@ export default function PlantView({ plant }) {
         </footer>
       </main>
 
-      <BuyBar plant={plant} shown={pastBuy} />
+      <BuyBar plant={plant} shown={pastBuy} pincode={pincode} />
     </div>
   )
 }
 
-/** The link to the shop's WhatsApp, already naming the plant and its price. */
-function OrderLink({ plant, className }) {
-  const action = buyAction(plant, `${window.location.origin}/${plant.slug}`)
+/** The link to the shop's WhatsApp, already naming the plant, its price and where it is going. */
+function OrderLink({ plant, className, pincode }) {
+  const action = buyAction(plant, `${window.location.origin}/${plant.slug}`, pincode)
   if (!action) return null
 
   return (
@@ -159,7 +166,7 @@ function OrderLink({ plant, className }) {
  * What it costs and whether it can be had, directly under the name — the
  * second thing anyone in a shop wants to know after what the plant is.
  */
-function BuyPanel({ plant, panelRef }) {
+function BuyPanel({ plant, panelRef, pincode, onPincode }) {
   const { price_minor: price, original_price_minor: original, currency } = plant
   const off = discountPercent(price, original)
   const sold = isSoldOut(plant)
@@ -187,7 +194,10 @@ function BuyPanel({ plant, panelRef }) {
 
       {plant.price_note && <p className="pl-buy__note">{plant.price_note}</p>}
 
-      <OrderLink plant={plant} className="pl-cta" />
+      {/* A date for something that cannot be bought would only mislead. */}
+      {!sold && <DeliveryCheck pincode={pincode} onCheck={onPincode} />}
+
+      <OrderLink plant={plant} className="pl-cta" pincode={pincode} />
     </section>
   )
 }
@@ -197,7 +207,7 @@ function BuyPanel({ plant, panelRef }) {
  * floats to the right of the contact button instead of covering it, so the
  * page never has two things competing for the bottom-left corner.
  */
-function BuyBar({ plant, shown }) {
+function BuyBar({ plant, shown, pincode }) {
   if (!buyAction(plant)) return null
   const price = plant.price_minor
 
@@ -206,7 +216,7 @@ function BuyBar({ plant, shown }) {
       <span className="pl-buybar__price">
         {price == null ? 'Ask for price' : formatPrice(price, plant.currency)}
       </span>
-      <OrderLink plant={plant} className="pl-cta pl-cta--bar" />
+      <OrderLink plant={plant} className="pl-cta pl-cta--bar" pincode={pincode} />
     </div>
   )
 }
@@ -309,59 +319,6 @@ function AlsoLike({ plants }) {
         ))}
       </ul>
     </section>
-  )
-}
-
-function Hero({ image }) {
-  const [loaded, setLoaded] = useState(false)
-  const imgRef = useRef(null)
-  const heroRef = useRef(null)
-
-  // A cached photo can finish before React attaches onLoad.
-  useEffect(() => {
-    if (imgRef.current?.complete) setLoaded(true)
-  }, [])
-
-  // Gentle parallax: the photo drifts up slower than the page scrolls.
-  useEffect(() => {
-    const hero = heroRef.current
-    if (!hero || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-
-    let frame = 0
-    const onScroll = () => {
-      cancelAnimationFrame(frame)
-      frame = requestAnimationFrame(() => {
-        hero.style.setProperty('--scroll', Math.min(window.scrollY, 800))
-      })
-    }
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => {
-      window.removeEventListener('scroll', onScroll)
-      cancelAnimationFrame(frame)
-    }
-  }, [])
-
-  return (
-    <div
-      className={`pl-hero${loaded ? ' is-loaded' : ''}`}
-      ref={heroRef}
-      style={image.placeholder ? { backgroundImage: `url("${image.placeholder}")` } : undefined}
-    >
-      <div className="pl-hero__brand">
-        <Leaf className="pl-hero__leaf" />
-        StomatalWorld
-      </div>
-      <img
-        ref={imgRef}
-        className="pl-hero__img"
-        style={{ viewTransitionName: 'plant-photo' }}
-        src={imageSrc(image.url)}
-        alt={image.alt}
-        fetchPriority="high"
-        decoding="async"
-        onLoad={() => setLoaded(true)}
-      />
-    </div>
   )
 }
 
