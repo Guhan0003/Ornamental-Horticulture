@@ -12,6 +12,10 @@ DeepDiveIcon = Literal["origin", "water", "sparkle", "paw", "sun", "home", "land
 
 LightLevel = Annotated[int, Field(ge=0, le=LIGHT_LEVELS - 1)]
 
+# The cover plus its gallery. "As many as it needs", capped so a plant page and
+# its JSON stay light on a shop's Wi-Fi. Keep in step with frontend/src/lib/plantFormat.js.
+MAX_PHOTOS = 12
+
 # Keep in step with frontend/src/lib/commerce.js.
 Availability = Literal["in_stock", "ask", "sold_out"]
 
@@ -100,7 +104,9 @@ class DeepDivePoint(BaseModel):
 class PlantFields(BaseModel):
     common_name: Text(200, required=True)
     scientific_name: Text(200) = ""
+    # The cover, and the photos after it in swiping order.
     image: PlantImage
+    gallery: list[PlantImage] = Field(default_factory=list, max_length=MAX_PHOTOS - 1)
     profile: Profile = Field(default_factory=Profile)
     snap: Text(600, required=True)
     deep_dive: list[DeepDivePoint] = Field(min_length=1, max_length=12)
@@ -130,6 +136,8 @@ class PlantUpdate(BaseModel):
     common_name: Text(200, required=True) | None = None
     scientific_name: Text(200) | None = None
     image: PlantImage | None = None
+    # Send [] to clear it; null is refused like the other sections.
+    gallery: list[PlantImage] | None = Field(default=None, max_length=MAX_PHOTOS - 1)
     profile: Profile | None = None
     snap: Text(600, required=True) | None = None
     deep_dive: list[DeepDivePoint] | None = Field(default=None, min_length=1, max_length=12)

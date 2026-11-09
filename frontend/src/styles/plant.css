@@ -38,8 +38,10 @@ body.is-plant {
   background-position: center;
 }
 
-/* The blurred placeholder sits underneath; soften it so pixels don't show. */
-.pl-hero::before {
+/* The blurred placeholder sits underneath; soften it so pixels don't show. Only
+   until the photo arrives: a blur behind a finished photo is wasted work, and
+   backdrop-filter on every slide is the first thing to make swiping stutter. */
+.pl-slide:not(.is-loaded)::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -61,17 +63,16 @@ body.is-plant {
     opacity 0.9s var(--pl-ease),
     filter 1.1s var(--pl-ease),
     transform 1.6s var(--pl-ease);
-  will-change: transform;
 }
 
-.pl-hero.is-loaded .pl-hero__img {
+.pl-slide.is-loaded .pl-hero__img {
   opacity: 1;
   filter: none;
   transform: translate3d(0, calc(var(--scroll) * 0.35px), 0) scale(1);
 }
 
 /* Once loaded, scrolling shouldn't lag behind a long transform transition. */
-.pl-hero.is-loaded .pl-hero__img {
+.pl-slide.is-loaded .pl-hero__img {
   transition:
     opacity 0.9s var(--pl-ease),
     filter 1.1s var(--pl-ease),
@@ -103,6 +104,217 @@ body.is-plant {
   width: 1rem;
   height: 1rem;
   color: var(--pl-leaf);
+}
+
+/* ---------- the photos: a row that scrolls and snaps ---------- */
+
+/* The browser does the sliding — finger-tracking, momentum, snapping — off the
+   main thread, so it stays smooth on a cheap phone. Nothing here moves a photo
+   with JavaScript. */
+.pl-track {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  /* a swipe at the edge must not also be the browser's back gesture */
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  outline: none;
+}
+
+.pl-track::-webkit-scrollbar {
+  display: none;
+}
+
+/* A mouse can drag it. While it does, the row follows the pointer exactly, so
+   snapping and the smooth-scroll easing are off until it is let go. */
+@media (hover: hover) and (pointer: fine) {
+  .pl-track {
+    cursor: grab;
+  }
+}
+
+.pl-track.is-dragging {
+  scroll-snap-type: none;
+  scroll-behavior: auto;
+  cursor: grabbing;
+}
+
+.pl-track:focus-visible {
+  box-shadow: inset 0 0 0 3px var(--pl-mint);
+}
+
+.pl-slide {
+  position: relative;
+  flex: 0 0 100%;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--photo-bg);
+  background-size: cover;
+  background-position: center;
+  scroll-snap-align: center;
+  /* a hard flick moves one photo, not three */
+  scroll-snap-stop: always;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Photos after the cover just fade in. The cover's slow zoom-and-unblur is
+   lovely on arrival but would read as a pop when it happens at the edge of a swipe. */
+.pl-slide:not(:first-child) .pl-hero__img {
+  transform: translate3d(0, calc(var(--scroll) * 0.35px), 0);
+  filter: none;
+  transition: opacity 0.5s var(--pl-ease);
+}
+
+.pl-slide:not(:first-child).is-loaded .pl-hero__img {
+  transition:
+    opacity 0.5s var(--pl-ease),
+    transform 0.08s linear;
+}
+
+/* Each photo settles as it arrives: slightly large at the edge of the screen,
+   natural size when centred. Driven by the scroll position itself, so the
+   browser runs it with the sliding and it can never fall out of step. Browsers
+   without scroll-driven animations simply skip it. */
+@supports (animation-timeline: view(inline)) {
+  .pl-slide {
+    view-timeline: --pl-slide inline;
+  }
+
+  .pl-hero__img {
+    animation: pl-settle linear both;
+    animation-timeline: --pl-slide;
+  }
+}
+
+@keyframes pl-settle {
+  0%,
+  100% {
+    scale: 1.09;
+  }
+  50% {
+    scale: 1;
+  }
+}
+
+.pl-count {
+  position: absolute;
+  z-index: 2;
+  top: calc(1rem + env(safe-area-inset-top));
+  right: 1rem;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(255, 253, 248, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+  color: var(--pl-forest);
+}
+
+/* The dots sit above the sheet's rounded edge, which overlaps the photo. */
+.pl-pager {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  bottom: 2.9rem;
+  display: flex;
+  max-width: calc(100% - 2rem);
+  padding: 0 0.3rem;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: rgba(12, 31, 20, 0.42);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.pl-pager__btn {
+  display: grid;
+  place-items: center;
+  width: 1.4rem;
+  height: 2.25rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pl-pager__dot {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.55);
+  transition:
+    width 0.3s var(--pl-ease),
+    background-color 0.3s;
+}
+
+.pl-pager__btn[aria-current='true'] .pl-pager__dot {
+  width: 1.1rem;
+  background: #fff;
+}
+
+.pl-arrow {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  display: none;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-top: -1.4rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 253, 248, 0.82);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 4px 14px rgba(12, 31, 20, 0.18);
+  color: var(--pl-forest);
+  cursor: pointer;
+  transition:
+    opacity 0.2s,
+    transform 0.14s var(--pl-ease);
+}
+
+.pl-arrow--prev {
+  left: 1rem;
+}
+
+.pl-arrow--next {
+  right: 1rem;
+}
+
+.pl-arrow:active {
+  transform: scale(0.94);
+}
+
+.pl-arrow:disabled {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pl-arrow svg {
+  width: 1.3rem;
+  height: 1.3rem;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .pl-arrow {
+    display: grid;
+  }
 }
 
 /* ---------- content sheet ---------- */
@@ -274,6 +486,130 @@ body.is-plant {
 
 .pl-stock--sold_out::before {
   background: var(--pl-muted);
+}
+
+/* ---------- check delivery ---------- */
+
+/* Thumb-sized: the field and the button are 3rem tall (48px), and the text is
+   16px so iOS does not zoom the page when the field is tapped. */
+
+.pl-delivery {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--pl-line);
+}
+
+.pl-delivery__label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--pl-forest-2);
+}
+
+.pl-delivery__icon {
+  width: 1.2rem;
+  height: 1.2rem;
+  color: var(--pl-leaf);
+}
+
+.pl-delivery__row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.pl-delivery__input {
+  flex: 1;
+  min-width: 0;
+  min-height: 3rem;
+  padding: 0 1.1rem;
+  border: 1px solid var(--pl-line);
+  border-radius: 999px;
+  background: var(--pl-cream);
+  color: var(--pl-forest);
+  font: inherit;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+}
+
+.pl-delivery__input::placeholder {
+  color: var(--pl-muted);
+  letter-spacing: 0;
+}
+
+.pl-delivery__input[aria-invalid='true'] {
+  border-color: #c25a5a;
+}
+
+.pl-delivery__input:focus-visible,
+.pl-delivery__go:focus-visible {
+  outline: 2px solid var(--pl-leaf);
+  outline-offset: 2px;
+}
+
+.pl-delivery__go {
+  flex: none;
+  min-width: 5.25rem;
+  min-height: 3rem;
+  padding: 0 1.2rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--pl-forest);
+  color: #f2efe4;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.14s var(--pl-ease);
+}
+
+.pl-delivery__go:active {
+  transform: scale(0.96);
+}
+
+.pl-delivery__error {
+  margin: 0.6rem 0 0 0.25rem;
+  font-size: 0.85rem;
+  color: #a33b3b;
+}
+
+.pl-delivery__result {
+  display: grid;
+  gap: 0.15rem;
+  margin: 0.7rem 0 0;
+  padding: 0.75rem 0.95rem;
+  border-radius: 0.95rem;
+  background: var(--pl-mint-soft);
+  color: var(--pl-forest-2);
+  animation: pl-rise 0.4s var(--pl-ease) both;
+}
+
+.pl-delivery__result strong {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  font-size: 1.2rem;
+  line-height: 1.25;
+}
+
+.pl-delivery__date {
+  white-space: nowrap;
+}
+
+.pl-delivery__eyebrow {
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--pl-leaf);
+}
+
+.pl-delivery__how {
+  margin-top: 0.15rem;
+  font-size: 0.8rem;
+  line-height: 1.45;
 }
 
 /* The order button is WhatsApp's own green, so it reads as "this opens WhatsApp". */
@@ -924,7 +1260,7 @@ body.is-plant {
     transform: scale(1.06);
   }
 
-  .pl-hero.is-loaded .pl-hero__img {
+  .pl-slide.is-loaded .pl-hero__img {
     transform: none;
   }
 
@@ -939,6 +1275,15 @@ body.is-plant {
   .pl-hero__brand {
     top: 1.5rem;
     left: 1.5rem;
+  }
+
+  .pl-count {
+    top: 1.5rem;
+    right: 1.5rem;
+  }
+
+  .pl-pager {
+    bottom: 1.5rem;
   }
 }
 
@@ -980,9 +1325,17 @@ body.is-plant {
   }
 
   .pl-hero__img,
-  .pl-hero.is-loaded .pl-hero__img {
+  .pl-slide.is-loaded .pl-hero__img {
     transform: none;
     filter: none;
+  }
+
+  .pl-track {
+    scroll-behavior: auto;
+  }
+
+  .pl-hero__img {
+    animation: none;
   }
 
   .pl-meter__seg,

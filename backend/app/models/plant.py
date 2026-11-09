@@ -31,8 +31,14 @@ class Plant(Base):
     common_name: Mapped[str] = mapped_column(String(200))
     scientific_name: Mapped[str] = mapped_column(String(200), default="")
 
-    # {"url", "alt", "placeholder", "background"}
+    # The cover: {"url", "alt", "placeholder", "background"}. It is the
+    # thumbnail the shop, the search and the suggestions show, and the first
+    # photo on the page.
     image: Mapped[dict[str, Any]] = mapped_column(JSON)
+
+    # More photos after the cover, in the order a visitor swipes through them,
+    # each shaped like `image`. Empty for a plant with one photo.
+    gallery: Mapped[list[dict[str, Any]]] = mapped_column(JSON, default=list)
 
     # {"environment", "light": {...}, "landscape_use": {...}, "home_use": {...}}
     profile: Mapped[dict[str, Any]] = mapped_column(JSON)
