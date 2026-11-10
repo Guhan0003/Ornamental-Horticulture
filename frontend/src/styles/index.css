@@ -394,6 +394,33 @@ button.status {
   color: var(--ink);
 }
 
+/* ---------------- a shelf: one family of plants under its own heading ------- */
+
+.shelf + .shelf {
+  margin-top: 2rem;
+}
+
+.shelf__title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin: 0 0 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--line);
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 400;
+  font-size: 1.1rem;
+  letter-spacing: -0.01em;
+}
+
+.shelf__count {
+  font-family: inherit;
+  font-size: 0.78rem;
+  color: var(--ink-dim);
+  /* Pushed away from the name so it reads as a tally, not part of the title. */
+  margin-left: auto;
+}
+
 .shop__grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

@@ -112,7 +112,11 @@ export function buyAction(plant, pageUrl, pincode) {
 
 /* ---------------- the home page list ---------------- */
 
+// "type" is first and is the default: most of the catalogue is Philodendron
+// and Pothos, and a flat A–Z of forty plants buries that. Inside a section the
+// order is the same A–Z, so picking it only unfolds the shelves into one list.
 export const SORTS = [
+  { value: 'type', label: 'By type' },
   { value: 'name', label: 'A–Z' },
   { value: 'low', label: 'Price: low to high' },
   { value: 'high', label: 'Price: high to low' },
