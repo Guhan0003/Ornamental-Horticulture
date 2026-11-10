@@ -1,0 +1,50 @@
+{
+  "slug": "philodendron-ring-of-fire-variegated",
+  "common_name": "Philodendron Ring of Fire Variegated",
+  "scientific_name": "Philodendron 'Ring of Fire'",
+  "price_minor": 54900,
+  "availability": "in_stock",
+  "image": {
+    "file": "philodendron-ring-of-fire-variegated.jpg",
+    "alt": "A variegated Philodendron Ring of Fire in a white pot, its jagged leaves marked in cream, yellow and orange over deep green"
+  },
+  "profile": {
+    "environment": "Indoor",
+    "light": {
+      "label": "Bright indirect light",
+      "note": "Tolerates medium light, but the variegation fades back towards green",
+      "ideal": [2],
+      "tolerates": [1]
+    },
+    "landscape_use": {
+      "items": ["Sheltered shaded patios"],
+      "note": "Frost-free zones, out of direct sun"
+    },
+    "home_use": {
+      "items": ["Table top statement plant", "Shelf and desk accent"]
+    }
+  },
+  "snap": "A slow-growing climbing Philodendron with long, deeply jagged leaves splashed in cream, yellow and orange over deep green. New leaves open warm orange before settling, so a healthy plant shows several stages at once. Toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "A hybrid rather than a wild species, with parentage still argued over among growers. It climbs slowly and takes years to reach full leaf size, so a moss pole is worth giving it early rather than later."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Water when the top inch of the mix has dried, in a loose, chunky aroid mix. It grows slowly, so it drinks and feeds less than its size suggests — more of these are lost to kindness than to neglect."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "This is the original Ring of Fire: colour arrives in sections rather than across the whole leaf, so one plant carries orange new growth, cream and yellow blocks, and deep green all at the same time. The Gold form trades that for an even chartreuse — same jagged leaf, a quite different plant to look at."
+    },
+    {
+      "icon": "paw",
+      "title": "Pet Safety",
+      "body": "Toxic to cats and dogs if chewed or swallowed; the calcium oxalate crystals irritate the mouth and stomach. Keep it out of reach of pets and small children."
+    }
+  ]
+}
