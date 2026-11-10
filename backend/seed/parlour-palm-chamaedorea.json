@@ -1,0 +1,63 @@
+{
+  "slug": "parlour-palm-chamaedorea",
+  "common_name": "Parlour Palm (Chamaedorea)",
+  "scientific_name": "Chamaedorea elegans",
+  "price_minor": 49900,
+  "availability": "in_stock",
+  "image": {
+    "file": "parlour-palm-chamaedorea.jpg",
+    "alt": "A parlour palm in a white pot, with slender green canes and fine arching fronds"
+  },
+  "profile": {
+    "environment": "Indoor",
+    "light": {
+      "label": "Medium to bright indirect light",
+      "note": "Tolerates low light",
+      "ideal": [
+        1,
+        2
+      ],
+      "tolerates": [
+        0
+      ]
+    },
+    "landscape_use": {
+      "items": [
+        "Shaded understorey planting",
+        "Sheltered tropical borders"
+      ],
+      "note": "Frost-free zones only"
+    },
+    "home_use": {
+      "items": [
+        "Floor plant",
+        "Tabletop accent",
+        "Desk plant",
+        "Low-light corner"
+      ]
+    }
+  },
+  "snap": "A slow, clumping palm with fine arching fronds on slender green canes, happy in the dim corners most plants refuse and safe to keep around pets.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "Native to the rainforest understorey of southern Mexico and Guatemala, where it grows in deep shade beneath taller trees. Clumping and slow, reaching 2–4 feet indoors over several years and rarely outgrowing its spot."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Water when the top inch of soil has dried, and never leave the pot standing in water — root rot kills far more parlour palms than neglect does. Brown leaf tips usually mean dry air or salts in tap water rather than thirst."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "One of the few palms that genuinely copes with low light and ordinary indoor humidity, which is how it became a Victorian parlour fixture and got its name. Often sold as Neanthe Bella palm."
+    },
+    {
+      "icon": "paw",
+      "title": "Pet Safety",
+      "body": "Non-toxic to cats and dogs, so it suits homes where a Peace Lily or a Monstera would not. Chewed fronds will still upset a small stomach, and the plant looks better unchewed."
+    }
+  ]
+}
