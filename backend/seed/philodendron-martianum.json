@@ -1,0 +1,50 @@
+{
+  "slug": "philodendron-martianum",
+  "common_name": "Philodendron Martianum",
+  "scientific_name": "Philodendron martianum",
+  "price_minor": 59900,
+  "availability": "in_stock",
+  "image": {
+    "file": "philodendron-martianum.jpg",
+    "alt": "A Philodendron Martianum in a white pot, its glossy paddle-shaped leaves held up on thick swollen stalks"
+  },
+  "profile": {
+    "environment": "Indoor",
+    "light": {
+      "label": "Bright indirect light",
+      "note": "Tolerates medium light, with slower growth",
+      "ideal": [2],
+      "tolerates": [1]
+    },
+    "landscape_use": {
+      "items": ["Sheltered shaded patios"],
+      "note": "Frost-free zones, out of direct sun"
+    },
+    "home_use": {
+      "items": ["Table top accent", "Desk plant", "Shelf plant"]
+    }
+  },
+  "snap": "A compact, self-heading Philodendron with thick glossy paddle leaves held up on swollen, water-storing stalks — the reason the trade calls it the Fat Boy. It stays small, forgives a missed watering, and is toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "Native to the Atlantic forest of southern Brazil, where it grows on trees and rocks rather than in the ground. It is self-heading, forming a slow, tidy rosette instead of climbing, and stays small enough for a table for years."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Water when the top inch of soil has dried, then leave it be. Those swollen stalks are a water store, which makes this one of the few Philodendrons that would rather be forgotten than kept damp — constantly wet soil rots it quickly."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "The fat, inflated leaf stalks are the whole point of the plant. They thicken as it matures, so an established one looks like a cluster of green bottles holding its leaves up, and no other Philodendron in the shop looks remotely like it."
+    },
+    {
+      "icon": "paw",
+      "title": "Pet Safety",
+      "body": "Toxic to cats and dogs if chewed or swallowed; the calcium oxalate crystals irritate the mouth and stomach. Its low, table-height rosette sits within easy reach, so place it accordingly."
+    }
+  ]
+}
