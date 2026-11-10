@@ -1,0 +1,46 @@
+{
+  "slug": "syngonium-mojito",
+  "common_name": "Syngonium Mojito",
+  "scientific_name": "Syngonium podophyllum 'Mojito'",
+  "price_minor": 54900,
+  "price_note": "with white decor pot",
+  "availability": "in_stock",
+  "image": {
+    "file": "syngonium-mojito.jpg",
+    "alt": "A Syngonium Mojito in a white pot, its arrowhead leaves mottled in dark green, lime and cream like marble"
+  },
+  "profile": {
+    "environment": "Indoor & outdoor",
+    "light": {
+      "label": "Bright indirect light",
+      "note": "Tolerates medium light, but the lime and cream fade back towards green",
+      "ideal": [2],
+      "tolerates": [1]
+    },
+    "landscape_use": {
+      "items": ["Shaded tropical borders", "Shaded patios and balconies"],
+      "note": "Frost-free zones only; never in direct sun"
+    },
+    "home_use": {
+      "items": ["Table top statement plant", "Hanging baskets", "Moss pole climber"]
+    }
+  },
+  "snap": "A variegated Syngonium whose arrowhead leaves are mottled in dark green, lime and cream, like marble that has been splashed with paint. The pattern is different on every leaf, and it needs brighter light than the plain forms to keep it. Toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "The species grows wild in the forests of Central and South America, from Mexico down to Bolivia, scrambling over the forest floor and climbing trees. Mojito is a heavily variegated cultivar of it, and like the others it starts as a bushy clump of simple arrowhead leaves, then vines, trailing from a basket or climbing a pole, as the leaves begin to divide into lobes."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Water when the top inch of the mix has dried, and never let the pot stand in water. Light is the rule that decides how it looks: bright indirect holds the lime and cream, a dim corner lets the leaves drift back to plain green, and direct sun scorches the pale patches brown. Because so much of each leaf is not green, it also grows more slowly than the plain forms."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "The mottling is the draw: dark green islands set in a lime and cream ground, no two leaves alike, and it reads as marbled rather than striped. Variegation like this is never fully fixed. If a stem comes back all green, cut it back to a marked node; the plain stem will otherwise out-grow the patterned ones, because it makes more food and runs faster."
+    }
+  ]
+}
