@@ -1,0 +1,50 @@
+{
+  "slug": "philodendron-congo-rojo",
+  "common_name": "Philodendron Congo Rojo",
+  "scientific_name": "Philodendron 'Rojo Congo'",
+  "price_minor": 49900,
+  "availability": "in_stock",
+  "image": {
+    "file": "philodendron-congo-rojo.jpg",
+    "alt": "A Philodendron Congo Rojo in a white pot, its broad glossy leaves deep green flushed with burgundy, held on dark red stems"
+  },
+  "profile": {
+    "environment": "Indoor",
+    "light": {
+      "label": "Bright indirect light",
+      "note": "Tolerates medium light, with less red in the new leaves",
+      "ideal": [2],
+      "tolerates": [1]
+    },
+    "landscape_use": {
+      "items": ["Sheltered shaded patios"],
+      "note": "Frost-free zones, out of direct sun"
+    },
+    "home_use": {
+      "items": ["Floor plant", "Living room statement plant", "Table top statement plant"]
+    }
+  },
+  "snap": "A self-heading Philodendron whose broad, glossy leaves open deep burgundy and darken to near-black green, all carried on dark red stems. It holds its shape without a pole, takes ordinary indoor light, and is toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "A nursery hybrid rather than a wild species, usually given as Philodendron tatei 'Congo' crossed with 'Imperial Red'. It is sold both ways round — Congo Rojo and Rojo Congo are the same plant. It is self-heading, building a short thick trunk over years rather than climbing, and reaches roughly three feet tall and as much across."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Water when the top two inches of the mix have dried, and use something loose that drains fast. The thick stems hold their own reserve, so this plant is far more often killed by a heavy, wet mix than by a forgotten week. Do not bury the crown when repotting — set it at the same depth it came in."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "It shows two colours at once. New leaves unfurl a deep burgundy red, then darken over weeks to a glossy green so dark it reads black, while the stems stay red throughout. Most red-leaved houseplants need strong light to colour up; this one does it in an ordinary bright room. As it builds a trunk the oldest leaves yellow and drop — that is the plant growing up, not a problem to fix."
+    },
+    {
+      "icon": "paw",
+      "title": "Pet Safety",
+      "body": "Toxic to cats and dogs if chewed or swallowed; the calcium oxalate crystals irritate the mouth and stomach. Keep it out of reach of pets and small children."
+    }
+  ]
+}
