@@ -1,0 +1,59 @@
+{
+  "slug": "philodendron-pink-princess",
+  "common_name": "Philodendron Pink Princess",
+  "scientific_name": "Philodendron erubescens 'Pink Princess'",
+  "price_minor": 59900,
+  "availability": "in_stock",
+  "image": {
+    "file": "philodendron-pink-princess.jpg",
+    "alt": "A Philodendron Pink Princess in a white pot, its dark leaves marked with bright pink on deep red stems"
+  },
+  "profile": {
+    "environment": "Indoor",
+    "light": {
+      "label": "Bright indirect light",
+      "note": "Tolerates medium light, but the pink fades and new leaves come back plain green",
+      "ideal": [
+        2
+      ],
+      "tolerates": [
+        1
+      ]
+    },
+    "landscape_use": {
+      "items": [
+        "Sheltered shaded patios"
+      ],
+      "note": "Frost-free zones, never in direct sun"
+    },
+    "home_use": {
+      "items": [
+        "Table top statement plant",
+        "Shelf and desk accent"
+      ]
+    }
+  },
+  "snap": "A climbing Philodendron with deep green, almost black leaves splashed in bright pink, carried on dark red stems. Every leaf is marked differently. It needs bright, filtered light to keep the pink, and is toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "A cultivated form of Philodendron erubescens, a climbing aroid from the rainforests of South America. It climbs as it matures and does its best work up a moss pole, where the leaves grow larger with each new one."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Water when the top inch of the mix has dried, in a loose, chunky aroid mix — these roots rot fast in heavy soil. Bright filtered light is what keeps the pink coming; in a dim corner the new leaves revert to plain green, and direct sun scorches the pink parts first."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "The pink is unstable, so no two leaves match and the plant needs steering: a stem throwing only green leaves is cut back to a pink node, and an all-pink leaf has no green left to feed itself and will eventually fail. Not to be confused with Pink Congo, whose pink is chemically induced and turns green for good after a few months."
+    },
+    {
+      "icon": "paw",
+      "title": "Pet Safety",
+      "body": "Toxic to cats and dogs if chewed or swallowed; like all philodendrons it carries calcium oxalate crystals that irritate the mouth and stomach. Keep it up on a shelf if pets chew at leaves."
+    }
+  ]
+}
