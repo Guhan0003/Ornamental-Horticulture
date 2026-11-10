@@ -13,15 +13,28 @@
     "light": {
       "label": "Bright indirect light, or morning sun outdoors",
       "note": "Takes medium light indoors and morning sun outdoors",
-      "ideal": [2],
-      "tolerates": [1, 3]
+      "ideal": [
+        2
+      ],
+      "tolerates": [
+        1,
+        3
+      ]
     },
     "landscape_use": {
-      "items": ["Groundcover under trees", "Shaded tropical beds", "Patio and poolside planters"],
+      "items": [
+        "Groundcover under trees",
+        "Shaded tropical beds",
+        "Patio and poolside planters"
+      ],
       "note": "Frost-free zones, out of harsh afternoon sun"
     },
     "home_use": {
-      "items": ["Floor plant", "Table top accent", "Shelf plant"]
+      "items": [
+        "Floor plant",
+        "Table top accent",
+        "Shelf plant"
+      ]
     }
   },
   "snap": "A sprawling, clump-forming Philodendron with glossy arrow-shaped leaves on pale upright stems. It spreads sideways rather than climbing, forgives neglect better than most of the genus, and is toxic to cats and dogs if chewed.",
@@ -45,11 +58,6 @@
       "icon": "landscape",
       "title": "Indoors Or Out",
       "body": "Indoors it fills a pot and holds its shape without a pole. In a frost-free garden it is a groundcover — planted in drifts under trees it knits into low, weed-smothering cover, which is exactly the use its namesake had in mind."
-    },
-    {
-      "icon": "paw",
-      "title": "Pet Safety",
-      "body": "Toxic to cats and dogs if chewed or swallowed; the calcium oxalate crystals irritate the mouth and stomach. Its low, spreading habit puts the leaves right at pet height, so place it with that in mind."
     }
   ]
 }

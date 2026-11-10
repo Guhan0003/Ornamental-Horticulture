@@ -1,0 +1,57 @@
+{
+  "slug": "syngonium-albo",
+  "common_name": "Syngonium Albo",
+  "scientific_name": "Syngonium podophyllum 'Albo Variegatum'",
+  "price_minor": 49900,
+  "price_note": "with white decor pot",
+  "availability": "in_stock",
+  "image": {
+    "file": "syngonium-albo.webp",
+    "alt": "A Syngonium Albo with arrowhead leaves splashed in cream and white, in a white pot"
+  },
+  "profile": {
+    "environment": "Indoor & outdoor",
+    "light": {
+      "label": "Bright indirect light",
+      "note": "Tolerates medium light, but the white fades back towards green",
+      "ideal": [
+        2
+      ],
+      "tolerates": [
+        1
+      ]
+    },
+    "landscape_use": {
+      "items": [
+        "Shaded tropical borders",
+        "Courtyards and patios"
+      ],
+      "note": ""
+    },
+    "home_use": {
+      "items": [
+        "Table top accent",
+        "Living room floor planters"
+      ],
+      "note": ""
+    }
+  },
+  "snap": "A climbing and trailing houseplant with arrowhead-shaped leaves splashed with cream and white. No two leaves are patterned the same. It grows quickly, looks good in a hanging basket or on a moss pole, and is toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "The species grows wild in the tropical forests of Central and South America, from Mexico to Bolivia. There it climbs trees and scrambles over the forest floor. The Albo is a cultivated variegated form. It is an evergreen vine that trails or climbs to 1–2 m indoors. Its leaves start arrow-shaped and become lobed as it matures."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Give it bright indirect light all year, because the white patches have no chlorophyll and the plant needs the green parts to feed itself. In low light the pattern fades to plain green; in direct sun the white patches scorch. Water when the top 2–3 cm of soil is dry and never let the pot sit in water, since wet roots rot easily."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "The variegation is the draw: each leaf carries its own mix of green, cream and white. It can revert, though. If a shoot comes back all green, cut it off at the node so the plant keeps its pattern. A moss pole makes it climb, and its leaves get larger and more lobed."
+    }
+  ]
+}

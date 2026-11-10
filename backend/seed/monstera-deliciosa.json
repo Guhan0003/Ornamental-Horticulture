@@ -1,0 +1,58 @@
+{
+  "slug": "monstera-deliciosa",
+  "common_name": "Monstera Deliciosa (Swiss Cheese)",
+  "scientific_name": "Monstera deliciosa",
+  "price_minor": 49900,
+  "price_note": "with white decor pot",
+  "availability": "in_stock",
+  "image": {
+    "file": "monstera-deliciosa.webp",
+    "alt": "A Monstera deliciosa with large glossy leaves split into deep lobes, in a white pot"
+  },
+  "profile": {
+    "environment": "Indoor",
+    "light": {
+      "label": "Medium to bright indirect light",
+      "note": "Tolerates medium light",
+      "ideal": [
+        2
+      ],
+      "tolerates": [
+        1
+      ]
+    },
+    "landscape_use": {
+      "items": [
+        "Shaded tropical gardens",
+        "Trained up a tree trunk or totem"
+      ],
+      "note": ""
+    },
+    "home_use": {
+      "items": [
+        "Floor statement plant",
+        "Corner focal point",
+        "Living room statement plant"
+      ],
+      "note": ""
+    }
+  },
+  "snap": "A dramatic statement houseplant famous for its large, glossy leaves naturally split with architectural holes and climbing, jungle-like growth.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "Native to tropical rainforests of southern Mexico and Central America; grows as a climbing vine with large split leaves reaching 6–8 feet tall indoors on support."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Water when the top 2 inches of soil dry out; provide a moss pole or trellis for aerial roots to attach and climb."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "The holes and splits — fenestrations — arrive as the plant matures and climbs, not on a young plant, and brighter light brings them on sooner. Give it a moss pole and the leaves get larger and more deeply cut; leave it unsupported and it stays small-leaved and sprawling."
+    }
+  ]
+}

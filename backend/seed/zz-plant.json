@@ -14,15 +14,27 @@
     "light": {
       "label": "Low to bright indirect light",
       "note": "Survives a genuinely dark corner, but grows faster and fuller in brighter light",
-      "ideal": [1, 2],
-      "tolerates": [0]
+      "ideal": [
+        1,
+        2
+      ],
+      "tolerates": [
+        0
+      ]
     },
     "landscape_use": {
-      "items": ["Shaded patio containers", "Shaded understorey planting"],
+      "items": [
+        "Shaded patio containers",
+        "Shaded understorey planting"
+      ],
       "note": "Frost-free zones, out of direct sun"
     },
     "home_use": {
-      "items": ["Desk plant", "Floor plant", "Low-light corner"]
+      "items": [
+        "Desk plant",
+        "Floor plant",
+        "Low-light corner"
+      ]
     }
   },
   "snap": "A near-indestructible indoor staple, its arching stems lined with smooth, waxy leaflets that shine without polish. Fat rhizomes below the soil store water, so it takes low light and long gaps between waterings, and every part of it is toxic if chewed.",
@@ -41,11 +53,6 @@
       "icon": "sparkle",
       "title": "Special Feature",
       "body": "It asks less than almost anything else sold as a houseplant: long gaps without water, light too poor for most things, dry indoor air, and it keeps its shine with no leaf polish at all. If a room has killed everything else you have put in it, this is the plant to try there."
-    },
-    {
-      "icon": "paw",
-      "title": "Pet Safety",
-      "body": "Toxic to cats and dogs if chewed or swallowed; the calcium oxalate crystals irritate the mouth and stomach. The sap can also irritate skin, so wash your hands after cutting stems or dividing it."
     }
   ]
 }

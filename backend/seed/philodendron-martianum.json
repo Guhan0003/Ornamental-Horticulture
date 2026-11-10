@@ -13,15 +13,25 @@
     "light": {
       "label": "Bright indirect light",
       "note": "Tolerates medium light, with slower growth",
-      "ideal": [2],
-      "tolerates": [1]
+      "ideal": [
+        2
+      ],
+      "tolerates": [
+        1
+      ]
     },
     "landscape_use": {
-      "items": ["Sheltered shaded patios"],
+      "items": [
+        "Sheltered shaded patios"
+      ],
       "note": "Frost-free zones, out of direct sun"
     },
     "home_use": {
-      "items": ["Table top accent", "Desk plant", "Shelf plant"]
+      "items": [
+        "Table top accent",
+        "Desk plant",
+        "Shelf plant"
+      ]
     }
   },
   "snap": "A compact, self-heading Philodendron with thick glossy paddle leaves held up on swollen, water-storing stalks — the reason the trade calls it the Fat Boy. It stays small, forgives a missed watering, and is toxic to cats and dogs if chewed.",
@@ -40,11 +50,6 @@
       "icon": "sparkle",
       "title": "Special Feature",
       "body": "The fat, inflated leaf stalks are the whole point of the plant. They thicken as it matures, so an established one looks like a cluster of green bottles holding its leaves up, and no other Philodendron in the shop looks remotely like it."
-    },
-    {
-      "icon": "paw",
-      "title": "Pet Safety",
-      "body": "Toxic to cats and dogs if chewed or swallowed; the calcium oxalate crystals irritate the mouth and stomach. Its low, table-height rosette sits within easy reach, so place it accordingly."
     }
   ]
 }

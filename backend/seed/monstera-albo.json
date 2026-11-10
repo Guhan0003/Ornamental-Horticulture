@@ -1,0 +1,56 @@
+{
+  "slug": "monstera-albo",
+  "common_name": "Monstera Albo",
+  "scientific_name": "Monstera deliciosa 'Albo-Variegata'",
+  "price_minor": 89900,
+  "price_note": "A good plant with good variegations",
+  "availability": "in_stock",
+  "image": {
+    "file": "monstera-albo.webp",
+    "alt": "A Monstera Albo with split, holey leaves marked in bold white and cream sections, in a white pot"
+  },
+  "profile": {
+    "environment": "Indoor",
+    "light": {
+      "label": "Bright indirect light",
+      "note": "Tolerates medium light, but growth slows and the white fades",
+      "ideal": [
+        2
+      ],
+      "tolerates": [
+        1
+      ]
+    },
+    "landscape_use": {
+      "items": [
+        "Sheltered shaded patios"
+      ],
+      "note": ""
+    },
+    "home_use": {
+      "items": [
+        "Living room statement plant"
+      ],
+      "note": ""
+    }
+  },
+  "snap": "A climbing Monstera with big, glossy leaves that split and grow holes as they mature, marked with bold white and cream sections. No two leaves look alike. It needs bright, filtered light and a pole to climb. Toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "Native to the rainforests of southern Mexico and Central America, where it climbs tree trunks using aerial roots. The Albo is a cultivated variegated form. Young leaves are whole; the splits and holes appear as the plant matures and climbs. With a pole or trellis it can reach 2–3 m indoors."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Give it bright indirect light and let the soil dry out a little between waterings. The white parts have no chlorophyll, so they scorch in direct sun, and in dim light the plant fades to plain green. Water when the top 5 cm of soil is dry, use a chunky, well-draining aroid mix, and keep it above 15°C. Soggy roots rot quickly."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "It combines the split, holey leaves of a Monstera with bold white variegation, and every leaf is different. A leaf that comes out almost all white can't feed itself and will brown and drop; this is normal. If a shoot turns fully green, cut it back to a variegated node so the pattern doesn't take over. A moss pole makes the leaves larger and more split."
+    }
+  ],
+  "original_price_minor": 129900
+}

@@ -1,0 +1,61 @@
+{
+  "slug": "pothos-combo",
+  "common_name": "Pothos Combo",
+  "scientific_name": "Epipremnum aureum (Neon, Jade, Marble Queen, N'Joy and Manjula)",
+  "price_minor": 99900,
+  "price_note": "with decor pots",
+  "availability": "in_stock",
+  "image": {
+    "file": "pothos-combo.webp",
+    "alt": "A set of pothos in white pots with the Stomatal World name on them: lime-yellow Neon, dark green Jade, and cream-and-green Marble Queen, N'Joy and Manjula"
+  },
+  "profile": {
+    "environment": "Indoor & outdoor",
+    "light": {
+      "label": "Bright indirect light",
+      "note": "Jade copes with low light; the variegated ones fade",
+      "ideal": [
+        1,
+        2
+      ],
+      "tolerates": [
+        0
+      ]
+    },
+    "landscape_use": {
+      "items": [
+        "Shaded tropical borders",
+        "Climbing tree trunks and walls",
+        "Shaded ground cover"
+      ],
+      "note": "Frost-free zones only; spreads fast, so keep it trimmed"
+    },
+    "home_use": {
+      "items": [
+        "Hanging baskets",
+        "Shelves and bookcases",
+        "Moss pole or trellis",
+        "Offices and desks"
+      ],
+      "note": "Group the pots near a bright window for a mixed display"
+    }
+  },
+  "snap": "A set of pothos in five looks: glowing lime Neon, glossy green Jade, marbled Marble Queen, compact N'Joy and swirled Manjula. All are easy trailing vines that forgive a missed watering, so they suit beginners and look good grouped together. All are toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "The pothos is native to the Society Islands in the South Pacific and now grows wild across the tropics, where it climbs tree trunks with aerial roots. Every plant in this set is a cultivated form of the same species. Indoors the vines trail from a basket or shelf, or climb a pole or trellis."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Water when the top 3–5 cm of soil is dry, and never leave the pots standing in water. They droop when thirsty and perk up soon after a drink. Yellow, mushy leaves mean too much water. Give them bright indirect light. Jade copes with dim rooms and Neon only darkens, but Marble Queen, N'Joy and Manjula fade towards green. Direct sun scorches all of them."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "Five looks in one set. Neon glows lime-yellow. Jade is deep, glossy green. Marble Queen is streaked with cream-white. N'Joy has small leaves with bold white and green patches. Manjula has broad, wavy leaves swirled with cream, white and green. They are happy in the same light and the same watering routine, so they make a bright mixed display on a shelf or in a hanging group."
+    }
+  ]
+}

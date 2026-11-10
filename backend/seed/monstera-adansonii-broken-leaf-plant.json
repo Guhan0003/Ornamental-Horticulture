@@ -1,0 +1,61 @@
+{
+  "slug": "monstera-adansonii-broken-leaf-plant",
+  "common_name": "Monstera Adansonii (Broken Leaf Plant)",
+  "scientific_name": "Monstera adansonii",
+  "price_minor": 29900,
+  "price_note": "with white decor pot",
+  "availability": "in_stock",
+  "image": {
+    "file": "monstera-adansonii-broken-leaf-plant.webp",
+    "alt": "A Monstera adansonii with heart-shaped green leaves full of oval holes, in a white pot"
+  },
+  "profile": {
+    "environment": "Indoor & outdoor",
+    "light": {
+      "label": "Bright indirect light",
+      "note": "Tolerates medium light, but the leaves stay small",
+      "ideal": [
+        2
+      ],
+      "tolerates": [
+        1
+      ]
+    },
+    "landscape_use": {
+      "items": [
+        "Shaded tropical gardens",
+        "Under tree canopy",
+        "Trained up a tree trunk"
+      ],
+      "note": "Frost-free, humid zones only; keep out of direct sun"
+    },
+    "home_use": {
+      "items": [
+        "Hanging baskets",
+        "Moss pole or trellis climber",
+        "Shelves and plant stands",
+        "Bright desks"
+      ],
+      "note": "Likes humid air; a bright kitchen or bathroom window suits it"
+    }
+  },
+  "snap": "A climbing plant with thin, heart-shaped leaves full of oval holes, which is why it is also called the broken leaf, Swiss cheese or five-holes plant. It grows fast, trails or climbs, and likes humid air and bright, filtered light. Toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "Native to the rainforests of Central and South America, from southern Mexico to Brazil, where it climbs tree trunks with aerial roots. Indoors it trails from a basket or climbs a pole or trellis to 1–2 m. The holes appear as the leaves mature, and the leaves grow larger as the plant climbs."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Give it bright indirect light and humid air, and water when the top 3–5 cm of soil is dry. Never leave the pot standing in water. In dim light the leaves stay small with few holes, and direct sun scorches them. Brown, crisp leaf edges mean the air is too dry. Keep it warm, above 15°C."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "The leaves are covered in oval holes, from tiny ones at the edge to big ones near the midrib, so no two look alike. It grows quickly and trails nicely, and it fills a hanging basket in a season or two. A moss pole makes the leaves larger and the holes bigger. Trim the vine tips to keep it full."
+    }
+  ],
+  "original_price_minor": 49900
+}

@@ -1,0 +1,60 @@
+{
+  "slug": "jade-pothos",
+  "common_name": "Jade Pothos",
+  "scientific_name": "Epipremnum aureum 'Jade'",
+  "price_minor": 29900,
+  "price_note": "with white decor pot",
+  "availability": "in_stock",
+  "image": {
+    "file": "jade-pothos.webp",
+    "alt": "A Jade Pothos with glossy dark green heart-shaped leaves trailing from a white pot"
+  },
+  "profile": {
+    "environment": "Indoor & outdoor",
+    "light": {
+      "label": "Medium to bright indirect light",
+      "note": "Tolerates low light, but growth slows",
+      "ideal": [
+        1,
+        2
+      ],
+      "tolerates": [
+        0
+      ]
+    },
+    "landscape_use": {
+      "items": [
+        "Shaded tropical borders",
+        "Climbing tree trunks and walls",
+        "Shaded ground cover"
+      ],
+      "note": "Frost-free zones only; spreads fast, so keep it trimmed"
+    },
+    "home_use": {
+      "items": [
+        "Offices and dim rooms",
+        "Hanging baskets",
+        "Shelves and bookcases"
+      ],
+      "note": "Trails well from a high shelf, even far from a window"
+    }
+  },
+  "snap": "A trailing vine with glossy, deep green heart-shaped leaves and no variegation. It copes with dim rooms better than most houseplants and forgives missed waterings. A good first plant for offices and shaded corners. Toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "The pothos is native to the Society Islands in the South Pacific and now grows wild across the tropics, where it climbs tree trunks with aerial roots. The Jade is a cultivated form with solid green leaves, with none of the cream or yellow markings of other pothos. Indoors the vines trail 2 m or more, or climb a pole or trellis."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Water when the top 3–5 cm of soil is dry, and never leave the pot standing in water. It droops when thirsty and perks up soon after a drink. Yellow, mushy leaves mean too much water. It grows best in medium to bright indirect light but copes with low light, and direct sun scorches the leaves."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "With solid green leaves it has no pattern to fade, so it keeps its rich colour even in a dim room. That makes it one of the most reliable plants for offices and shaded corners. Cuttings with a node root easily in a glass of water. Trim the vine tips to keep it full, and give it a moss pole to climb for larger leaves."
+    }
+  ]
+}

@@ -11,15 +11,27 @@
     "light": {
       "label": "Medium to bright indirect light",
       "note": "Tolerates low light",
-      "ideal": [1, 2],
-      "tolerates": [0]
+      "ideal": [
+        1,
+        2
+      ],
+      "tolerates": [
+        0
+      ]
     },
     "landscape_use": {
-      "items": ["Shaded tropical borders", "Mass groundcover"],
+      "items": [
+        "Shaded tropical borders",
+        "Mass groundcover"
+      ],
       "note": "Frost-free zones"
     },
     "home_use": {
-      "items": ["Tabletop accent", "Floor plant", "Air-purifying space cleaner"]
+      "items": [
+        "Tabletop accent",
+        "Floor plant",
+        "Shaded corner"
+      ]
     }
   },
   "snap": "An elegant indoor staple known for glossy dark leaves and striking white spathes that signal thirst by gently drooping before springing back after watering.",
@@ -37,12 +49,7 @@
     {
       "icon": "sparkle",
       "title": "Special Feature",
-      "body": "Highly effective at filtering indoor toxins (like benzene and formaldehyde) and blooms continuously in warm, humid conditions."
-    },
-    {
-      "icon": "paw",
-      "title": "Pet Safety",
-      "body": "Toxic to cats and dogs if chewed or swallowed; its calcium oxalate crystals irritate the mouth and stomach. Keep it out of reach of pets and small children."
+      "body": "The white spathe is not a petal but a modified leaf, and it stands for weeks before fading to green. The plant also tells you when it is thirsty: the whole thing droops, then lifts again within hours of a drink. Few houseplants ask so plainly."
     }
   ]
 }

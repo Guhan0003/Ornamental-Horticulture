@@ -1,0 +1,60 @@
+{
+  "slug": "manjula-pothos",
+  "common_name": "Manjula Pothos",
+  "scientific_name": "Epipremnum aureum 'Manjula'",
+  "price_minor": 29900,
+  "price_note": "with white decor pot",
+  "availability": "in_stock",
+  "image": {
+    "file": "manjula-pothos.webp",
+    "alt": "A Manjula Pothos with broad, wavy, heart-shaped leaves swirled in cream, white and green, trailing from a white pot"
+  },
+  "profile": {
+    "environment": "Indoor & outdoor",
+    "light": {
+      "label": "Bright indirect light",
+      "note": "Tolerates medium light, but the white fades",
+      "ideal": [
+        1,
+        2
+      ],
+      "tolerates": [
+        0
+      ]
+    },
+    "landscape_use": {
+      "items": [
+        "Shaded tropical borders",
+        "Climbing tree trunks and walls",
+        "Shaded ground cover"
+      ],
+      "note": "Frost-free zones only; keep out of direct sun"
+    },
+    "home_use": {
+      "items": [
+        "Hanging baskets",
+        "Shelves and bookcases",
+        "Bright desks and tables"
+      ],
+      "note": "Trails well from a shelf near a bright window"
+    }
+  },
+  "snap": "A trailing pothos with broad, wavy-edged, heart-shaped leaves swirled in cream, white and green, each one a little different. It is easy to keep and forgives a missed watering, but it needs bright, filtered light to hold its colours. Toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "The pothos is native to the Society Islands in the South Pacific and now grows wild across the tropics, where it climbs tree trunks with aerial roots. The Manjula is a cultivated form with wider, wavier leaves than the plain green pothos. Indoors the vines trail or climb a pole or trellis, and the leaves grow larger with support."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Give it bright indirect light to keep the cream and white. In dim light the leaves turn greener, and direct sun scorches the pale areas. Water when the top 3–5 cm of soil is dry, and never leave the pot standing in water. Brown, crisp leaf edges mean the air is too dry, so mist it now and then or set it near a humidifier."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "The leaves are broad, glossy and wavy at the edge, swirled with cream, white and green, so no two look alike. The look is more painterly than the streaks of other variegated pothos. If a shoot comes back all green, cut it back to a variegated node so the pattern doesn't take over. Trim the tips to keep it full."
+    }
+  ]
+}

@@ -13,15 +13,24 @@
     "light": {
       "label": "Bright indirect light",
       "note": "Tolerates medium light, but the gold dulls towards green",
-      "ideal": [2],
-      "tolerates": [1]
+      "ideal": [
+        2
+      ],
+      "tolerates": [
+        1
+      ]
     },
     "landscape_use": {
-      "items": ["Sheltered shaded patios"],
+      "items": [
+        "Sheltered shaded patios"
+      ],
       "note": "Frost-free zones, out of direct sun"
     },
     "home_use": {
-      "items": ["Table top statement plant", "Shelf and desk accent"]
+      "items": [
+        "Table top statement plant",
+        "Shelf and desk accent"
+      ]
     }
   },
   "snap": "A slow-growing climbing Philodendron with long, deeply jagged leaves that hold a bright chartreuse gold instead of the cream and red of the ordinary Ring of Fire. Bright filtered light is what keeps the colour, and it is toxic to cats and dogs if chewed.",
@@ -40,11 +49,6 @@
       "icon": "sparkle",
       "title": "Special Feature",
       "body": "Two things at once: leaf edges cut into deep irregular teeth, and a gold that runs through the whole leaf rather than sitting in patches. Give it enough light and new leaves open almost yellow; give it too little and the gold settles towards plain green."
-    },
-    {
-      "icon": "paw",
-      "title": "Pet Safety",
-      "body": "Toxic to cats and dogs if chewed or swallowed; the calcium oxalate crystals irritate the mouth and stomach. Keep it out of reach of pets and small children."
     }
   ]
 }

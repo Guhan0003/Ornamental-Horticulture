@@ -1,0 +1,57 @@
+{
+  "slug": "monstera-thai-constellation",
+  "common_name": "Monstera Thai Constellation",
+  "scientific_name": "Monstera deliciosa 'Thai Constellation'",
+  "price_minor": 99900,
+  "price_note": "",
+  "availability": "in_stock",
+  "image": {
+    "file": "monstera-thai-constellation.webp",
+    "alt": "A Monstera Thai Constellation with big split green leaves scattered with creamy white speckles, in a white pot"
+  },
+  "profile": {
+    "environment": "Indoor & outdoor",
+    "light": {
+      "label": "Bright indirect light",
+      "note": "Tolerates medium light, but the cream speckles fade",
+      "ideal": [
+        2
+      ],
+      "tolerates": [
+        1
+      ]
+    },
+    "landscape_use": {
+      "items": [
+        "Shaded tropical gardens",
+        "Trained up a tree trunk or totem"
+      ],
+      "note": "Frost-free zones only; keep out of harsh direct sun"
+    },
+    "home_use": {
+      "items": [
+        "Living room statement plant",
+        "Moss pole or trellis climber"
+      ],
+      "note": ""
+    }
+  },
+  "snap": "A Monstera with big, split green leaves scattered with creamy white speckles, like stars in a night sky. The pattern is steadier than on most variegated Monsteras. It needs bright, filtered light and a pole to climb. Toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "The wild Monstera deliciosa grows in the rainforests of southern Mexico and Central America and climbs tree trunks with aerial roots. The Thai Constellation is a cultivated form, named for Thailand, where it is widely said to have been developed. It is multiplied in labs by tissue culture, which keeps its pattern even. With a pole or trellis it can reach 2–3 m indoors."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Give it bright indirect light and let the soil dry out a little between waterings. In dim light the cream speckles fade, and harsh afternoon sun can scorch the pale patches. Water when the top 5 cm of soil is dry, use a chunky, well-draining aroid mix, and keep it above 15°C. Soggy roots rot quickly."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "The cream speckles and flecks on dark green leaves look like a scatter of stars, and no two leaves are the same. Because the variegation is spread evenly through the plant, it rarely produces all-white leaves or reverts fully to green, so it grows faster and is easier to keep than a sectored albo. A moss pole makes the leaves larger and more deeply split."
+    }
+  ]
+}

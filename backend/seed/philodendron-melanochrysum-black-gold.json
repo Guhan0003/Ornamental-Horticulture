@@ -1,0 +1,58 @@
+{
+  "slug": "philodendron-melanochrysum-black-gold",
+  "common_name": "Philodendron Melanochrysum (Black Gold)",
+  "scientific_name": "Philodendron melanochrysum",
+  "price_minor": 69900,
+  "price_note": "with white decor pot",
+  "availability": "in_stock",
+  "image": {
+    "file": "philodendron-melanochrysum-black-gold.webp",
+    "alt": "A Philodendron Melanochrysum with long velvety near-black leaves veined in pale green, in a white pot"
+  },
+  "profile": {
+    "environment": "Indoor & outdoor",
+    "light": {
+      "label": "Bright indirect light",
+      "note": "Tolerates medium light, but growth slows and the leaves stay small",
+      "ideal": [
+        2
+      ],
+      "tolerates": [
+        1
+      ]
+    },
+    "landscape_use": {
+      "items": [
+        "Shaded tropical gardens",
+        "Under tree canopy",
+        "Trained up a tree trunk or totem"
+      ],
+      "note": "Frost-free, humid zones only; keep out of direct sun"
+    },
+    "home_use": {
+      "items": [
+        "Bright living room",
+        "Moss pole climber"
+      ],
+      "note": "Likes humid air; group it with other plants or run a humidifier nearby"
+    }
+  },
+  "snap": "A climbing philodendron with velvety, near-black leaves that shimmer with bronze and gold, and new leaves that open golden. It loves warmth and humid air, and its leaves grow much larger when it climbs a pole. Toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "Native to the rainforests of Colombia, where it climbs tree trunks in warm, humid shade. Young plants carry small, heart-shaped leaves. As the vine climbs, the leaves grow longer and larger. Indoors, with a pole to climb, it can reach 1–2 m."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Give it humid air, warmth and bright indirect light. Aim for humidity of 60% or more and keep it above 15°C. Water when the top 3–5 cm of the mix is dry, use a chunky, airy mix, and never leave the pot standing in water. Direct sun fades the velvet sheen. Dry air and cold drafts turn the leaf edges brown."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "The velvety leaves look almost black in some light, then glow green and bronze as you move. New leaves open golden-bronze and darken as they age. A moss pole makes the leaves bigger and longer. Dust them gently with a soft, dry brush; wiping hard or using leaf shine spoils the velvet look."
+    }
+  ]
+}

@@ -13,15 +13,25 @@
     "light": {
       "label": "Bright indirect light",
       "note": "Tolerates medium light, but new leaves come back plainer green",
-      "ideal": [2],
-      "tolerates": [1]
+      "ideal": [
+        2
+      ],
+      "tolerates": [
+        1
+      ]
     },
     "landscape_use": {
-      "items": ["Sheltered shaded patios"],
+      "items": [
+        "Sheltered shaded patios"
+      ],
       "note": "Frost-free zones, never in direct sun"
     },
     "home_use": {
-      "items": ["Table top statement plant", "Collector's shelf", "Floor plant"]
+      "items": [
+        "Table top statement plant",
+        "Collector's shelf",
+        "Floor plant"
+      ]
     }
   },
   "snap": "The variegated form of the Burle Marx, its long green leaves splashed and sectored in cream and yellow, no two the same. It clumps and spreads instead of climbing, needs brighter light than the plain form to hold its markings, and is toxic to cats and dogs if chewed.",
@@ -40,11 +50,6 @@
       "icon": "sparkle",
       "title": "Special Feature",
       "body": "The variegation is unstable in both directions, which is the whole appeal and the whole risk. Leaves arrive flecked, half-and-half, or almost entirely cream. A stem that turns fully green will stay green unless you cut it back to a marked node, and an all-cream stem has no chlorophyll to feed itself and will eventually fail."
-    },
-    {
-      "icon": "paw",
-      "title": "Pet Safety",
-      "body": "Toxic to cats and dogs if chewed or swallowed; the calcium oxalate crystals irritate the mouth and stomach. Keep it out of reach of pets and small children."
     }
   ]
 }

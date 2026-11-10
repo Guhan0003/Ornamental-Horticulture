@@ -1,0 +1,60 @@
+{
+  "slug": "peacock-calathea",
+  "common_name": "Peacock Calathea",
+  "scientific_name": "Calathea makoyana",
+  "price_minor": 54900,
+  "price_note": "with white decor pot",
+  "availability": "in_stock",
+  "image": {
+    "file": "peacock-calathea.webp",
+    "alt": "A peacock calathea with green leaves marked in dark feather-like stripes, in a white pot"
+  },
+  "profile": {
+    "environment": "Indoor & outdoor",
+    "light": {
+      "label": "Medium to bright indirect light",
+      "note": "Tolerates low light, but growth slows",
+      "ideal": [
+        1,
+        2
+      ],
+      "tolerates": [
+        0
+      ]
+    },
+    "landscape_use": {
+      "items": [
+        "Shaded tropical borders",
+        "Under tree canopy",
+        "Shaded courtyards"
+      ],
+      "note": "Frost-free, humid zones only; needs full shade"
+    },
+    "home_use": {
+      "items": [
+        "Pet-friendly living room",
+        "Shelves and side tables",
+        "Bathrooms with a bright window"
+      ],
+      "note": "Loves humid air; group it with other plants or use a humidifier"
+    }
+  },
+  "snap": "A leafy plant with pale green leaves marked in dark green feather-like stripes, like a peacock's tail, and deep purple undersides. The leaves fold up at night and open again in the morning. It likes humid air and soft light. Safe for cats and dogs.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "Native to the rainforests of eastern Brazil, where it grows on the shaded forest floor under tall trees. That is why it wants warmth, humidity and soft light, not hot sun. A clumping plant that usually stays 40–60 cm tall indoors."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Give it soft, indirect light and humid air, and water when the top 2–3 cm of soil is dry, ideally with filtered or rainwater. Direct sun fades and scorches the pattern. Brown leaf tips mean dry air or minerals and chemicals in tap water. Keep it warm, between 18°C and 27°C, and away from cold drafts."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "Each leaf looks hand-painted, with dark feather-shaped markings and a deep purple underside. The leaves also move: they fold upward at night and open again at dawn, which is why calatheas are called prayer plants. Wipe the leaves gently with a damp cloth to keep the pattern bright."
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "slug": "calathea-golden-mosaic",
+  "common_name": "Calathea Golden Mosaic",
+  "scientific_name": "Ctenanthe lubbersiana",
+  "price_minor": 52900,
+  "price_note": "with white decor pot",
+  "availability": "in_stock",
+  "image": {
+    "file": "calathea-golden-mosaic.webp",
+    "alt": "A Calathea Golden Mosaic with glossy leaves splashed in gold and dark green, in a white pot"
+  },
+  "profile": {
+    "environment": "Indoor & outdoor",
+    "light": {
+      "label": "Medium to bright indirect light",
+      "note": "Not suited to low light; the gold fades",
+      "ideal": [
+        1,
+        2
+      ],
+      "tolerates": []
+    },
+    "landscape_use": {
+      "items": [
+        "Shaded tropical borders",
+        "Under tree canopy",
+        "Shaded courtyards"
+      ],
+      "note": "Frost-free, humid zones only; needs shade"
+    },
+    "home_use": {
+      "items": [
+        "Bright living room",
+        "Shelves and side tables",
+        "Kitchens and bathrooms with a bright window"
+      ],
+      "note": "Likes humid air; keep it away from cold drafts"
+    }
+  },
+  "snap": "An upright, leafy plant with glossy leaves splashed in gold and dark green, like a mosaic. It brightens a shelf or side table and is easier to keep than most calatheas. It likes soft light and humid air. Generally regarded as safe for cats and dogs.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "Native to the rainforests of Brazil, where it grows on the shaded forest floor. That is why it wants warmth, humidity and soft light, not hot sun. A clumping plant with upright stems that usually reaches 60–90 cm indoors, and often looks best with a stake for support."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Give it soft, bright indirect light and humid air, and water when the top 2–3 cm of soil is dry, ideally with filtered or rainwater. Direct sun scorches the gold, and in dim light the pattern fades. Brown leaf tips mean dry air or minerals and chemicals in tap water. Keep it warm, above 15°C, and away from cold drafts."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "Each glossy leaf is splashed with gold, lime and dark green in its own way, which gives the plant its mosaic look. It is more forgiving of changing indoor conditions than most of the calathea family. Like its prayer-plant relatives, its leaves shift with the light through the day. Wipe the leaves gently with a damp cloth to keep the gloss."
+    }
+  ]
+}

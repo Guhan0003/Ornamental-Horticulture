@@ -13,15 +13,25 @@
     "light": {
       "label": "Bright indirect light",
       "note": "Tolerates medium light, but new leaves come back plainer",
-      "ideal": [2],
-      "tolerates": [1]
+      "ideal": [
+        2
+      ],
+      "tolerates": [
+        1
+      ]
     },
     "landscape_use": {
-      "items": ["Shaded verandahs and balconies"],
+      "items": [
+        "Shaded verandahs and balconies"
+      ],
       "note": "Frost-free zones, out of direct sun"
     },
     "home_use": {
-      "items": ["Hanging basket", "Shelf trailer", "Desk plant"]
+      "items": [
+        "Hanging basket",
+        "Shelf trailer",
+        "Desk plant"
+      ]
     }
   },
   "snap": "A fast, trailing Philodendron with heart-shaped leaves split down the middle by a bold lime stripe — the green and gold of the flag it is named for. Forgiving enough for a first plant, it trails from a shelf or climbs a pole, and is toxic to cats and dogs if chewed.",
@@ -40,11 +50,6 @@
       "icon": "sparkle",
       "title": "Special Feature",
       "body": "No two leaves carry the same amount of lime: some come out almost entirely green, others nearly all stripe. Bright indirect light keeps the contrast sharp, and a stem that runs all-green can be cut back to a variegated node to bring the colour home."
-    },
-    {
-      "icon": "paw",
-      "title": "Pet Safety",
-      "body": "Toxic to cats and dogs if chewed or swallowed; the calcium oxalate crystals irritate the mouth and stomach. Trailing stems hang within easy reach of a curious cat, so hang it high or keep it to a closed room."
     }
   ]
 }
