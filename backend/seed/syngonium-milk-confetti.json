@@ -1,0 +1,46 @@
+{
+  "slug": "syngonium-milk-confetti",
+  "common_name": "Syngonium Milk Confetti",
+  "scientific_name": "Syngonium podophyllum 'Milk Confetti'",
+  "price_minor": 34900,
+  "price_note": "with white decor pot",
+  "availability": "in_stock",
+  "image": {
+    "file": "syngonium-milk-confetti.jpg",
+    "alt": "A Syngonium Milk Confetti in a white pot, its arrowhead leaves cream and pale green freckled all over in pink"
+  },
+  "profile": {
+    "environment": "Indoor & outdoor",
+    "light": {
+      "label": "Bright indirect light",
+      "note": "Tolerates medium light, but new leaves come back greener and plainer",
+      "ideal": [2],
+      "tolerates": [1]
+    },
+    "landscape_use": {
+      "items": ["Shaded tropical borders", "Shaded patios and balconies"],
+      "note": "Frost-free zones only; never in direct sun"
+    },
+    "home_use": {
+      "items": ["Table top accent", "Desk plant", "Shelves and plant stands"]
+    }
+  },
+  "snap": "A compact arrowhead vine whose cream and pale green leaves are freckled all over in pink, no two the same. So little of each leaf is green that it grows slower and scorches more easily than its plainer relatives. Toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "The species grows wild in the forests of Central and South America, scrambling over the ground and climbing trees. This is one of its most heavily variegated cultivars, a milk-cream base freckled in pink. Like the others it begins as a compact mound of arrowhead leaves and only vines later, when the leaves start to divide into lobes."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Water when the top inch of the mix has dried, and never let the pot stand in water. The rule that sets this one apart is light: so much of each leaf is cream rather than green that it makes less food than a plain Syngonium, so it grows slowly, wants bright indirect light to make up the difference, and burns in direct sun long before its green relatives would."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "The freckling runs from a light pink pepper to broad splashes, and no two leaves repeat. It also drifts with the light it gets: kept dim, the plant answers with greener, plainer leaves, because green is what feeds it. Good light is what keeps the confetti coming, and a leaf that opens mostly green is the plant looking after itself rather than anything you did wrong."
+    }
+  ]
+}
