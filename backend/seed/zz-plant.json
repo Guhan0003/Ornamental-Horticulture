@@ -1,0 +1,51 @@
+{
+  "slug": "zz-plant",
+  "common_name": "ZZ Plant",
+  "scientific_name": "Zamioculcas zamiifolia",
+  "price_minor": 39900,
+  "price_note": "with white decor pot",
+  "availability": "in_stock",
+  "image": {
+    "file": "zz-plant.webp",
+    "alt": "A ZZ plant in a white glossy pot, its arching stems lined with paired waxy green leaflets"
+  },
+  "profile": {
+    "environment": "Indoor",
+    "light": {
+      "label": "Low to bright indirect light",
+      "note": "Survives a genuinely dark corner, but grows faster and fuller in brighter light",
+      "ideal": [1, 2],
+      "tolerates": [0]
+    },
+    "landscape_use": {
+      "items": ["Shaded patio containers", "Shaded understorey planting"],
+      "note": "Frost-free zones, out of direct sun"
+    },
+    "home_use": {
+      "items": ["Desk plant", "Floor plant", "Low-light corner"]
+    }
+  },
+  "snap": "A near-indestructible indoor staple, its arching stems lined with smooth, waxy leaflets that shine without polish. Fat rhizomes below the soil store water, so it takes low light and long gaps between waterings, and every part of it is toxic if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "Native to eastern Africa, from Kenya down to South Africa, where it sits out long dry months on the forest floor. Indoors it sends up arching stems two to three feet tall, each lined with paired glossy leaflets, and grows in occasional flushes rather than steadily."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Let the mix dry out completely, then water it thoroughly. The rhizomes below the soil are a reservoir, and a mix kept damp rots them — very nearly the only way to kill a ZZ. In a dim corner it may want water just once a month, so judge by the soil rather than the calendar."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "It asks less than almost anything else sold as a houseplant: long gaps without water, light too poor for most things, dry indoor air, and it keeps its shine with no leaf polish at all. If a room has killed everything else you have put in it, this is the plant to try there."
+    },
+    {
+      "icon": "paw",
+      "title": "Pet Safety",
+      "body": "Toxic to cats and dogs if chewed or swallowed; the calcium oxalate crystals irritate the mouth and stomach. The sap can also irritate skin, so wash your hands after cutting stems or dividing it."
+    }
+  ]
+}
