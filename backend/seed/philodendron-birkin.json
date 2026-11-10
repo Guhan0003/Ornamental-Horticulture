@@ -1,0 +1,50 @@
+{
+  "slug": "philodendron-birkin",
+  "common_name": "Philodendron Birkin",
+  "scientific_name": "Philodendron 'Birkin'",
+  "price_minor": 44900,
+  "availability": "in_stock",
+  "image": {
+    "file": "philodendron-birkin.jpg",
+    "alt": "Close view of Philodendron Birkin leaves, dark green with fine creamy pinstripes running out from the midrib"
+  },
+  "profile": {
+    "environment": "Indoor",
+    "light": {
+      "label": "Bright indirect light",
+      "note": "Tolerates medium light, but new leaves come back plainer",
+      "ideal": [2],
+      "tolerates": [1]
+    },
+    "landscape_use": {
+      "items": ["Sheltered shaded patios"],
+      "note": "Frost-free zones, out of direct sun"
+    },
+    "home_use": {
+      "items": ["Table top accent", "Desk plant", "Shelf plant"]
+    }
+  },
+  "snap": "A compact, self-heading Philodendron whose dark leaves carry fine creamy pinstripes running out from the midrib. New leaves open plain and draw their stripes as they expand. Bright filtered light is what keeps the pattern, and it is toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "Not a wild species but a sport that appeared in cultivation on a Philodendron 'Rojo Congo'. It is self-heading, holding a tidy upright clump rather than climbing, and grows slowly enough to keep a desk for years."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Water when the top inch of the mix has dried, in a loose, chunky aroid mix. It is a slow grower, so it wants less water and far less feeding than its leaf size suggests."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "The pinstriping is unstable, and that is the thing worth knowing before buying. Every leaf is marked differently, the occasional one opens almost pure white, and a stem that reverts goes back to the deep red-green of the Rojo Congo it came from. Bright light keeps it striping; a dim corner sends it plain."
+    },
+    {
+      "icon": "paw",
+      "title": "Pet Safety",
+      "body": "Toxic to cats and dogs if chewed or swallowed; the calcium oxalate crystals irritate the mouth and stomach. Keep it out of reach of pets and small children."
+    }
+  ]
+}
