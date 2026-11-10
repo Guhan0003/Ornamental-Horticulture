@@ -1,0 +1,58 @@
+{
+  "slug": "pink-rubber-plant",
+  "common_name": "Pink Rubber Plant",
+  "scientific_name": "Ficus elastica 'Ruby'",
+  "price_minor": 42900,
+  "price_note": "with white decor pot",
+  "availability": "in_stock",
+  "image": {
+    "file": "pink-rubber-plant.webp",
+    "alt": "A pink rubber plant with glossy leaves splashed in pink, cream and green, in a white pot"
+  },
+  "profile": {
+    "environment": "Indoor & outdoor",
+    "light": {
+      "label": "Bright indirect light",
+      "note": "Tolerates medium light, but the pink fades",
+      "ideal": [
+        2
+      ],
+      "tolerates": [
+        1
+      ]
+    },
+    "landscape_use": {
+      "items": [
+        "Large pots on covered patios",
+        "Sheltered courtyards"
+      ],
+      "note": "Frost-free zones only; keep it in a pot, as in the ground it becomes a very large tree"
+    },
+    "home_use": {
+      "items": [
+        "Bright living room statement plant",
+        "Corner by a bright window",
+        "Offices and reception areas"
+      ],
+      "note": "Choose a bright spot and keep it there; it dislikes sudden changes"
+    }
+  },
+  "snap": "An upright rubber plant with big, glossy leaves splashed in pink, cream and green, on red-pink stems. It is sturdy and slow-growing, and the pink is strongest in bright, filtered light. Toxic to cats and dogs if chewed, and the milky sap irritates skin.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "The rubber plant is native to the forests of South and Southeast Asia, where it grows into a huge tree with aerial roots. The Ruby is a cultivated, variegated form. Indoors it grows slowly to 1–2 m, with a single upright stem and big, leathery leaves."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Give it bright indirect light to keep the pink. In dim light the leaves turn greener, and direct sun scorches the pale and pink areas. Water when the top 3–5 cm of soil is dry, and never leave the pot standing in water. Too much water makes the leaves yellow and drop. Keep it above 12°C and away from cold drafts."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "Each leaf is a mix of green, cream and pink, with a pink-red underside and red midrib, and the colour shifts as the leaf ages. New leaves open from a bright red bud sheath that later drops off. Wipe the leaves with a damp cloth to keep them glossy. If a shoot comes back all green, cut it back to a colourful node."
+    }
+  ]
+}

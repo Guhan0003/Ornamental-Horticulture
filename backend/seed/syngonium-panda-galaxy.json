@@ -1,0 +1,58 @@
+{
+  "slug": "syngonium-panda-galaxy",
+  "common_name": "Syngonium Panda Galaxy",
+  "scientific_name": "Syngonium podophyllum 'Panda Galaxy'",
+  "price_minor": 49900,
+  "price_note": "with white decor pot",
+  "availability": "in_stock",
+  "image": {
+    "file": "syngonium-panda-galaxy.webp",
+    "alt": "A Syngonium Panda Galaxy with green arrowhead leaves speckled in cream and white, in a white pot"
+  },
+  "profile": {
+    "environment": "Indoor & outdoor",
+    "light": {
+      "label": "Bright indirect light",
+      "note": "Tolerates medium light, but the speckles fade",
+      "ideal": [
+        2
+      ],
+      "tolerates": [
+        1
+      ]
+    },
+    "landscape_use": {
+      "items": [
+        "Shaded tropical borders",
+        "Shaded patios and balconies"
+      ],
+      "note": "Frost-free zones only; keep out of direct sun"
+    },
+    "home_use": {
+      "items": [
+        "Hanging baskets",
+        "Moss pole climber",
+        "Shelves and plant stands"
+      ],
+      "note": "Best near an east-facing window, or a few feet back from a bright one"
+    }
+  },
+  "snap": "A climbing and trailing arrowhead vine with green leaves sprinkled with cream and white speckles, like stars. Every leaf comes out a little different. It grows well in a hanging basket or up a pole, and is toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "The species grows wild in the humid forests of Central and South America, where it scrambles over the forest floor and climbs trees. The Panda Galaxy is a cultivated, speckled form of it. It is an evergreen vine that trails from a basket or climbs to about 1.5 m with support."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Give it bright indirect light, and water when the top 2–3 cm of soil is dry. In low light the speckles fade towards plain green, and direct sun scorches the pale spots. Keep it warm, ideally 18–27°C and never below 15°C, and never let the pot sit in water, since wet roots rot easily."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "The variegation is a scatter of cream and white spots, from lightly peppered to boldly marbled, and each new leaf has its own pattern. Pinch the tips to keep it full and bushy. If a shoot turns plain green, cut it back to a speckled node. A moss pole makes the leaves larger and more lobed."
+    }
+  ]
+}

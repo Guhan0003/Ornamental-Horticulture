@@ -13,15 +13,25 @@
     "light": {
       "label": "Bright indirect light",
       "note": "Tolerates medium light, but new leaves come back plainer",
-      "ideal": [2],
-      "tolerates": [1]
+      "ideal": [
+        2
+      ],
+      "tolerates": [
+        1
+      ]
     },
     "landscape_use": {
-      "items": ["Sheltered shaded patios"],
+      "items": [
+        "Sheltered shaded patios"
+      ],
       "note": "Frost-free zones, out of direct sun"
     },
     "home_use": {
-      "items": ["Table top accent", "Desk plant", "Shelf plant"]
+      "items": [
+        "Table top accent",
+        "Desk plant",
+        "Shelf plant"
+      ]
     }
   },
   "snap": "A compact, self-heading Philodendron whose dark leaves carry fine creamy pinstripes running out from the midrib. New leaves open plain and draw their stripes as they expand. Bright filtered light is what keeps the pattern, and it is toxic to cats and dogs if chewed.",
@@ -40,11 +50,6 @@
       "icon": "sparkle",
       "title": "Special Feature",
       "body": "The pinstriping is unstable, and that is the thing worth knowing before buying. Every leaf is marked differently, the occasional one opens almost pure white, and a stem that reverts goes back to the deep red-green of the Rojo Congo it came from. Bright light keeps it striping; a dim corner sends it plain."
-    },
-    {
-      "icon": "paw",
-      "title": "Pet Safety",
-      "body": "Toxic to cats and dogs if chewed or swallowed; the calcium oxalate crystals irritate the mouth and stomach. Keep it out of reach of pets and small children."
     }
   ]
 }

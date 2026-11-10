@@ -1,0 +1,59 @@
+{
+  "slug": "philodendron-billietiae",
+  "common_name": "Philodendron Billietiae",
+  "scientific_name": "Philodendron billietiae",
+  "price_minor": 44900,
+  "price_note": "with white decor pot",
+  "availability": "in_stock",
+  "image": {
+    "file": "philodendron-billietiae.webp",
+    "alt": "A Philodendron billietiae with glossy dark green leaves on bright orange stems, in a white pot"
+  },
+  "profile": {
+    "environment": "Indoor & outdoor",
+    "light": {
+      "label": "Bright indirect light",
+      "note": "Tolerates medium light, but growth slows and the leaves stay small",
+      "ideal": [
+        2
+      ],
+      "tolerates": [
+        1
+      ]
+    },
+    "landscape_use": {
+      "items": [
+        "Shaded tropical gardens",
+        "Under tree canopy",
+        "Trained up a tree trunk or totem"
+      ],
+      "note": ""
+    },
+    "home_use": {
+      "items": [
+        "Bright living room",
+        "Moss pole climber",
+        "Greenhouse cabinet or humid corner"
+      ],
+      "note": ""
+    }
+  },
+  "snap": "A climbing philodendron with glossy, dark green leaves held on bright orange stems. The orange against the green makes it a favourite with collectors. It grows bigger leaves as it climbs, and likes warmth and humid air. Toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "Native to the rainforests of northern South America, around French Guiana and nearby parts of Brazil, where it climbs tree trunks with aerial roots. Young plants carry small, heart-shaped leaves. As the vine climbs, the leaves grow longer, larger and wavier. With a pole to climb it can reach 1–2 m indoors."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Give it bright indirect light, warmth and humid air. Water when the top 3–5 cm of the mix is dry, use a chunky, airy aroid mix, and never leave the pot standing in water. Direct sun scorches the leaves and fades the orange stems. Keep it above 15°C and away from cold drafts. Dry air browns the leaf edges."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "The stems, or petioles, are a bright orange-yellow that stands out against the deep green, glossy leaves. A moss pole makes the leaves larger and more elongated and wavy at the edges. Each new leaf opens from a pale bud sheath that later drops off. Wipe the leaves gently with a damp cloth to keep the gloss."
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "slug": "fiddle-leaf-fig",
+  "common_name": "Fiddle-Leaf Fig",
+  "scientific_name": "Ficus lyrata",
+  "price_minor": 32900,
+  "price_note": "with white decor pot",
+  "availability": "in_stock",
+  "image": {
+    "file": "fiddle-leaf-fig.webp",
+    "alt": "A young fiddle-leaf fig with large glossy green violin-shaped leaves, in a white pot"
+  },
+  "profile": {
+    "environment": "Indoor & outdoor",
+    "light": {
+      "label": "Bright indirect light",
+      "note": "Tolerates gentle direct sun once it is used to it",
+      "ideal": [
+        2
+      ],
+      "tolerates": [
+        1,
+        3
+      ]
+    },
+    "landscape_use": {
+      "items": [
+        "Tropical garden specimen tree",
+        "Sheltered courtyards",
+        "Large pots on covered patios"
+      ],
+      "note": "Frost-free zones only; shelter it from strong wind and harsh afternoon sun"
+    },
+    "home_use": {
+      "items": [
+        "Bright living room statement plant",
+        "Corner by a bright window",
+        "Offices and lobbies"
+      ],
+      "note": "Choose a spot and leave it; it dislikes being moved"
+    }
+  },
+  "snap": "A bold indoor tree with large, glossy, violin-shaped leaves and a sculptural shape. It rewards a bright spot and a steady routine, but it sulks if you move it or overwater it. Toxic to cats and dogs if chewed, and the milky sap irritates skin.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "Native to the lowland rainforests of tropical West Africa, where it can grow into a tree 12 m tall or more, often starting life high in another tree. Indoors it grows slowly into a tree 1.5–2 m tall, with the big, leathery, veined leaves held on a single upright stem."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Pick a bright spot with indirect light and leave it there. This plant hates being moved, drafts and sudden changes, and it drops leaves when stressed. Water when the top 3–5 cm of soil is dry, usually about once a week, and never let it sit in water. Turn the pot a quarter turn now and then so it grows evenly."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "The huge, violin-shaped leaves make it a living sculpture, and it works as the single statement plant of a room. Each new leaf unfurls from a pointed bud sheath that later drops off. Wipe the leaves with a damp cloth to keep them glossy and to help them take up light. It can be pruned to shape or to keep it compact."
+    }
+  ]
+}

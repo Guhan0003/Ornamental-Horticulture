@@ -13,15 +13,24 @@
     "light": {
       "label": "Bright indirect light",
       "note": "Tolerates medium light, with slower growth and less marbling",
-      "ideal": [2],
-      "tolerates": [1]
+      "ideal": [
+        2
+      ],
+      "tolerates": [
+        1
+      ]
     },
     "landscape_use": {
-      "items": ["Sheltered shaded patios"],
+      "items": [
+        "Sheltered shaded patios"
+      ],
       "note": "Frost-free zones, out of direct sun"
     },
     "home_use": {
-      "items": ["Table top statement plant", "Floor plant"]
+      "items": [
+        "Table top statement plant",
+        "Floor plant"
+      ]
     }
   },
   "snap": "A climbing Philodendron with long, slightly wavy leaves marbled in cream and pale green over deep green, no two alike. It wants bright filtered light and steadier humidity than most, and is toxic to cats and dogs if chewed.",
@@ -40,11 +49,6 @@
       "icon": "sparkle",
       "title": "Special Feature",
       "body": "The marbling is painted rather than blocked — cream and pale green running in streaks through deep green, so every leaf is different and new ones open almost white before they harden and green up."
-    },
-    {
-      "icon": "paw",
-      "title": "Pet Safety",
-      "body": "Toxic to cats and dogs if chewed or swallowed; the calcium oxalate crystals irritate the mouth and stomach. Keep it out of reach of pets and small children."
     }
   ]
 }

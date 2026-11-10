@@ -1,0 +1,58 @@
+{
+  "slug": "white-rubber-plant",
+  "common_name": "White Rubber Plant",
+  "scientific_name": "Ficus elastica 'Tineke'",
+  "price_minor": 42900,
+  "price_note": "with white decor pot",
+  "availability": "in_stock",
+  "image": {
+    "file": "white-rubber-plant.webp",
+    "alt": "A variegated rubber plant with grey-green leaves edged in cream and pink, in a white pot"
+  },
+  "profile": {
+    "environment": "Indoor & outdoor",
+    "light": {
+      "label": "Bright indirect light",
+      "note": "Tolerates medium light, but the cream fades",
+      "ideal": [
+        2
+      ],
+      "tolerates": [
+        1
+      ]
+    },
+    "landscape_use": {
+      "items": [
+        "Large pots on covered patios",
+        "Sheltered courtyards"
+      ],
+      "note": "Frost-free zones only; keep it in a pot, as in the ground it becomes a very large tree"
+    },
+    "home_use": {
+      "items": [
+        "Bright living room statement plant",
+        "Corner by a bright window",
+        "Offices and reception areas"
+      ],
+      "note": "Choose a bright spot and keep it there; it dislikes sudden changes"
+    }
+  },
+  "snap": "An upright rubber plant with large, glossy grey-green leaves edged in cream, and pink-blushed new growth. It is sturdy, slow and easy to keep, and it needs bright, filtered light to hold its colour. Toxic to cats and dogs if chewed, and the milky sap irritates skin.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "The rubber plant is native to the forests of South and Southeast Asia, where it grows into a huge tree with aerial roots. The Tineke is a cultivated form with cream-edged leaves. Indoors it grows slowly to 1–2 m, with a single upright stem and big, leathery leaves."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Give it bright indirect light to keep the cream edges. In dim light the leaves turn greener, and direct sun scorches the pale areas. Water when the top 3–5 cm of soil is dry, and never leave the pot standing in water. Too much water makes the leaves yellow and drop. Keep it above 12°C and away from cold drafts."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "The leaves are marbled in grey-green with creamy white edges, and new growth unfurls in blush pink from a red bud sheath. Wipe the leaves with a damp cloth to keep them glossy. It can be pruned to control its height, and pruning makes it branch. If a shoot comes back all green, cut it back to a variegated node."
+    }
+  ]
+}

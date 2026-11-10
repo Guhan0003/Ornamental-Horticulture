@@ -1,0 +1,61 @@
+{
+  "slug": "snake-plant-sansevieria",
+  "common_name": "Snake Plant (Sansevieria)",
+  "scientific_name": "Dracaena trifasciata (Sansevieria trifasciata)",
+  "price_minor": 39900,
+  "price_note": "with white decor pot · 6 varieties available in stock",
+  "availability": "in_stock",
+  "image": {
+    "file": "snake-plant-sansevieria.webp",
+    "alt": "A snake plant with tall, upright, striped green leaves in a white pot"
+  },
+  "profile": {
+    "environment": "Indoor & outdoor",
+    "light": {
+      "label": "Medium to bright indirect light",
+      "note": "Tolerates low light and some direct sun",
+      "ideal": [
+        1,
+        2
+      ],
+      "tolerates": [
+        0,
+        3
+      ]
+    },
+    "landscape_use": {
+      "items": [
+        "Dry and rock gardens",
+        "Courtyards and patios"
+      ],
+      "note": "Frost-free zones only; spreads by underground stems, so grow it in pots or edging"
+    },
+    "home_use": {
+      "items": [
+        "Bedrooms and offices",
+        "Entryways and hallways",
+        "Low-light corners",
+        "Floor planters"
+      ],
+      "note": "Fits bright or dim spots; water only when the soil is dry"
+    }
+  },
+  "snap": "A tough, upright plant with stiff, sword-shaped leaves that thrives on neglect. It copes with dim rooms, dry air and missed waterings better than almost any houseplant. Mildly toxic to cats and dogs if eaten.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "Native to the dry tropical regions of Africa, Madagascar and southern Asia, where it grows in rocky, sandy ground. That is why it stores water in thick, upright leaves and spreads by underground stems. An evergreen plant that grows from about 30 cm to over 1 m tall, depending on the variety."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Let the soil dry out completely between waterings, and when in doubt, don't water. Too much water is the main thing that kills it, because the roots rot. Water about every 2–3 weeks, and less in winter. Use a gritty, fast-draining mix and a pot with drainage holes. Keep it above 10°C."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "It is almost impossible to kill with neglect. The thick leaves store water, and the plant opens its pores mainly at night to lose less of it. It grows in low light, bright light and some direct sun, and it stands upright with a neat, sculptural shape. Colours range from deep green with pale bands to silver-green and yellow-edged, depending on the variety."
+    }
+  ]
+}
