@@ -1,0 +1,59 @@
+{
+  "slug": "philodendron-white-princess",
+  "common_name": "Philodendron White Princess",
+  "scientific_name": "Philodendron erubescens 'White Princess'",
+  "price_minor": 59900,
+  "availability": "in_stock",
+  "image": {
+    "file": "philodendron-white-princess.jpg",
+    "alt": "A Philodendron White Princess in a white pot, its dark leaves splashed with white and cream on pink-red stems"
+  },
+  "profile": {
+    "environment": "Indoor",
+    "light": {
+      "label": "Bright indirect light",
+      "note": "Tolerates medium light, but the white fades and new leaves come back greener",
+      "ideal": [
+        2
+      ],
+      "tolerates": [
+        1
+      ]
+    },
+    "landscape_use": {
+      "items": [
+        "Sheltered shaded patios"
+      ],
+      "note": "Frost-free zones, never in direct sun"
+    },
+    "home_use": {
+      "items": [
+        "Table top statement plant",
+        "Shelf and desk accent"
+      ]
+    }
+  },
+  "snap": "A compact, upright Philodendron with dark leaves splashed in white and cream, held on striking pink-red stems. No two leaves are marked the same. It needs bright, filtered light to keep the white, and is toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "A cultivated form of Philodendron erubescens, a climbing aroid from the rainforests of South America. It stays compact and upright for a long while, then slowly begins to climb and will happily take a small moss pole."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Water when the top inch of the mix has dried, using a loose, airy aroid mix that drains fast — these roots rot quickly in heavy soil. Bright filtered light is what keeps the white coming; in a dim corner the new leaves revert to plain green."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "The variegation is unstable, so every leaf is a surprise: clean white patches, fine speckling, or a half-and-half split down the middle. The pink-red stems are what tell a true White Princess apart from a White Knight or a White Wizard."
+    },
+    {
+      "icon": "paw",
+      "title": "Pet Safety",
+      "body": "Toxic to cats and dogs if chewed or swallowed; like all philodendrons it carries calcium oxalate crystals that irritate the mouth and stomach. Keep it up on a shelf if pets chew at leaves."
+    }
+  ]
+}
