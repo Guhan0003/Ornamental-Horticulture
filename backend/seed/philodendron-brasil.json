@@ -1,0 +1,50 @@
+{
+  "slug": "philodendron-brasil",
+  "common_name": "Philodendron Brasil",
+  "scientific_name": "Philodendron hederaceum 'Brasil'",
+  "price_minor": 29900,
+  "availability": "in_stock",
+  "image": {
+    "file": "philodendron-brasil.jpg",
+    "alt": "A Philodendron Brasil in a white textured pot, its heart-shaped leaves split down the middle by a bold lime stripe"
+  },
+  "profile": {
+    "environment": "Indoor",
+    "light": {
+      "label": "Bright indirect light",
+      "note": "Tolerates medium light, but new leaves come back plainer",
+      "ideal": [2],
+      "tolerates": [1]
+    },
+    "landscape_use": {
+      "items": ["Shaded verandahs and balconies"],
+      "note": "Frost-free zones, out of direct sun"
+    },
+    "home_use": {
+      "items": ["Hanging basket", "Shelf trailer", "Desk plant"]
+    }
+  },
+  "snap": "A fast, trailing Philodendron with heart-shaped leaves split down the middle by a bold lime stripe — the green and gold of the flag it is named for. Forgiving enough for a first plant, it trails from a shelf or climbs a pole, and is toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "A variegated form of the common heartleaf Philodendron from Central America and the Caribbean — the same species as the velvet-leaved Micans, wearing a quite different coat. It grows quickly either way: trailing from a shelf, or climbing a pole with bigger leaves each time."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Water when the top inch of soil has dried. This is among the most forgiving houseplants sold — it wilts plainly when thirsty and recovers within hours of a drink — which is what makes it a sensible first plant."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "No two leaves carry the same amount of lime: some come out almost entirely green, others nearly all stripe. Bright indirect light keeps the contrast sharp, and a stem that runs all-green can be cut back to a variegated node to bring the colour home."
+    },
+    {
+      "icon": "paw",
+      "title": "Pet Safety",
+      "body": "Toxic to cats and dogs if chewed or swallowed; the calcium oxalate crystals irritate the mouth and stomach. Trailing stems hang within easy reach of a curious cat, so hang it high or keep it to a closed room."
+    }
+  ]
+}
