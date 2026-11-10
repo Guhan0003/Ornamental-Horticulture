@@ -1,0 +1,50 @@
+{
+  "slug": "philodendron-micans",
+  "common_name": "Philodendron Micans",
+  "scientific_name": "Philodendron hederaceum var. hederaceum",
+  "price_minor": 29900,
+  "availability": "in_stock",
+  "image": {
+    "file": "philodendron-micans.jpg",
+    "alt": "A Philodendron Micans in a white pot, its heart-shaped velvet leaves trailing over the rim in copper and deep green"
+  },
+  "profile": {
+    "environment": "Indoor",
+    "light": {
+      "label": "Bright indirect light",
+      "note": "Tolerates medium light, with slower growth",
+      "ideal": [2],
+      "tolerates": [1]
+    },
+    "landscape_use": {
+      "items": ["Shaded verandahs and balconies"],
+      "note": "Frost-free zones, out of direct sun"
+    },
+    "home_use": {
+      "items": ["Hanging basket", "Shelf trailer", "Desk plant"]
+    }
+  },
+  "snap": "A trailing Philodendron whose heart-shaped leaves have a soft velvet surface — copper-pink as they open, deepening to near-black green with a faint shimmer. It trails from a shelf or climbs a pole, and is toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "A velvet-leaved form of the common heartleaf Philodendron, native to Central America and the Caribbean. Left alone it trails; given a pole or a moss stick it climbs, and the leaves grow noticeably larger when it has something to hold."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Water when the top inch of soil has dried. It wilts obviously when thirsty and recovers within hours of a drink, which makes it one of the easier plants to read. Keep it out of direct sun, which flattens the velvet and scorches the thin leaves."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "The surface is genuinely velvet rather than glossy, so it catches the light differently as you walk past it. New leaves open copper-pink and darken as they age, which means a healthy plant is showing three or four colours at once."
+    },
+    {
+      "icon": "paw",
+      "title": "Pet Safety",
+      "body": "Toxic to cats and dogs if chewed or swallowed; the calcium oxalate crystals irritate the mouth and stomach. Trailing stems hang within easy reach of a curious cat, so hang it high or keep it to a closed room."
+    }
+  ]
+}
