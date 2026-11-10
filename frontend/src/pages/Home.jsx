@@ -33,13 +33,7 @@ export default function Home() {
       <section className="card home-hero">
         <Leaf />
 
-        <p className="brand">StomatalWorld</p>
-
-        <h1 className="title">
-          Ornamental
-          <br />
-          Horticulture
-        </h1>
+        <h1 className="title">StomatalWorld</h1>
 
         <p className="lede">
           Live plants, ready to take home. Open any one to see what it needs and how to keep it
