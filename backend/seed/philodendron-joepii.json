@@ -1,0 +1,50 @@
+{
+  "slug": "philodendron-joepii",
+  "common_name": "Philodendron Joepii",
+  "scientific_name": "Philodendron joepii",
+  "price_minor": 56900,
+  "availability": "in_stock",
+  "image": {
+    "file": "philodendron-joepii.jpg",
+    "alt": "A young Philodendron Joepii in a nursery pot, its long narrow-waisted leaves flaring into two lobes at the base"
+  },
+  "profile": {
+    "environment": "Indoor",
+    "light": {
+      "label": "Bright indirect light",
+      "note": "Tolerates medium light, with slower growth",
+      "ideal": [2],
+      "tolerates": [1]
+    },
+    "landscape_use": {
+      "items": ["Sheltered shaded patios"],
+      "note": "Frost-free zones, out of direct sun"
+    },
+    "home_use": {
+      "items": ["Collector's shelf", "Table top accent"]
+    }
+  },
+  "snap": "A rare climbing Philodendron with strangely cut leaves — a long narrow blade that flares into two slender lobes at the base, like nothing else in the genus. Leaves take their odd shape as the plant matures, and it is toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "Found in French Guiana by the naturalist Joep Moonen, who it is named after, and known from only a handful of wild plants. Everything in cultivation descends from that find. It climbs, and wants a moss pole to show what it can do."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Water when the top inch of the mix has dried, in a loose, chunky aroid mix. Warmth and humidity matter more to this one than to the common Philodendrons, and cold wet roots are what kill it."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "The leaf shape is the reason to own it: a narrow waist between a long blade and two thin basal lobes, so distinctive that it was mistaken for a damaged plant when first collected. Young plants look almost ordinary — the shape arrives with maturity."
+    },
+    {
+      "icon": "paw",
+      "title": "Pet Safety",
+      "body": "Toxic to cats and dogs if chewed or swallowed; the calcium oxalate crystals irritate the mouth and stomach. Keep it out of reach of pets and small children."
+    }
+  ]
+}
