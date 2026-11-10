@@ -1,0 +1,50 @@
+{
+  "slug": "philodendron-ring-of-fire-gold",
+  "common_name": "Philodendron Ring of Fire Gold",
+  "scientific_name": "Philodendron 'Ring of Fire Gold'",
+  "price_minor": 34900,
+  "availability": "in_stock",
+  "image": {
+    "file": "philodendron-ring-of-fire-gold.jpg",
+    "alt": "A Philodendron Ring of Fire Gold in a white pot, its long deeply jagged leaves glowing bright chartreuse"
+  },
+  "profile": {
+    "environment": "Indoor",
+    "light": {
+      "label": "Bright indirect light",
+      "note": "Tolerates medium light, but the gold dulls towards green",
+      "ideal": [2],
+      "tolerates": [1]
+    },
+    "landscape_use": {
+      "items": ["Sheltered shaded patios"],
+      "note": "Frost-free zones, out of direct sun"
+    },
+    "home_use": {
+      "items": ["Table top statement plant", "Shelf and desk accent"]
+    }
+  },
+  "snap": "A slow-growing climbing Philodendron with long, deeply jagged leaves that hold a bright chartreuse gold instead of the cream and red of the ordinary Ring of Fire. Bright filtered light is what keeps the colour, and it is toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "A hybrid rather than a wild species, with parentage still argued over among growers. The Gold is the chartreuse form of the better-known variegated Ring of Fire. It climbs slowly and takes years to show its full leaf size, so a moss pole pays off here."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Water when the top inch of the mix has dried, in a loose, chunky aroid mix. It grows slowly, which means it drinks and feeds less than it looks like it should — more plants of this kind are lost to kindness than to neglect."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "Two things at once: leaf edges cut into deep irregular teeth, and a gold that runs through the whole leaf rather than sitting in patches. Give it enough light and new leaves open almost yellow; give it too little and the gold settles towards plain green."
+    },
+    {
+      "icon": "paw",
+      "title": "Pet Safety",
+      "body": "Toxic to cats and dogs if chewed or swallowed; the calcium oxalate crystals irritate the mouth and stomach. Keep it out of reach of pets and small children."
+    }
+  ]
+}
