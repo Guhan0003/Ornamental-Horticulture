@@ -1,0 +1,45 @@
+{
+  "slug": "philodendron-florida-ghost-green",
+  "common_name": "Philodendron Florida Ghost Green",
+  "scientific_name": "Philodendron 'Florida Green'",
+  "price_minor": 49900,
+  "availability": "in_stock",
+  "image": {
+    "file": "philodendron-florida-ghost-green.jpg",
+    "alt": "A Philodendron Florida Ghost Green in a white pot, its deeply lobed claw-shaped leaves opening pale lime and darkening to deep green"
+  },
+  "profile": {
+    "environment": "Indoor",
+    "light": {
+      "label": "Bright indirect light",
+      "note": "Tolerates medium light, but the leaves stay small and simple",
+      "ideal": [2],
+      "tolerates": [1]
+    },
+    "landscape_use": {
+      "items": ["Sheltered shaded patios"],
+      "note": "Frost-free zones, out of direct sun"
+    },
+    "home_use": {
+      "items": ["Table top statement plant", "Moss pole climber", "Shelf plant"]
+    }
+  },
+  "snap": "A climbing Philodendron with deeply lobed, claw-shaped leaves that open pale lime green and darken as they harden. It needs a pole to show what it can really do, takes ordinary bright indoor light, and is toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "A nursery hybrid rather than a wild species, raised in Florida from Philodendron pedatum and Philodendron squamiferum — which is where the name comes from. It is sold as Florida Green and as Florida Ghost Green; both are the green-stemmed form, whose new leaves open pale lime rather than the near-white of the plain Florida Ghost. It climbs, using aerial roots the way it would use a tree trunk."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Water when the top inch of the mix has dried, in a loose, chunky aroid mix — a dense mix held wet is what kills these. One thing not to treat: new leaves arriving pale are meant to be pale, not starved. Feeding or moving the plant to chase them green only sets it back, because they darken on their own over a few weeks."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "The leaf shape changes as the plant grows up. A young one carries simple arrow-shaped leaves and gives little away; once it has a pole to climb, each new leaf comes out larger and more deeply cut, until it reaches the five-fingered claw the plant is bought for. Left to sprawl with no support, it stays in its juvenile shape indefinitely — the pole is not decoration here, it is the difference."
+    }
+  ]
+}
