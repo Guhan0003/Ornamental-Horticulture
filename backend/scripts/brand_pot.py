@@ -21,9 +21,17 @@ BRAND = Path(__file__).resolve().parent.parent.parent / "brand" / "png"
 LOGOS = {
     "lockup": BRAND / "logo-lockup-forest-2048.png",
     "mark": BRAND / "logo-mark-forest-2048.png",
+    # For a dark pot, where the forest green would disappear.
+    "lockup-light": BRAND / "logo-lockup-dark-bg-2048.png",
+    "mark-light": BRAND / "logo-mark-cream-2048.png",
 }
 # The lockup is wide, so it takes more of the pot than the mark does.
-DEFAULT_WIDTH = {"lockup": 0.68, "mark": 0.26}
+DEFAULT_WIDTH = {
+    "lockup": 0.68,
+    "mark": 0.26,
+    "lockup-light": 0.68,
+    "mark-light": 0.26,
+}
 
 
 def brand(photo_path, pot, logo="lockup", width=None, opacity=0.88, out=None):
