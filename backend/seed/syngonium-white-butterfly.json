@@ -1,0 +1,46 @@
+{
+  "slug": "syngonium-white-butterfly",
+  "common_name": "Syngonium White Butterfly",
+  "scientific_name": "Syngonium podophyllum 'White Butterfly'",
+  "price_minor": 29900,
+  "price_note": "with white decor pot",
+  "availability": "in_stock",
+  "image": {
+    "file": "syngonium-white-butterfly.jpg",
+    "alt": "A Syngonium White Butterfly in a white pot, its arrowhead leaves pale silvery green edged in darker green"
+  },
+  "profile": {
+    "environment": "Indoor & outdoor",
+    "light": {
+      "label": "Medium to bright indirect light",
+      "note": "Tolerates low light, but it stretches and the pale centres dull",
+      "ideal": [1, 2],
+      "tolerates": [0]
+    },
+    "landscape_use": {
+      "items": ["Shaded tropical borders", "Shaded ground cover"],
+      "note": "Frost-free zones only; spreads fast, so keep it trimmed"
+    },
+    "home_use": {
+      "items": ["Hanging baskets", "Desk plant", "Shelves and plant stands"]
+    }
+  },
+  "snap": "The toughest and fastest of the Syngoniums, its arrowhead leaves pale silver-green inside a darker green edge. It takes dimmer rooms and missed waterings better than any of its coloured relatives, and the leaves split into lobes as it climbs. Toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "The species grows wild from Mexico down to Bolivia, scrambling over the forest floor and climbing trees. White Butterfly is its oldest and most widely grown cultivar — often shortened to just Butterfly — and the one the whole group is judged against. It begins as a bushy clump and then runs, trailing from a basket or climbing a pole."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Water when the top inch of the mix has dried, and never let the pot stand in water. This is the forgiving one: ordinary room humidity suits it, medium light suits it, and a forgotten week does no real harm. Its only real failing is going leggy — long bare stems with leaves at the ends — which is light being too low, or nobody pinching it back."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "The leaf you buy is not the leaf it ends up with. Young growth is a simple arrowhead; as the plant runs and climbs, each leaf divides into three lobes and then five, until a mature specimen looks like a different plant altogether. It is also the quickest to multiply — a cut stem with a node puts out roots in water within a week, so one pot fills a hanging basket in a season."
+    }
+  ]
+}
