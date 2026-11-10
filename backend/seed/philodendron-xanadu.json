@@ -1,0 +1,67 @@
+{
+  "slug": "philodendron-xanadu",
+  "common_name": "Philodendron Xanadu",
+  "scientific_name": "Thaumatophyllum xanadu",
+  "price_minor": 29900,
+  "availability": "in_stock",
+  "image": {
+    "file": "philodendron-xanadu.jpg",
+    "alt": "A Philodendron Xanadu in a white pot, its deeply lobed glossy green leaves spreading into a low mound"
+  },
+  "profile": {
+    "environment": "Indoor & outdoor",
+    "light": {
+      "label": "Bright indirect light, or morning sun outdoors",
+      "note": "Takes medium light indoors and morning sun outdoors",
+      "ideal": [
+        2
+      ],
+      "tolerates": [
+        1,
+        3
+      ]
+    },
+    "landscape_use": {
+      "items": [
+        "Mass planting and borders",
+        "Shaded tropical beds",
+        "Poolside and patio planters"
+      ],
+      "note": "Frost-free zones"
+    },
+    "home_use": {
+      "items": [
+        "Floor plant",
+        "Living room statement plant"
+      ]
+    }
+  },
+  "snap": "A compact, self-heading Philodendron with deeply lobed, glossy leaves that spread into a low mound. It holds its shape without a pole, takes more light than most Philodendrons, and is toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "Native to Brazil, and moved out of Philodendron into the genus Thaumatophyllum in 2018 — the trade still sells it under the old name. It is self-heading rather than climbing, settling into a mound around three feet across and about as tall."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Water when the top inch of soil has dried. Thick stems hold enough in reserve to forgive a missed week, but it sulks in soggy soil, so drainage matters more than frequency. Outdoors keep it out of harsh afternoon sun, which bleaches the leaves."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "Most Philodendrons climb and want a moss pole. This one keeps its own shape, which is what makes it work as a floor plant indoors and as mass planting outdoors with no support at all. The deeply cut leaves read almost fern-like from across a room."
+    },
+    {
+      "icon": "landscape",
+      "title": "Indoors Or Out",
+      "body": "Happy in a pot by a bright window and equally happy in the ground in a frost-free garden, where it takes morning sun and spreads into low, weed-smothering cover. Few houseplants do both this well."
+    },
+    {
+      "icon": "paw",
+      "title": "Pet Safety",
+      "body": "Toxic to cats and dogs if chewed or swallowed; the calcium oxalate crystals irritate the mouth and stomach. Its low, spreading habit puts the leaves right at pet height, so place it with that in mind."
+    }
+  ]
+}
