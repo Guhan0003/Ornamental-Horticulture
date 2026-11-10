@@ -1,41 +1,72 @@
-"""Place the StomatalWorld logo on the pot, as if printed on it."""
+"""
+Print the StomatalWorld mark onto the pot in a plant photo.
+
+    python scripts/brand_pot.py PHOTO --pot LEFT TOP RIGHT BOTTOM [--out FILE]
+
+The pot box is the flat front face of the pot, in pixels, measured off the
+photo — not the whole pot, since leaves usually overhang the top of it.
+
+Size is chosen against what a phone actually renders rather than what looks
+right at full resolution: the hero photo is about 375px wide on a phone, so a
+pot 480px wide in a 1600px image is only ~110px on the screen someone is
+holding. The default width is a fraction of the pot for that reason.
+"""
+
+import argparse
+from pathlib import Path
+
 from PIL import Image
 
-PHOTO = "seed/parlour-palm-chamaedorea.jpg"
-OUT = "/private/tmp/claude-501/-Users-gowsi-Guhan-Projects-Ornamental-Horticulture/a2c68195-74bf-4657-a617-02660ae1ad61/scratchpad"
+BRAND = Path(__file__).resolve().parent.parent.parent / "brand" / "png"
+LOGOS = {
+    "lockup": BRAND / "logo-lockup-forest-2048.png",
+    "mark": BRAND / "logo-mark-forest-2048.png",
+}
+# The lockup is wide, so it takes more of the pot than the mark does.
+DEFAULT_WIDTH = {"lockup": 0.68, "mark": 0.26}
 
-# The flat front face of the pot, measured off the crop.
-POT_LEFT, POT_RIGHT = 610, 980
-POT_TOP, POT_BOTTOM = 1200, 1480
-POT_W = POT_RIGHT - POT_LEFT
-CENTRE_X = (POT_LEFT + POT_RIGHT) // 2
 
+def brand(photo_path, pot, logo="lockup", width=None, opacity=0.88, out=None):
+    left, top, right, bottom = pot
+    pot_width = right - left
+    centre = ((left + right) // 2, (top + bottom) // 2)
 
-def place(logo_path, width_fraction, centre_y, opacity, out_name):
-    photo = Image.open(PHOTO).convert("RGBA")
-    logo = Image.open(logo_path).convert("RGBA")
+    photo = Image.open(photo_path).convert("RGBA")
+    art = Image.open(LOGOS[logo]).convert("RGBA")
 
-    w = int(POT_W * width_fraction)
-    h = max(1, round(logo.height * w / logo.width))
-    logo = logo.resize((w, h), Image.LANCZOS)
+    w = int(pot_width * (width or DEFAULT_WIDTH[logo]))
+    h = max(1, round(art.height * w / art.width))
+    art = art.resize((w, h), Image.LANCZOS)
 
-    # Slightly transparent so it reads as printed on the pot rather than
+    # Slightly transparent, so it reads as printed on the pot rather than
     # pasted over the photograph.
-    alpha = logo.getchannel("A").point(lambda v: int(v * opacity))
-    logo.putalpha(alpha)
+    art.putalpha(art.getchannel("A").point(lambda v: int(v * opacity)))
 
     layer = Image.new("RGBA", photo.size, (0, 0, 0, 0))
-    layer.paste(logo, (CENTRE_X - w // 2, centre_y - h // 2), logo)
+    layer.paste(art, (centre[0] - w // 2, centre[1] - h // 2), art)
 
-    out = Image.alpha_composite(photo, layer).convert("RGB")
-    path = f"{OUT}/{out_name}"
-    out.save(path, quality=95)
-    print(f"{out_name}: logo {w}x{h}px at centre ({CENTRE_X}, {centre_y})")
-    return path
+    result = Image.alpha_composite(photo, layer).convert("RGB")
+    out = out or photo_path
+    result.save(out, quality=95)
+    print(f"{logo} {w}x{h}px centred at {centre} -> {out}")
+    return out
 
 
-# A — the full lockup: leaf plus wordmark, across the pot face.
-place("../brand/png/logo-lockup-forest-2048.png", 0.68, 1330, 0.88, "pot-a-lockup.jpg")
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("photo")
+    parser.add_argument(
+        "--pot", nargs=4, type=int, required=True, metavar=("LEFT", "TOP", "RIGHT", "BOTTOM")
+    )
+    parser.add_argument("--logo", choices=sorted(LOGOS), default="lockup")
+    parser.add_argument("--width", type=float, help="fraction of the pot's width")
+    parser.add_argument("--opacity", type=float, default=0.88)
+    parser.add_argument("--out", help="defaults to overwriting the photo")
+    args = parser.parse_args()
 
-# B — the leaf mark alone, larger, the way a pot usually carries a symbol.
-place("../brand/png/logo-mark-forest-2048.png", 0.26, 1320, 0.85, "pot-b-mark.jpg")
+    brand(args.photo, args.pot, args.logo, args.width, args.opacity, args.out)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
