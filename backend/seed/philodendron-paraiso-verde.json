@@ -1,0 +1,50 @@
+{
+  "slug": "philodendron-paraiso-verde",
+  "common_name": "Philodendron Paraiso Verde",
+  "scientific_name": "Philodendron 'Paraiso Verde'",
+  "price_minor": 49900,
+  "availability": "in_stock",
+  "image": {
+    "file": "philodendron-paraiso-verde.jpg",
+    "alt": "A Philodendron Paraiso Verde in a white pot, its long wavy leaves marbled in cream and pale green over deep green"
+  },
+  "profile": {
+    "environment": "Indoor",
+    "light": {
+      "label": "Bright indirect light",
+      "note": "Tolerates medium light, with slower growth and less marbling",
+      "ideal": [2],
+      "tolerates": [1]
+    },
+    "landscape_use": {
+      "items": ["Sheltered shaded patios"],
+      "note": "Frost-free zones, out of direct sun"
+    },
+    "home_use": {
+      "items": ["Table top statement plant", "Floor plant"]
+    }
+  },
+  "snap": "A climbing Philodendron with long, slightly wavy leaves marbled in cream and pale green over deep green, no two alike. It wants bright filtered light and steadier humidity than most, and is toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "A cultivated plant whose parentage is still unsettled, usually placed near Philodendron giganteum. It climbs, and the leaves lengthen considerably once it has a pole to hold — a specimen left trailing never shows what it can do."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Water when the top inch of the mix has dried, in a loose aroid mix. Humidity matters more here than with most Philodendrons: dry air, and hard or chlorinated water, are the usual reasons new leaves come out with brown tips."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "The marbling is painted rather than blocked — cream and pale green running in streaks through deep green, so every leaf is different and new ones open almost white before they harden and green up."
+    },
+    {
+      "icon": "paw",
+      "title": "Pet Safety",
+      "body": "Toxic to cats and dogs if chewed or swallowed; the calcium oxalate crystals irritate the mouth and stomach. Keep it out of reach of pets and small children."
+    }
+  ]
+}
