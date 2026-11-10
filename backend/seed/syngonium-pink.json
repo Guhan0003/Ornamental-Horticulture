@@ -1,0 +1,46 @@
+{
+  "slug": "syngonium-pink",
+  "common_name": "Syngonium Pink",
+  "scientific_name": "Syngonium podophyllum 'Neon Robusta'",
+  "price_minor": 29900,
+  "price_note": "with white decor pot",
+  "availability": "in_stock",
+  "image": {
+    "file": "syngonium-pink.jpg",
+    "alt": "A pink Syngonium in a white pot, its broad arrowhead leaves a soft dusty pink on pale green stems"
+  },
+  "profile": {
+    "environment": "Indoor & outdoor",
+    "light": {
+      "label": "Bright indirect light",
+      "note": "Tolerates medium light, but new leaves come back greener",
+      "ideal": [2],
+      "tolerates": [1]
+    },
+    "landscape_use": {
+      "items": ["Shaded tropical borders", "Shaded patios and balconies"],
+      "note": "Frost-free zones only; keep out of direct sun"
+    },
+    "home_use": {
+      "items": ["Table top accent", "Hanging baskets", "Shelves and plant stands"]
+    }
+  },
+  "snap": "A compact arrowhead vine with soft, dusty-pink leaves on pale green stems. New leaves open the pinkest and settle towards green as they age, so the colour always sits in the growing tips. It is fast, forgiving, and toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "The species grows wild in the forests of Central and South America, from Mexico down to Bolivia, scrambling over the ground and climbing trees. This is a pink-leaved cultivar of it, usually sold as Neon Robusta. It starts as a compact mound of arrowhead leaves and only vines later, when the leaves also begin to divide into lobes."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Water when the top inch of the mix has dried, and keep it out of direct sun, which bleaches and scorches the pink. Bright indirect light is what holds the colour; in a dim corner the new leaves simply come back greener. Never let the pot stand in water — the roots rot quickly in a mix kept wet."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "The pink is not permanent on any one leaf. Each opens strongly coloured and softens towards green over the following weeks, so the plant renews its colour from the top rather than holding it. That makes pinching the point: nip the growing tips and it answers with more new growth, which means more pink, instead of running out into a bare vine. The tips you remove root in water in a fortnight."
+    }
+  ]
+}
