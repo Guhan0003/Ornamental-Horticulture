@@ -1,0 +1,50 @@
+{
+  "slug": "zz-plant-black",
+  "common_name": "Black ZZ Plant",
+  "scientific_name": "Zamioculcas zamiifolia 'Raven'",
+  "price_minor": 52900,
+  "availability": "in_stock",
+  "image": {
+    "file": "zz-plant-black.jpg",
+    "alt": "A black ZZ plant in a white pot, its arching stems lined with paired glossy leaflets in near-black green"
+  },
+  "profile": {
+    "environment": "Indoor",
+    "light": {
+      "label": "Bright indirect light",
+      "note": "Survives low light, but the leaves stay green instead of blackening",
+      "ideal": [2],
+      "tolerates": [0, 1]
+    },
+    "landscape_use": {
+      "items": ["Shaded patio containers"],
+      "note": "Frost-free zones, out of direct sun"
+    },
+    "home_use": {
+      "items": ["Floor plant", "Desk plant", "Living room statement plant"]
+    }
+  },
+  "snap": "The dark form of the ZZ plant, its paired glossy leaflets opening bright lime green and hardening to a near-black purple. It stores water in underground rhizomes and shrugs off neglect that would kill most houseplants, and every part of it is toxic if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "A dark-leaved selection of Zamioculcas zamiifolia, the East African species behind the ordinary green ZZ. It was raised in South Korea and reached the trade as 'Raven' in 2018. The habit is unchanged: fat water-storing rhizomes below the soil, arching stems to about two feet, and growth that arrives in occasional flushes rather than steadily."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Let the mix dry out completely, then water it thoroughly. The rhizomes are a reservoir, and a mix kept damp rots them — this is very nearly the only way to kill a ZZ. In a dim corner it may want water just once a month, so judge by the soil rather than the calendar."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "New growth opens bright lime green and darkens over several weeks to near-black, so a plant in growth carries both colours at once. A pale green stem is not a reversion or a mislabelled plant — it is simply new, and the colour arrives on its own. Brighter indirect light makes it go darker; a dim corner keeps it green."
+    },
+    {
+      "icon": "paw",
+      "title": "Pet Safety",
+      "body": "Toxic to cats and dogs if chewed or swallowed; the calcium oxalate crystals irritate the mouth and stomach. The sap can also irritate skin, so wash your hands after cutting stems or dividing it."
+    }
+  ]
+}
