@@ -1,0 +1,46 @@
+{
+  "slug": "syngonium-red-plum-allusion",
+  "common_name": "Syngonium Red Plum Allusion",
+  "scientific_name": "Syngonium podophyllum 'Plum Allusion'",
+  "price_minor": 29900,
+  "price_note": "with white decor pot",
+  "availability": "in_stock",
+  "image": {
+    "file": "syngonium-red-plum-allusion.jpg",
+    "alt": "A Syngonium Red Plum Allusion in a white embossed pot, its arrowhead leaves olive green flushed with plum and veined in red"
+  },
+  "profile": {
+    "environment": "Indoor & outdoor",
+    "light": {
+      "label": "Bright indirect light",
+      "note": "Tolerates medium light, but the plum fades back towards olive",
+      "ideal": [2],
+      "tolerates": [1]
+    },
+    "landscape_use": {
+      "items": ["Shaded tropical borders", "Shaded patios and balconies"],
+      "note": "Frost-free zones only; keep out of direct sun"
+    },
+    "home_use": {
+      "items": ["Desk plant", "Table top accent", "Shelves and plant stands"]
+    }
+  },
+  "snap": "A compact arrowhead Syngonium whose olive-green leaves are flushed plum and veined in red. Unlike its relatives it does not run — it branches from the base and holds a low mound, which makes it the one to put on a desk. Toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "The species grows wild in the forests of Central and South America, where it scrambles and climbs. This one belongs to the Allusion group, a set of cultivars selected for the opposite habit: compact, self-branching plants that stay put. It is sold as Plum Allusion and as Red Plum Allusion — the same plant either way."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Water when the top inch of the mix has dried, and never leave the pot standing in water. Light is what decides how it looks: bright indirect brings up the plum flush and the red veining, while a dim corner returns flat olive leaves with the colour drained out. Direct sun scorches it."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "It does not vine. An ordinary Syngonium runs once it settles in, and keeping it tidy means pinching it back or giving it a pole; this one branches from the base instead and stays a dense low mound at roughly a foot across. That is the reason to choose it over the others on a desk or a narrow shelf, where a trailing plant becomes a nuisance. The colour is the second reason: plum laid over olive, with every vein picked out in red."
+    }
+  ]
+}
