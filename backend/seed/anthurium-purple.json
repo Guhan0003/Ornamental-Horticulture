@@ -1,0 +1,59 @@
+{
+  "slug": "anthurium-purple",
+  "common_name": "Anthurium Purple",
+  "scientific_name": "Anthurium andraeanum",
+  "price_minor": 49900,
+  "price_note": "with white decor pot",
+  "availability": "in_stock",
+  "image": {
+    "file": "anthurium-purple.jpg",
+    "alt": "An Anthurium Purple in a white pot, its glossy deep purple heart-shaped bracts and purple spikes above dark green leaves"
+  },
+  "profile": {
+    "environment": "Indoor & outdoor",
+    "light": {
+      "label": "Bright indirect light",
+      "note": "Tolerates medium light, but it flowers much less",
+      "ideal": [
+        2
+      ],
+      "tolerates": [
+        1
+      ]
+    },
+    "landscape_use": {
+      "items": [
+        "Shaded tropical borders",
+        "Under tree canopy",
+        "Shaded patios and verandas"
+      ],
+      "note": "Frost-free, humid zones only; shade it from hot sun"
+    },
+    "home_use": {
+      "items": [
+        "Bright living room",
+        "Table centrepiece",
+        "Bathroom with a bright window"
+      ],
+      "note": "Flowers best in bright indirect light; keep away from cold drafts"
+    }
+  },
+  "snap": "A flowering Anthurium with glossy, deep purple heart-shaped bracts and a matching purple spike. The bract is a waxy bloom that stays showy for weeks, and the plant flowers again and again with bright, filtered light. Toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "Native to the wet rainforests of Colombia and Ecuador, where it grows on tree trunks and on the shaded forest floor. That is why it wants warmth, humidity and a loose, airy mix. A compact, evergreen plant that usually stays 30–60 cm tall indoors."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Give it bright indirect light, warmth and humid air, and let the top 2–3 cm of the mix dry before you water. Use a chunky, orchid-style mix so the roots can breathe, and never leave the pot standing in water. Keep it above 15°C and away from cold drafts. Without enough light it grows leaves but won't flower. Brown leaf tips mean dry air or built-up salts; rainwater or filtered water helps."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "The bract is a deep, saturated purple with a polished, almost lacquered sheen, and the spike in the middle matches it, so the whole bloom reads as one colour. The bract is really a modified leaf, and the small spike (the spadix) carries the true flowers. The colour is richest in bright indirect light, and the gloss shows dust and water marks, so wipe the bracts with a soft dry cloth. With good light and warmth it blooms through the year."
+    }
+  ]
+}
