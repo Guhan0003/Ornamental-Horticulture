@@ -110,6 +110,29 @@ export function buyAction(plant, pageUrl, pincode) {
   return { label, href: `https://wa.me/${digits(contact.whatsapp)}?text=${encodeURIComponent(text)}` }
 }
 
+/* ---------------- asking for a real photo ---------------- */
+
+/**
+ * The WhatsApp link behind "Ask for a real photo". With a plant it names that
+ * plant and the page, so the shop knows exactly which one to photograph; with
+ * none (the footer, the contact popup) it is a general ask.
+ *
+ * Null when no WhatsApp number is set, so the caller shows no dead button.
+ */
+export function realPhotoAction(plant, pageUrl) {
+  if (!contact.whatsapp) return null
+
+  const message = plant
+    ? `Hi! Could you send me a real photo of the ${plant.common_name} you have in stock right now?`
+    : 'Hi! I’d like to see a real photo of a plant before I order. Could you help?'
+
+  const text = plant && pageUrl ? `${message} ${pageUrl}` : message
+  return {
+    label: 'Ask for a real photo',
+    href: `https://wa.me/${digits(contact.whatsapp)}?text=${encodeURIComponent(text)}`,
+  }
+}
+
 /* ---------------- the home page list ---------------- */
 
 // "type" is first and is the default: most of the catalogue is Philodendron

@@ -206,6 +206,126 @@ body.is-plant {
   }
 }
 
+/* ---------- reference-image label, and the note it opens ---------- */
+
+.pl-note {
+  position: absolute;
+  z-index: 3;
+  /* Directly under the brand pill, in the same corner. */
+  top: calc(3.45rem + env(safe-area-inset-top));
+  left: 1rem;
+  animation: pl-fade 0.8s 0.45s var(--pl-ease) both;
+}
+
+.pl-note__chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.75rem 0.4rem 0.55rem;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 253, 248, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--pl-forest);
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* The pill is small; the tap area is not. */
+.pl-note__chip::after {
+  content: '';
+  position: absolute;
+  inset: -0.5rem -0.4rem;
+}
+
+.pl-note__chip:focus-visible,
+.pl-note__ask:focus-visible {
+  outline: 2px solid var(--pl-leaf);
+  outline-offset: 2px;
+}
+
+.pl-note__icon {
+  width: 0.95rem;
+  height: 0.95rem;
+  flex: none;
+}
+
+.pl-note__card {
+  position: absolute;
+  top: calc(100% + 0.55rem);
+  left: 0;
+  width: min(19.5rem, calc(100vw - 2rem));
+  padding: 1rem 1.05rem 1.05rem;
+  border-radius: 1.1rem;
+  background: var(--pl-paper);
+  color: var(--pl-forest);
+  box-shadow:
+    0 0.15rem 0.4rem rgba(12, 31, 20, 0.08),
+    0 1.2rem 2.4rem -0.6rem rgba(12, 31, 20, 0.35);
+  animation: pl-note-in 0.22s var(--pl-ease) both;
+}
+
+.pl-note__title {
+  margin: 0 0 0.4rem;
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  font-size: 1.05rem;
+  line-height: 1.25;
+}
+
+.pl-note__body {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--pl-muted);
+}
+
+.pl-note__ask {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.9rem;
+  margin-top: 0.9rem;
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  background: #1f9b55;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pl-note__ask-icon {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+@keyframes pl-note-in {
+  from {
+    opacity: 0;
+    transform: translateY(-0.4rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pl-note,
+  .pl-note__card {
+    animation: none;
+  }
+}
+
 .pl-count {
   position: absolute;
   z-index: 2;
@@ -1015,6 +1135,22 @@ body.is-plant {
 
 /* ---------- footer ---------- */
 
+.pl-footer__photos {
+  max-width: 24rem;
+  margin: 0.9rem 0 0;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  text-align: center;
+  color: var(--pl-muted);
+}
+
+.pl-footer__photos a {
+  color: var(--pl-leaf);
+  text-underline-offset: 0.18em;
+}
+
 .pl-footer {
   display: flex;
   flex-direction: column;
@@ -1274,6 +1410,11 @@ body.is-plant {
 
   .pl-hero__brand {
     top: 1.5rem;
+    left: 1.5rem;
+  }
+
+  .pl-note {
+    top: 3.95rem;
     left: 1.5rem;
   }
 

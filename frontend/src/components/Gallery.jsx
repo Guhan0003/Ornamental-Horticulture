@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import Leaf from './Leaf.jsx'
+import PhotoNote from './PhotoNote.jsx'
 import { imageSrc } from '../lib/api.js'
 
 const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -28,8 +29,9 @@ const FLICK = 0.4
  * appears in does not drop. Until a photo arrives its blurred preview fills the slide.
  *
  * `photos` is the cover followed by the gallery, each { url, alt, placeholder, background }.
+ * `realPhoto` is the WhatsApp link for asking to see the real plant, or null.
  */
-export default function Gallery({ photos, name }) {
+export default function Gallery({ photos, name, realPhoto = null }) {
   const heroRef = useRef(null)
   const trackRef = useRef(null)
   const [active, setActive] = useState(0)
@@ -230,6 +232,9 @@ export default function Gallery({ photos, name }) {
         <Leaf className="pl-hero__leaf" />
         StomatalWorld
       </div>
+
+      {/* Every photo says it is a reference image, and offers a real one. */}
+      <PhotoNote action={realPhoto} />
 
       {several && (
         <>

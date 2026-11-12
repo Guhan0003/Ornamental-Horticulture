@@ -1,7 +1,9 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import Leaf from './Leaf.jsx'
+import PhotoLine from './PhotoLine.jsx'
 import { contact } from '../data/contact.js'
+import { realPhotoAction } from '../lib/commerce.js'
 import '../styles/contact.css'
 
 const digits = (value) => value.replace(/[^\d]/g, '')
@@ -147,6 +149,8 @@ export default function ContactButton() {
               {contact.highlight && <p className="contact-card__highlight">{contact.highlight}</p>}
             </div>
           )}
+
+          <PhotoLine className="contact-card__photos" action={realPhotoAction(null)} />
 
           <ul className="contact-card__list">
             {items.map((item, index) => (
