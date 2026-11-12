@@ -24,6 +24,10 @@ test('the three genera sold as Calathea share one shelf', () => {
   assert.equal(groupOf(plant('Beauty Star', 'Goeppertia ornata')), 'Calathea')
 })
 
+test('Aglaonemas have a shelf of their own', () => {
+  assert.equal(groupOf(plant('Aglaonema Pink Star', "Aglaonema 'Pink Star'")), 'Aglaonema')
+})
+
 test('a genus we do not name, or no name at all, has no shelf', () => {
   assert.equal(groupOf(plant('Something New', 'Begonia maculata')), null)
   assert.equal(groupOf(plant('Unlabelled', '')), null)
