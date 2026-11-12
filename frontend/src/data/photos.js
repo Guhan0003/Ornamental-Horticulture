@@ -13,7 +13,7 @@ export const photoNotice = {
   // The note the label opens.
   title: 'This is a reference image',
   body:
-    'Photos on this site are for reference. Some are AI-generated or stock images, so the plant you receive may look a little different. Want to see the real one? We’ll send you a photo of the plant we have in stock.',
+    'Photos on this site are for reference. Some are AI-generated or stock images. Want to see the real one? We’ll send you a photo of the plant we have in stock.',
   button: 'Ask for a real photo',
 
   // One line for the footers and the contact popup.
