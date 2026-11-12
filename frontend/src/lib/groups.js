@@ -39,19 +39,25 @@ export const OTHERS = 'More plants'
 const MIN_MEMBERS = 2
 
 /**
- * Shelves that belong next to another one whatever their size. Biggest-first
- * would put the Aglaonemas fourth, behind Syngonium and Pothos, but they are
- * sold as a step on from the Philodendrons and are looked at together. The
- * Anthuriums follow them, then the ZZ Plants, then the Pothos: the same family of
- * easy aroids, kept ahead of the bigger Syngonium shelf.
- * Pins are applied in this order, so a shelf can be pinned to one pinned above it.
+ * The order the shelves appear in, top to bottom. This is the shop's choice, not
+ * a size ranking: Philodendron leads because it is the bulk of the range, and
+ * the rest follow the way the shop wants them walked.
+ *
+ * A shelf that is not listed (a genus added later) goes after these, biggest
+ * first, and a listed shelf with too few plants simply isn't drawn. More plants
+ * is always last.
  */
-const NEXT_TO = {
-  Aglaonema: 'Philodendron',
-  Anthurium: 'Aglaonema',
-  'ZZ Plant': 'Anthurium',
-  Pothos: 'ZZ Plant',
-}
+export const SHELF_ORDER = [
+  'Philodendron',
+  'Aglaonema',
+  'Anthurium',
+  'ZZ Plant',
+  'Syngonium',
+  'Monstera',
+  'Ficus & Rubber Plants',
+  'Pothos',
+  'Calathea',
+]
 
 const genusOf = (plant) => (plant.scientific_name || '').trim().split(/\s+/)[0] || ''
 
@@ -59,8 +65,8 @@ const genusOf = (plant) => (plant.scientific_name || '').trim().split(/\s+/)[0] 
 export const groupOf = (plant) => NAMES[genusOf(plant)] ?? null
 
 /**
- * The plants in sections, biggest shelf first, with everything too small to be
- * a shelf of its own gathered at the end.
+ * The plants in sections, in SHELF_ORDER, with everything too small to be a
+ * shelf of its own gathered at the end.
  *
  * Cards keep the order they arrive in, so whatever the caller sorted by still
  * holds inside each section.
@@ -87,27 +93,20 @@ export function groupPlants(plants) {
     }
   }
 
+  const rank = (name) => {
+    const at = SHELF_ORDER.indexOf(name)
+    return at === -1 ? SHELF_ORDER.length : at
+  }
+
   const sections = [...shelves]
     .map(([name, members]) => ({ name, plants: members }))
-    .sort((a, b) => b.plants.length - a.plants.length || a.name.localeCompare(b.name))
-
-  // Move each pinned shelf to sit directly under the one it belongs with. If
-  // that shelf isn't there (too few plants), fall back to the shelf it was
-  // itself pinned to, and so on up the chain; with none left it keeps its
-  // size order.
-  const has = (name) => sections.some((section) => section.name === name)
-  const anchorFor = (name) => {
-    let anchor = NEXT_TO[name]
-    while (anchor && !has(anchor)) anchor = NEXT_TO[anchor]
-    return anchor
-  }
-
-  for (const name of Object.keys(NEXT_TO)) {
-    const anchor = anchorFor(name)
-    if (!has(name) || !anchor) continue
-    const [moved] = sections.splice(sections.findIndex((section) => section.name === name), 1)
-    sections.splice(sections.findIndex((section) => section.name === anchor) + 1, 0, moved)
-  }
+    .sort(
+      (a, b) =>
+        rank(a.name) - rank(b.name) ||
+        // only unlisted shelves tie on rank: biggest first, then by name
+        b.plants.length - a.plants.length ||
+        a.name.localeCompare(b.name),
+    )
 
   if (others.length) sections.push({ name: OTHERS, plants: others })
   return sections
