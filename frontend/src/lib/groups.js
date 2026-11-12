@@ -38,6 +38,13 @@ export const OTHERS = 'More plants'
 /** A heading over a single plant is not a section, it is a stray card. */
 const MIN_MEMBERS = 2
 
+/**
+ * Shelves that belong next to another one whatever their size. Biggest-first
+ * would put the Aglaonemas fourth, behind Syngonium and Pothos, but they are
+ * sold as a step on from the Philodendrons and are looked at together.
+ */
+const NEXT_TO = { Aglaonema: 'Philodendron' }
+
 const genusOf = (plant) => (plant.scientific_name || '').trim().split(/\s+/)[0] || ''
 
 /** The shelf this plant belongs on, or null when its genus isn't one we name. */
@@ -75,6 +82,16 @@ export function groupPlants(plants) {
   const sections = [...shelves]
     .map(([name, members]) => ({ name, plants: members }))
     .sort((a, b) => b.plants.length - a.plants.length || a.name.localeCompare(b.name))
+
+  // Move each pinned shelf to sit directly under the one it belongs with. If
+  // that shelf isn't there (too few plants), the pinned one keeps its place.
+  for (const [name, anchor] of Object.entries(NEXT_TO)) {
+    const from = sections.findIndex((section) => section.name === name)
+    const at = sections.findIndex((section) => section.name === anchor)
+    if (from === -1 || at === -1) continue
+    const [moved] = sections.splice(from, 1)
+    sections.splice(sections.findIndex((section) => section.name === anchor) + 1, 0, moved)
+  }
 
   if (others.length) sections.push({ name: OTHERS, plants: others })
   return sections

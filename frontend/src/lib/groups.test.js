@@ -49,6 +49,28 @@ test('the biggest shelf comes first, and More plants is always last', () => {
   assert.deepEqual(names(sections), ['Pothos', 'Monstera', 'Syngonium', OTHERS])
 })
 
+test('Aglaonema sits directly under Philodendron, not where its size would put it', () => {
+  const many = (name, sci, n) => Array.from({ length: n }, (_, i) => plant(`${name} ${i}`, sci))
+  const sections = groupPlants([
+    ...many('Phil', 'Philodendron hederaceum', 5),
+    ...many('Syn', 'Syngonium podophyllum', 4),
+    ...many('Pothos', 'Epipremnum aureum', 3),
+    ...many('Agl', "Aglaonema 'Lipstick'", 2),
+  ])
+
+  assert.deepEqual(names(sections), ['Philodendron', 'Aglaonema', 'Syngonium', 'Pothos'])
+})
+
+test('with no Philodendron shelf, Aglaonema keeps its size order', () => {
+  const many = (name, sci, n) => Array.from({ length: n }, (_, i) => plant(`${name} ${i}`, sci))
+  const sections = groupPlants([
+    ...many('Syn', 'Syngonium podophyllum', 4),
+    ...many('Agl', "Aglaonema 'Lipstick'", 2),
+  ])
+
+  assert.deepEqual(names(sections), ['Syngonium', 'Aglaonema'])
+})
+
 test('a genus with one plant in stock is not a shelf, it joins the others', () => {
   const sections = groupPlants([
     plant('Neon Pothos', 'Epipremnum aureum'),
