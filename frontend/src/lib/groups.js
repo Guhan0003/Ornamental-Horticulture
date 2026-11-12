@@ -42,11 +42,16 @@ const MIN_MEMBERS = 2
  * Shelves that belong next to another one whatever their size. Biggest-first
  * would put the Aglaonemas fourth, behind Syngonium and Pothos, but they are
  * sold as a step on from the Philodendrons and are looked at together. The
- * Anthuriums follow them, and the ZZ Plants after those: the same family of
- * easy aroids, kept ahead of the bigger Syngonium and Pothos shelves.
+ * Anthuriums follow them, then the ZZ Plants, then the Pothos: the same family of
+ * easy aroids, kept ahead of the bigger Syngonium shelf.
  * Pins are applied in this order, so a shelf can be pinned to one pinned above it.
  */
-const NEXT_TO = { Aglaonema: 'Philodendron', Anthurium: 'Aglaonema', 'ZZ Plant': 'Anthurium' }
+const NEXT_TO = {
+  Aglaonema: 'Philodendron',
+  Anthurium: 'Aglaonema',
+  'ZZ Plant': 'Anthurium',
+  Pothos: 'ZZ Plant',
+}
 
 const genusOf = (plant) => (plant.scientific_name || '').trim().split(/\s+/)[0] || ''
 
@@ -87,12 +92,20 @@ export function groupPlants(plants) {
     .sort((a, b) => b.plants.length - a.plants.length || a.name.localeCompare(b.name))
 
   // Move each pinned shelf to sit directly under the one it belongs with. If
-  // that shelf isn't there (too few plants), the pinned one keeps its place.
-  for (const [name, anchor] of Object.entries(NEXT_TO)) {
-    const from = sections.findIndex((section) => section.name === name)
-    const at = sections.findIndex((section) => section.name === anchor)
-    if (from === -1 || at === -1) continue
-    const [moved] = sections.splice(from, 1)
+  // that shelf isn't there (too few plants), fall back to the shelf it was
+  // itself pinned to, and so on up the chain; with none left it keeps its
+  // size order.
+  const has = (name) => sections.some((section) => section.name === name)
+  const anchorFor = (name) => {
+    let anchor = NEXT_TO[name]
+    while (anchor && !has(anchor)) anchor = NEXT_TO[anchor]
+    return anchor
+  }
+
+  for (const name of Object.keys(NEXT_TO)) {
+    const anchor = anchorFor(name)
+    if (!has(name) || !anchor) continue
+    const [moved] = sections.splice(sections.findIndex((section) => section.name === name), 1)
     sections.splice(sections.findIndex((section) => section.name === anchor) + 1, 0, moved)
   }
 

@@ -58,10 +58,10 @@ test('Aglaonema sits directly under Philodendron, not where its size would put i
     ...many('Agl', "Aglaonema 'Lipstick'", 2),
   ])
 
-  assert.deepEqual(names(sections), ['Philodendron', 'Aglaonema', 'Syngonium', 'Pothos'])
+  assert.deepEqual(names(sections), ['Philodendron', 'Aglaonema', 'Pothos', 'Syngonium'])
 })
 
-test('Anthurium follows Aglaonema, ahead of the bigger Syngonium and Pothos shelves', () => {
+test('Anthurium follows Aglaonema, ahead of the bigger Syngonium shelf', () => {
   const many = (name, sci, n) => Array.from({ length: n }, (_, i) => plant(`${name} ${i}`, sci))
   const sections = groupPlants([
     ...many('Phil', 'Philodendron hederaceum', 6),
@@ -71,10 +71,10 @@ test('Anthurium follows Aglaonema, ahead of the bigger Syngonium and Pothos shel
     ...many('Agl', "Aglaonema 'Lipstick'", 2),
   ])
 
-  assert.deepEqual(names(sections), ['Philodendron', 'Aglaonema', 'Anthurium', 'Syngonium', 'Pothos'])
+  assert.deepEqual(names(sections), ['Philodendron', 'Aglaonema', 'Anthurium', 'Pothos', 'Syngonium'])
 })
 
-test('ZZ Plant follows Anthurium, so it also sits ahead of Syngonium and Pothos', () => {
+test('ZZ Plant follows Anthurium, so it also sits ahead of Syngonium', () => {
   const many = (name, sci, n) => Array.from({ length: n }, (_, i) => plant(`${name} ${i}`, sci))
   const sections = groupPlants([
     ...many('Phil', 'Philodendron hederaceum', 6),
@@ -90,9 +90,37 @@ test('ZZ Plant follows Anthurium, so it also sits ahead of Syngonium and Pothos'
     'Aglaonema',
     'Anthurium',
     'ZZ Plant',
-    'Syngonium',
     'Pothos',
+    'Syngonium',
   ])
+})
+
+test('Pothos follows ZZ Plant, so it sits above the bigger Syngonium shelf', () => {
+  const many = (name, sci, n) => Array.from({ length: n }, (_, i) => plant(`${name} ${i}`, sci))
+  const sections = groupPlants([
+    ...many('Phil', 'Philodendron hederaceum', 6),
+    ...many('Syn', 'Syngonium podophyllum', 5),
+    ...many('Pothos', 'Epipremnum aureum', 4),
+    ...many('ZZ', 'Zamioculcas zamiifolia', 2),
+    ...many('Monstera', 'Monstera deliciosa', 3),
+  ])
+
+  assert.deepEqual(names(sections), ['Philodendron', 'ZZ Plant', 'Pothos', 'Syngonium', 'Monstera'])
+})
+
+test('a pin whose anchor is missing falls back up the chain', () => {
+  const many = (name, sci, n) => Array.from({ length: n }, (_, i) => plant(`${name} ${i}`, sci))
+  // No Aglaonema or Anthurium shelf: ZZ Plant slots under Philodendron instead,
+  // and Pothos still follows ZZ Plant.
+  const sections = groupPlants([
+    ...many('Phil', 'Philodendron hederaceum', 6),
+    ...many('Syn', 'Syngonium podophyllum', 5),
+    ...many('Monstera', 'Monstera deliciosa', 4),
+    ...many('Pothos', 'Epipremnum aureum', 3),
+    ...many('ZZ', 'Zamioculcas zamiifolia', 2),
+  ])
+
+  assert.deepEqual(names(sections), ['Philodendron', 'ZZ Plant', 'Pothos', 'Syngonium', 'Monstera'])
 })
 
 test('with no Philodendron shelf, Aglaonema keeps its size order', () => {
