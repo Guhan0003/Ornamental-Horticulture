@@ -42,10 +42,11 @@ const MIN_MEMBERS = 2
  * Shelves that belong next to another one whatever their size. Biggest-first
  * would put the Aglaonemas fourth, behind Syngonium and Pothos, but they are
  * sold as a step on from the Philodendrons and are looked at together. The
- * Anthuriums follow them: the same family of flowering and showy aroids.
+ * Anthuriums follow them, and the ZZ Plants after those: the same family of
+ * easy aroids, kept ahead of the bigger Syngonium and Pothos shelves.
  * Pins are applied in this order, so a shelf can be pinned to one pinned above it.
  */
-const NEXT_TO = { Aglaonema: 'Philodendron', Anthurium: 'Aglaonema' }
+const NEXT_TO = { Aglaonema: 'Philodendron', Anthurium: 'Aglaonema', 'ZZ Plant': 'Anthurium' }
 
 const genusOf = (plant) => (plant.scientific_name || '').trim().split(/\s+/)[0] || ''
 
