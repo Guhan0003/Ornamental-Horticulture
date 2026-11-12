@@ -1,0 +1,46 @@
+{
+  "slug": "aglaonema-super-white",
+  "common_name": "Aglaonema Super White",
+  "scientific_name": "Aglaonema 'Super White'",
+  "price_minor": 49900,
+  "price_note": "with decor pot",
+  "availability": "in_stock",
+  "image": {
+    "file": "aglaonema-super-white.jpg",
+    "alt": "An Aglaonema Super White in a cream pot, its long pointed leaves almost entirely creamy white, edged and flecked in green"
+  },
+  "profile": {
+    "environment": "Indoor",
+    "light": {
+      "label": "Medium to bright indirect light",
+      "note": "Tolerates low light, but needs more than the green forms to stay this pale",
+      "ideal": [1, 2],
+      "tolerates": [0]
+    },
+    "landscape_use": {
+      "items": ["Shaded patio containers"],
+      "note": "Frost-free zones only; keep out of direct sun"
+    },
+    "home_use": {
+      "items": ["Desk plant", "Table top accent", "Shaded corner"]
+    }
+  },
+  "snap": "A compact Aglaonema whose long, pointed leaves are almost entirely creamy white, edged and flecked in green. It is the palest of the group and the most light-hungry, but it still keeps its colour well away from a window. Toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "Aglaonemas come from the shaded forest floors of tropical Asia, from India through Southeast Asia to southern China. Super White is a cultivated selection bred for the white in its leaves. It is clumping rather than climbing: new stems rise from the base and the plant slowly thickens into a bushy mound, staying close to a foot or two tall."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Water when the top two inches of the mix have dried, in a loose, well-draining mix. Keep it warm: below roughly 15°C the leaves curl and brown, and a draught from an air-conditioner or an open window in winter does it in a night. Direct sun is the other thing to avoid — the white has little chlorophyll to protect it, so it scorches faster than any green Aglaonema."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "With so little green in each leaf, it makes less food than its darker relatives and grows slowly — which suits a desk, since it stays the size you bought for a long time. The trade-off is that it wants more light than they do. In a dim corner the new leaves come in greener and the white slips away, which is the plant adjusting rather than anything you have done wrong; moving it brighter brings the pale leaves back."
+    }
+  ]
+}
