@@ -1,0 +1,46 @@
+{
+  "slug": "aglaonema-snow-white",
+  "common_name": "Aglaonema Snow White",
+  "scientific_name": "Aglaonema 'Snow White'",
+  "price_minor": 49900,
+  "price_note": "with decor pot",
+  "availability": "in_stock",
+  "image": {
+    "file": "aglaonema-snow-white.jpg",
+    "alt": "An Aglaonema Snow White in a cream pot, its pointed green leaves heavily speckled in cream and pale green, on pale stems"
+  },
+  "profile": {
+    "environment": "Indoor",
+    "light": {
+      "label": "Medium to bright indirect light",
+      "note": "Tolerates low light, but the speckling thins out and the leaves go greener",
+      "ideal": [1, 2],
+      "tolerates": [0]
+    },
+    "landscape_use": {
+      "items": ["Shaded patio containers"],
+      "note": "Frost-free zones only; keep out of direct sun"
+    },
+    "home_use": {
+      "items": ["Desk plant", "Table top accent", "Shaded corner"]
+    }
+  },
+  "snap": "A bushy Aglaonema whose pointed green leaves are densely speckled in cream and pale green, on pale stems. It is paler and brighter than the plain forms but far greener, and so far tougher, than Super White. Toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "Aglaonemas come from the shaded forest floors of tropical Asia, from India through Southeast Asia to southern China, which is why they cope with dim rooms. Snow White is a cultivated hybrid, selected for the speckled leaf. It is clumping rather than climbing: new stems rise from the base and the plant thickens into a full, bushy mound rather than getting tall."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Water when the top two inches of the mix have dried, in a loose, well-draining mix. Keep it warm: below roughly 15°C the leaves curl and brown, and a draught from an air-conditioner or an open window in winter does it in a night. Direct sun scorches the pale speckles, so give it bright light that is filtered, not hot."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "It sits between the plain-green Aglaonemas and Super White. The speckling is heavy enough to brighten a room, but each leaf keeps plenty of green, so it makes enough food to grow steadily and takes dim light much better than Super White does. In low light the speckling thins and the leaves go greener — the plant adjusting, not failing — and moving it brighter brings the pattern back on new leaves."
+    }
+  ]
+}
