@@ -1,0 +1,46 @@
+{
+  "slug": "aglaonema-pink-star",
+  "common_name": "Aglaonema Pink Star",
+  "scientific_name": "Aglaonema 'Pink Star'",
+  "price_minor": 49900,
+  "price_note": "with decor pot",
+  "availability": "in_stock",
+  "image": {
+    "file": "aglaonema-pink-star.jpg",
+    "alt": "An Aglaonema Pink Star in a cream pot, its long pointed leaves bright pink and cream, speckled and edged in dark green"
+  },
+  "profile": {
+    "environment": "Indoor",
+    "light": {
+      "label": "Medium to bright indirect light",
+      "note": "Tolerates low light, but the pink fades and growth slows",
+      "ideal": [1, 2],
+      "tolerates": [0]
+    },
+    "landscape_use": {
+      "items": ["Shaded patio containers"],
+      "note": "Frost-free zones only; keep out of direct sun"
+    },
+    "home_use": {
+      "items": ["Desk plant", "Table top accent", "Low-light corner"]
+    }
+  },
+  "snap": "A compact Aglaonema with long, pointed leaves that are bright pink and cream, speckled and edged in dark green. It grows slowly into a neat clump and keeps its colour in ordinary room light, with no pole and no fuss. Toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "Aglaonemas come from the shaded forest floors of tropical Asia, from India through Southeast Asia to southern China, which is why they cope with dim rooms. Pink Star is a cultivated hybrid, selected for its colour rather than its size. It is clumping rather than climbing: new stems rise from the base and the plant slowly thickens into a bushy mound about a foot or two tall."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Water when the top two inches of the mix have dried, and use a loose, well-draining mix. Of everything that goes wrong with an Aglaonema, cold does the most damage: below roughly 15°C the leaves curl and brown, and a draught from an air-conditioner or an open window in winter will do it in a night. Keep it warm and out of the way of vents."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "It is one of the few pink plants that holds its colour away from a window. The pink sits in the leaf itself rather than being a flush that needs strong sun, so it stays vivid in ordinary room light, and fades only gradually in a dim corner. Growth is slow, which suits a desk: it stays the size you bought for a long time."
+    }
+  ]
+}
