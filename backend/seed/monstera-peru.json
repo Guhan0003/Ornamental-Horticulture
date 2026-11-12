@@ -1,0 +1,46 @@
+{
+  "slug": "monstera-peru",
+  "common_name": "Monstera Peru",
+  "scientific_name": "Monstera karstenianum",
+  "price_minor": 89900,
+  "price_note": "with white decor pot",
+  "availability": "in_stock",
+  "image": {
+    "file": "monstera-peru.jpg",
+    "alt": "A Monstera Peru in a white pot, its thick, deeply quilted dark green leaves on trailing stems"
+  },
+  "profile": {
+    "environment": "Indoor",
+    "light": {
+      "label": "Bright indirect light",
+      "note": "Tolerates medium light, but growth slows and the leaves lose their texture",
+      "ideal": [2],
+      "tolerates": [1]
+    },
+    "landscape_use": {
+      "items": ["Shaded tropical borders", "Under tree canopy"],
+      "note": "Frost-free, humid zones only; keep out of direct sun"
+    },
+    "home_use": {
+      "items": ["Hanging baskets", "Moss pole climber", "Shelves and plant stands"]
+    }
+  },
+  "snap": "A Monstera grown for its leaves rather than its holes: thick, deeply quilted and glossy, with a surface that looks hammered. It trails or climbs, stays compact, and is one of the more forgiving Monsteras. Toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "Monstera karstenianum grows wild in the rainforests of northern South America, including Peru, which is where the trade name comes from. It is a different species from the split-leaved Monstera deliciosa, and the leaves never split or develop holes. It climbs trees with aerial roots, or trails when it has nothing to climb, and it holds a smaller, tighter scale than most Monsteras."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Water when the top two inches of the mix have dried, in a chunky, well-draining aroid mix, and never leave the pot standing in water. The thick, leathery leaves cope with dry room air better than most tropical foliage. What spoils them is low light and wet roots together: the quilting flattens out and the plant stalls."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "The leaf is the point. It is thick and rubbery with a deeply puckered, hammered surface that catches the light, and it keeps that texture whether the plant trails or climbs. A moss pole to climb makes the leaves larger and more heavily quilted; left to trail, it stays smaller and fills a basket instead. Wipe the leaves with a soft damp cloth to keep the shine, since dust settles in the quilting."
+    }
+  ]
+}
