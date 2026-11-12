@@ -24,6 +24,7 @@ const NAMES = {
   Calathea: 'Calathea',
   Ctenanthe: 'Calathea',
   Goeppertia: 'Calathea',
+  Aglaonema: 'Aglaonema',
   Anthurium: 'Anthurium',
   Spathiphyllum: 'Peace Lily',
   Chamaedorea: 'Palms',
