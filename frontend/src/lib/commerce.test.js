@@ -5,6 +5,7 @@ import {
   buyAction,
   discountPercent,
   formatPrice,
+  realPhotoAction,
   sortPlants,
   toMinor,
   toRupees,
@@ -103,4 +104,22 @@ test('the button says the honest thing for a plant that cannot simply be ordered
   const ask = buyAction({ ...lily, availability: 'ask' }, '', '560001')
   assert.equal(ask.label, 'Check availability')
   assert.match(message(ask), /Is the Peace Lily \(₹399\) available\? Delivery pincode: 560001\./)
+})
+
+test('asking for a real photo opens WhatsApp naming the plant and the page', () => {
+  const action = realPhotoAction(lily, 'https://x.example/peace-lily')
+
+  assert.equal(action.label, 'Ask for a real photo')
+  assert.match(action.href, /^https:\/\/wa\.me\/\d+\?text=/)
+  assert.equal(
+    message(action),
+    'Hi! Could you send me a real photo of the Peace Lily you have in stock right now? https://x.example/peace-lily',
+  )
+})
+
+test('without a plant, the ask is general and carries no page', () => {
+  const action = realPhotoAction(null, 'https://x.example/ignored')
+
+  assert.match(message(action), /real photo of a plant before I order/)
+  assert.doesNotMatch(message(action), /x\.example/)
 })

@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import Catalogue from '../components/Catalogue.jsx'
 import Leaf from '../components/Leaf.jsx'
+import PhotoLine from '../components/PhotoLine.jsx'
 import PlantSearch from '../components/PlantSearch.jsx'
 import * as api from '../lib/api.js'
+import { realPhotoAction } from '../lib/commerce.js'
 
 export default function Home() {
   const [plants, setPlants] = useState(null)
@@ -43,7 +45,10 @@ export default function Home() {
 
       <Catalogue plants={plants} failed={failed} onRetry={() => setAttempt((n) => n + 1)} />
 
-      <footer className="footer">© {new Date().getFullYear()} StomatalWorld</footer>
+      <footer className="footer">
+        <PhotoLine className="footer__photos" action={realPhotoAction(null)} />
+        © {new Date().getFullYear()} StomatalWorld
+      </footer>
     </main>
   )
 }

@@ -5,6 +5,7 @@ import DeliveryCheck from './DeliveryCheck.jsx'
 import Gallery from './Gallery.jsx'
 import Icon from './Icon.jsx'
 import Leaf from './Leaf.jsx'
+import PhotoLine from './PhotoLine.jsx'
 import { imageSrc, prefetchPlant } from '../lib/api.js'
 import {
   availabilityLabel,
@@ -12,6 +13,7 @@ import {
   discountPercent,
   formatPrice,
   isSoldOut,
+  realPhotoAction,
 } from '../lib/commerce.js'
 import { savedPincode } from '../lib/delivery.js'
 import { LIGHT_SCALE } from '../lib/plantFormat.js'
@@ -44,7 +46,11 @@ export default function PlantView({ plant }) {
 
   return (
     <div className="pl" ref={rootRef} style={{ '--photo-bg': backdrop }}>
-      <Gallery photos={photos} name={plant.common_name} />
+      <Gallery
+        photos={photos}
+        name={plant.common_name}
+        realPhoto={realPhotoAction(plant, `${window.location.origin}/${plant.slug}`)}
+      />
 
       <main className="pl-sheet">
         <header className="pl-identity">
@@ -141,6 +147,10 @@ export default function PlantView({ plant }) {
           <Leaf className="pl-footer__leaf" />
           <span>StomatalWorld</span>
           <span className="pl-footer__sub">Ornamental Horticulture</span>
+          <PhotoLine
+            className="pl-footer__photos"
+            action={realPhotoAction(plant, `${window.location.origin}/${plant.slug}`)}
+          />
         </footer>
       </main>
 
