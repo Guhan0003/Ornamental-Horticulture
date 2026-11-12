@@ -61,6 +61,19 @@ test('Aglaonema sits directly under Philodendron, not where its size would put i
   assert.deepEqual(names(sections), ['Philodendron', 'Aglaonema', 'Syngonium', 'Pothos'])
 })
 
+test('Anthurium follows Aglaonema, ahead of the bigger Syngonium and Pothos shelves', () => {
+  const many = (name, sci, n) => Array.from({ length: n }, (_, i) => plant(`${name} ${i}`, sci))
+  const sections = groupPlants([
+    ...many('Phil', 'Philodendron hederaceum', 6),
+    ...many('Syn', 'Syngonium podophyllum', 5),
+    ...many('Pothos', 'Epipremnum aureum', 4),
+    ...many('Anth', 'Anthurium andraeanum', 3),
+    ...many('Agl', "Aglaonema 'Lipstick'", 2),
+  ])
+
+  assert.deepEqual(names(sections), ['Philodendron', 'Aglaonema', 'Anthurium', 'Syngonium', 'Pothos'])
+})
+
 test('with no Philodendron shelf, Aglaonema keeps its size order', () => {
   const many = (name, sci, n) => Array.from({ length: n }, (_, i) => plant(`${name} ${i}`, sci))
   const sections = groupPlants([
