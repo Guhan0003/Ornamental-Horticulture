@@ -1,0 +1,46 @@
+{
+  "slug": "aglaonema-pink-lipstick",
+  "common_name": "Aglaonema Pink Lipstick",
+  "scientific_name": "Aglaonema 'Lipstick'",
+  "price_minor": 49900,
+  "price_note": "with decor pot",
+  "availability": "in_stock",
+  "image": {
+    "file": "aglaonema-pink-lipstick.jpg",
+    "alt": "An Aglaonema Pink Lipstick in a cream pot, its long pointed dark green leaves outlined in bright pink-red, on pink stems"
+  },
+  "profile": {
+    "environment": "Indoor",
+    "light": {
+      "label": "Medium to bright indirect light",
+      "note": "Tolerates low light, but the red edges fade and growth slows",
+      "ideal": [1, 2],
+      "tolerates": [0]
+    },
+    "landscape_use": {
+      "items": ["Shaded patio containers"],
+      "note": "Frost-free zones only; keep out of direct sun"
+    },
+    "home_use": {
+      "items": ["Desk plant", "Table top accent", "Floor plant"]
+    }
+  },
+  "snap": "An upright Aglaonema with long, pointed, dark green leaves outlined in bright pink-red, carried on pink stems. It is the boldest and the most forgiving of the coloured Aglaonemas, takes ordinary indoor light, and is toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "Aglaonemas come from the shaded forest floors of tropical Asia, from India through Southeast Asia to southern China, which is why they cope with dim rooms. Lipstick is a cultivated hybrid raised in Thailand, which has produced most of the world's coloured Aglaonemas. It is clumping rather than climbing, and builds slowly into a bushy mound that can reach two feet or more with age."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Water when the top two inches of the mix have dried, in a loose, well-draining mix. Keep it warm: below roughly 15°C the leaves curl and brown, and a draught from an air-conditioner or an open window in winter does it in a night. This is the sturdiest of the coloured forms, so ordinary room conditions suit it — but it still resents cold and wet feet together."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "The red edge is the whole signature: a clean pink-red line drawn round each dark leaf, repeated down the midrib and the stems. It is also the plant that gives most colour for least light, and the one to start with if you want to try an Aglaonema. The colour is deepest in bright indirect light, and the edges thin out and fade towards green in a dim corner, so a pale-edged leaf means the plant wants moving brighter, not feeding."
+    }
+  ]
+}
