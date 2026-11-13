@@ -103,7 +103,7 @@ export default function PlantForm({ initial, isNew, onSave, footer }) {
       <FormSection
         number="1"
         title="Photos"
-        hint="The first photo is the cover: the thumbnail in the shop and in search. Visitors swipe through the rest."
+        hint="The first photo is the cover: the thumbnail in the shop. Visitors swipe through the rest."
       >
         <PhotosField
           photos={plant.photos}
