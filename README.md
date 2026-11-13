@@ -29,10 +29,9 @@ That page shows, for that plant, in this order:
 | **The Snap** | one or two sentences: the plant at a glance |
 | **The Deep Dive** | titled points: origin & habit, key care rule, special feature, pet safety |
 
-The home page is the shop: a **search bar** at the top, then every plant as a card with
-its photo, name and price, two to a row on a phone. Sold-out plants sink to the end, and
-the list can be sorted A–Z or by price. Tap a plant to open its page. There are no
-categories and no accounts.
+The home page is the shop: every plant as a card with its photo, name and price, two to
+a row on a phone. Sold-out plants sink to the end, and the list can be sorted A–Z or by
+price. Tap a plant to open its page. There are no categories and no accounts.
 
 Later, every plant gets a **QR code** that points at its page (see [Phases](#phases)).
 Because a printed QR code can never be changed, the page address is designed to be
@@ -60,7 +59,7 @@ Inside, two tabs:
 
 | # | Section | Fields | Required? |
 |---|---|---|---|
-| 1 | **Photos** | as many photos as you like, up to 12 (tap to choose several at once, or drag and drop) · tap a photo to make it the cover, move it earlier or later, describe it, or remove it · the first photo is the cover: the thumbnail in the shop and in search | at least one |
+| 1 | **Photos** | as many photos as you like, up to 12 (tap to choose several at once, or drag and drop) · tap a photo to make it the cover, move it earlier or later, describe it, or remove it · the first photo is the cover: the thumbnail in the shop | at least one |
 | 2 | **Identity** | common name, scientific name, page address (filled in from the name) | common name and address |
 | 3 | **Price & availability** | price in rupees · an optional original price (shows the discount) · what the price includes, e.g. *with white decor pot* · *In stock*, *Ask us* or *Sold out* | all optional; with no price the page says "Ask for the price" |
 | 4 | **Quick Profile** | environment: tap *Indoor*, *Outdoor* or *Indoor & outdoor* · light need: a summary, a tolerance note, and a 4-step light scale (tap each step: ideal → tolerates → clear) · landscape uses and home uses: type each one and press Enter · an optional note under each | all optional; empty cards are hidden on the page |
@@ -87,7 +86,7 @@ example. The exact API format is in [backend/README.md](backend/README.md#a-plan
 | `slug` | `peace-lily`, the address. **Set once, never changed** (see below). |
 | `common_name` | Peace Lily |
 | `scientific_name` | *Spathiphyllum wallisii* |
-| `image` | the cover photo, its description, a blurred preview and a backdrop colour. It is the thumbnail in the shop, in search and in suggestions. |
+| `image` | the cover photo, its description, a blurred preview and a backdrop colour. It is the thumbnail in the shop and in suggestions. |
 | `gallery` | more photos after the cover, each shaped like `image`, in swiping order (up to 11) |
 | `profile.environment` | Indoor |
 | `profile.light` | a label (*Medium to bright indirect light*), a note (*Tolerates low light*), and where it sits on the scale Low → Medium → Bright indirect → Direct sun, drawn as a meter |
@@ -123,7 +122,7 @@ removed. Pages load fast even on a poor mobile connection.
 1. ~~**Plant page template** at `/<slug>`~~: mobile-first, animated, pinned photo on
    wide screens, "not found" page for unknown addresses.
 2. ~~**Data model and API** matching the template~~, replacing the block-based page
-   builder and categories. Pages and the home search read from the API.
+   builder and categories. Pages and the home shop read from the API.
 3. ~~**Admin: Add plant** tab~~
 4. ~~**Admin: All plants** tab~~: browse, edit, delete.
 5. ~~**Database migrations** (Alembic)~~

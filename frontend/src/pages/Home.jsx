@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import Catalogue from '../components/Catalogue.jsx'
 import Leaf from '../components/Leaf.jsx'
 import PhotoLine from '../components/PhotoLine.jsx'
-import PlantSearch from '../components/PlantSearch.jsx'
 import * as api from '../lib/api.js'
 import { realPhotoAction } from '../lib/commerce.js'
 
@@ -11,7 +10,7 @@ export default function Home() {
   const [failed, setFailed] = useState(false)
   const [attempt, setAttempt] = useState(0)
 
-  // One small request feeds both the search box and the shop below it.
+  // One small request feeds the shop.
   useEffect(() => {
     let cancelled = false
     setFailed(false)
@@ -27,10 +26,6 @@ export default function Home() {
   return (
     <main className="page page--home">
       <div className="glow" aria-hidden="true" />
-
-      <header className="home-top">
-        <PlantSearch plants={plants} failed={failed} />
-      </header>
 
       <section className="card home-hero">
         <Leaf />

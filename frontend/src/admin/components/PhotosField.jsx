@@ -5,7 +5,7 @@ import { MAX_UPLOAD_BYTES, prepareImage } from '../../lib/prepareImage.js'
 
 /**
  * A plant's photos, as one list in swiping order. The first is the cover — the
- * thumbnail the shop and the search show, and the photo the page opens on.
+ * thumbnail the shop shows, and the photo the page opens on.
  *
  * Tap a photo to select it, then make it the cover, move it, describe it or
  * take it out. Adding takes as many photos as the phone's picker will give,

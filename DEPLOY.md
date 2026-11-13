@@ -118,7 +118,7 @@ frontend project's Environment Variables and redeploy.
 Then check on a phone:
 
 - `https://stomatalworld.vercel.app/peace-lily` — the full page
-- `https://stomatalworld.vercel.app/` — search shows the Peace Lily
+- `https://stomatalworld.vercel.app/` — the shop shows the Peace Lily
 - `https://stomatalworld.vercel.app/admin` — sign in with the password from step 2
 
 ## Afterwards

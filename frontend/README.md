@@ -22,13 +22,12 @@ src/
 ├── main.jsx                  entry point, router provider
 ├── App.jsx                   route table
 ├── pages/
-│   ├── Home.jsx              landing page with the plant search
+│   ├── Home.jsx              landing page: the shop
 │   ├── PlantPage.jsx         /<slug> — fetches one plant
 │   └── NotFound.jsx
 ├── components/
 │   ├── PlantView.jsx         the plant page design, rendered from API data
 │   ├── Gallery.jsx           the photos at the top: a scroll-snap row, dots, mouse drag
-│   ├── PlantSearch.jsx       search box with photo, name and price suggestions
 │   ├── Catalogue.jsx         the home page shop: every plant with its price, sortable
 │   ├── DeliveryCheck.jsx     pincode box on the plant page: gives a delivery date range
 │   ├── Icon.jsx              line icons (quick profile, deep dive)
@@ -55,7 +54,7 @@ src/
 │       ├── ChipsInput.jsx    landscape and home uses
 │       └── DeepDiveEditor.jsx
 └── styles/
-    ├── index.css             landing page and search
+    ├── index.css             landing page and shop
     └── plant.css             the plant page
 ```
 
