@@ -32,10 +32,7 @@ export default function Home() {
 
         <h1 className="title">StomatalWorld</h1>
 
-        <p className="lede">
-          Live plants, ready to take home. Open any one to see what it needs and how to keep it
-          alive — then order it on WhatsApp.
-        </p>
+        <p className="lede">Live plants, ready to take home.</p>
       </section>
 
       <Catalogue plants={plants} failed={failed} onRetry={() => setAttempt((n) => n + 1)} />
