@@ -512,16 +512,17 @@ button.status {
   font-weight: 500;
 }
 
-/* The StomatalWorld leaf in a small white circle, top right of every photo. The
-   top left is taken by the discount and sold-out tags. */
+/* The StomatalWorld leaf in a small white circle, bottom left of every photo. The
+   top corners are where the plants' leaves reach, and the top left also holds the
+   discount and sold-out tags. */
 .shop-card__mark {
   position: absolute;
-  top: 0.4rem;
-  right: 0.4rem;
+  bottom: 0.4rem;
+  left: 0.4rem;
   display: grid;
   place-items: center;
-  width: 1.6rem;
-  height: 1.6rem;
+  width: 1.3rem;
+  height: 1.3rem;
   border-radius: 50%;
   background: #fffdf8;
   color: #0c1f14;
@@ -541,10 +542,10 @@ button.status {
 
 @media (min-width: 640px) {
   .shop-card__mark {
-    top: 0.6rem;
-    right: 0.6rem;
-    width: 2rem;
-    height: 2rem;
+    bottom: 0.6rem;
+    left: 0.6rem;
+    width: 1.7rem;
+    height: 1.7rem;
   }
 }
 
