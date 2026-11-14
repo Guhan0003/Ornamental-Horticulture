@@ -27,5 +27,5 @@ export const contact = {
   email: 'stomatalworldd@gmail.com',
 
   // The handle only, without @ or the full link.
-  instagram: '',
+  instagram: 'stomatalworld',
 }
