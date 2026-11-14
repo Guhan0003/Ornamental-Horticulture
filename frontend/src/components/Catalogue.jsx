@@ -14,10 +14,29 @@ import { handOver } from './PlantView.jsx'
 const SCROLL_KEY = 'stomatalworld.home-scroll'
 const ORDER_KEY = 'stomatalworld.home-order'
 
+const normalise = (value) =>
+  value
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .trim()
+
+/** Plants whose common or scientific name contains what was typed. */
+function matching(plants, query) {
+  const q = normalise(query)
+  if (!q) return plants
+  return plants.filter((plant) =>
+    [plant.common_name, plant.scientific_name].some((name) => normalise(name ?? '').includes(q)),
+  )
+}
+
 /**
- * Every plant, with its price: the shop. Two to a row on a phone, because a
+ * Every plant, with its price: the shop. Three to a row on a phone, because a
  * photo is how anyone recognises a plant and the price under it is the next
  * thing they look for.
+ *
+ * Above the cards sits one small row: a search icon and the sort menu. The icon
+ * opens a search field in that same row, and the cards filter as you type.
  *
  * By default the cards sit under their family — Philodendron, Pothos, Monstera
  * — because that is how someone holding one asks for the next one. Any price
@@ -28,7 +47,10 @@ const ORDER_KEY = 'stomatalworld.home-order'
  */
 export default function Catalogue({ plants, failed, onRetry }) {
   const [order, setOrder] = useState(rememberedOrder)
-  const sorted = useMemo(() => sortPlants(plants ?? [], order), [plants, order])
+  const [searching, setSearching] = useState(false)
+  const [query, setQuery] = useState('')
+  const found = useMemo(() => matching(plants ?? [], query), [plants, query])
+  const sorted = useMemo(() => sortPlants(found, order), [found, order])
   const grouped = order === 'type'
   const sections = useMemo(
     () => (grouped ? groupPlants(sorted) : []),
@@ -65,33 +87,76 @@ export default function Catalogue({ plants, failed, onRetry }) {
     }
   }
 
+  const closeSearch = () => {
+    setSearching(false)
+    setQuery('')
+  }
+
   return (
     <section className="shop" aria-labelledby="shop-title">
-      <header className="shop__head">
-        <div>
-          <h2 id="shop-title" className="shop__title">
-            Our plants
-          </h2>
-          {plants && (
-            <p className="shop__count">
-              {plants.length} {plants.length === 1 ? 'plant' : 'plants'}
-            </p>
+      {/* Not shown, but it names the section for screen readers. */}
+      <h2 id="shop-title" className="visually-hidden">
+        Our plants
+      </h2>
+
+      {plants?.length > 1 && (
+        <div className="shop__bar">
+          {searching ? (
+            <div className="shop__search">
+              <svg className="shop__search-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="11" cy="11" r="6.5" />
+                <path d="m16 16 4.5 4.5" />
+              </svg>
+              <input
+                type="search"
+                placeholder="Search plants"
+                aria-label="Search plants"
+                autoComplete="off"
+                spellCheck="false"
+                autoFocus
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => e.key === 'Escape' && closeSearch()}
+              />
+              <button
+                type="button"
+                className="shop__search-close"
+                aria-label="Close search"
+                onClick={closeSearch}
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M6 6l12 12M18 6 6 18" />
+                </svg>
+              </button>
+            </div>
+          ) : (
+            <>
+              <button
+                type="button"
+                className="shop__search-open"
+                aria-label="Search plants"
+                onClick={() => setSearching(true)}
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="11" cy="11" r="6.5" />
+                  <path d="m16 16 4.5 4.5" />
+                </svg>
+              </button>
+
+              <label className="shop__sort">
+                <span className="visually-hidden">Sort plants</span>
+                <select value={order} onChange={(e) => chooseOrder(e.target.value)}>
+                  {SORTS.map(({ value, label }) => (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </>
           )}
         </div>
-
-        {plants?.length > 1 && (
-          <label className="shop__sort">
-            <span className="visually-hidden">Sort plants</span>
-            <select value={order} onChange={(e) => chooseOrder(e.target.value)}>
-              {SORTS.map(({ value, label }) => (
-                <option key={value} value={value}>
-                  {label}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
-      </header>
+      )}
 
       {failed ? (
         <div className="shop__message" role="alert">
@@ -114,6 +179,8 @@ export default function Catalogue({ plants, failed, onRetry }) {
         </ul>
       ) : plants.length === 0 ? (
         <p className="shop__message">No plants yet — check back soon.</p>
+      ) : found.length === 0 ? (
+        <p className="shop__message">No plant called “{query.trim()}” yet</p>
       ) : grouped ? (
         sections.map((section) => (
           <section className="shelf" key={section.name} aria-labelledby={headingId(section.name)}>
