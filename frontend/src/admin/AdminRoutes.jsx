@@ -1,3 +1,4 @@
+import { useLayoutEffect } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import './admin.css'
 import { AuthProvider } from './AuthContext.jsx'
@@ -9,6 +10,25 @@ import AddPlant from './pages/AddPlant.jsx'
 import EditPlant from './pages/EditPlant.jsx'
 
 /**
+ * The public pages are cream; the dashboard keeps its dark forest palette. This
+ * switches the page over while the dashboard is open, and back when it closes.
+ */
+function useDarkChrome() {
+  useLayoutEffect(() => {
+    const meta = document.querySelector('meta[name="theme-color"]')
+    const previous = meta?.getAttribute('content')
+
+    document.body.classList.add('is-admin')
+    meta?.setAttribute('content', '#0c1f14')
+
+    return () => {
+      document.body.classList.remove('is-admin')
+      if (previous) meta?.setAttribute('content', previous)
+    }
+  }, [])
+}
+
+/**
  * Everything behind /admin, in one module.
  *
  * It is imported lazily, so the dashboard — its pages, its stylesheet and the
@@ -16,6 +36,8 @@ import EditPlant from './pages/EditPlant.jsx'
  * a customer scanning a label in a shop.
  */
 export default function AdminRoutes() {
+  useDarkChrome()
+
   return (
     <AuthProvider>
       <Routes>

@@ -36,17 +36,17 @@
   padding: 0;
   border: 0;
   border-radius: 50%;
-  /* Bright mint, not forest: a dark button disappears into the dark home page.
-     The dark icon on it reads on the cream plant pages as well. */
-  background: linear-gradient(150deg, #a6efc2 0%, #6fd79b 50%, #3fae72 100%);
-  color: var(--c-forest);
+  /* A full leaf green with a white icon: the pages are cream, and a pale button
+     would fade into them. */
+  background: linear-gradient(150deg, #43a86f 0%, #2e7a4c 55%, #1f6a3f 100%);
+  color: #fff;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.6),
-    inset 0 -3px 6px rgba(20, 90, 55, 0.25),
-    0 8px 22px rgba(63, 174, 114, 0.5),
-    0 2px 6px rgba(0, 0, 0, 0.25);
+    inset 0 1px 1px rgba(255, 255, 255, 0.35),
+    inset 0 -3px 6px rgba(8, 50, 28, 0.3),
+    0 8px 22px rgba(46, 122, 76, 0.45),
+    0 2px 6px rgba(0, 0, 0, 0.2);
   transition:
     transform 0.35s var(--c-spring),
     box-shadow 0.3s var(--c-ease);
@@ -59,7 +59,7 @@
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  box-shadow: 0 0 0 0 rgba(111, 215, 155, 0.6);
+  box-shadow: 0 0 0 0 rgba(46, 122, 76, 0.5);
   animation: contact-ring 2.8s 1.2s ease-out infinite;
   pointer-events: none;
 }
@@ -76,15 +76,15 @@
   .contact-fab:hover {
     transform: translateY(-2px);
     box-shadow:
-      inset 0 1px 1px rgba(255, 255, 255, 0.7),
-      inset 0 -3px 6px rgba(20, 90, 55, 0.25),
-      0 12px 28px rgba(63, 174, 114, 0.6),
-      0 3px 8px rgba(0, 0, 0, 0.25);
+      inset 0 1px 1px rgba(255, 255, 255, 0.45),
+      inset 0 -3px 6px rgba(8, 50, 28, 0.3),
+      0 12px 28px rgba(46, 122, 76, 0.55),
+      0 3px 8px rgba(0, 0, 0, 0.2);
   }
 }
 
 .contact-fab:focus-visible {
-  outline: 2px solid var(--c-mint);
+  outline: 2px solid var(--c-leaf);
   outline-offset: 3px;
 }
 
@@ -437,11 +437,11 @@
 
 @keyframes contact-ring {
   0% {
-    box-shadow: 0 0 0 0 rgba(111, 215, 155, 0.6);
+    box-shadow: 0 0 0 0 rgba(46, 122, 76, 0.5);
   }
   45%,
   100% {
-    box-shadow: 0 0 0 1rem rgba(111, 215, 155, 0);
+    box-shadow: 0 0 0 1rem rgba(46, 122, 76, 0);
   }
 }
 
