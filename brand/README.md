@@ -47,6 +47,19 @@ Live in `frontend/public/`, wired up in `frontend/index.html`:
 These use a solid forest square with the green leaf, so the icon stays visible against
 both light and dark browser chrome.
 
+## Instagram
+
+Live in `instagram/`. 1080×1080, solid forest square, green leaf. Instagram crops profile
+pictures to a circle, so the artwork stays well inside the middle and the corners are
+plain forest.
+
+- `instagram-profile-mark` — the leaf alone. Use this one: it stays clear down to the
+  32px size used in comments.
+- `instagram-profile-name` — leaf over the StomatalWorld wordmark. Fine at the 110px
+  profile size, but the name is unreadable below about 80px.
+
+The `.svg` files are the source; the `-1080.png` files are what to upload.
+
 ## Regenerating
 
 The wordmark outlines were produced by instantiating the Fraunces variable font at
