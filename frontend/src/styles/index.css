@@ -182,20 +182,26 @@ button.status {
 /* The home page is a shop that scrolls, not one card centred on the screen. */
 .page--home {
   justify-content: flex-start;
-  gap: 2rem;
+  gap: 1rem;
+  /* Close to the top: the plants are what people came for, not the heading. */
+  padding-top: calc(1rem + env(safe-area-inset-top));
 }
 
 .home-hero .leaf {
-  margin-bottom: 1.1rem;
+  width: 2rem;
+  height: 2rem;
+  margin-bottom: 0.4rem;
 }
 
 .home-hero .title {
-  margin-bottom: 1rem;
-  font-size: clamp(2.1rem, 10vw, 3.1rem);
+  margin-bottom: 0.4rem;
+  font-size: clamp(1.8rem, 8vw, 2.5rem);
 }
 
 .home-hero .lede {
   margin-bottom: 0;
+  font-size: 0.8rem;
+  line-height: 1.45;
 }
 
 .shop {
@@ -203,44 +209,141 @@ button.status {
   width: min(100%, 64rem);
 }
 
-.shop__head {
+/* One slim row above the cards: the search icon, and the sort menu. */
+.shop__bar {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
 }
 
-.shop__title {
-  margin: 0;
-  font-family: 'Fraunces', Georgia, serif;
-  font-weight: 400;
-  font-size: 1.6rem;
-  letter-spacing: -0.02em;
-}
-
-.shop__count {
-  margin: 0.15rem 0 0;
-  font-size: 0.82rem;
+.shop__search-open,
+.shop__search {
+  height: 2.1rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(242, 239, 228, 0.06);
   color: var(--ink-dim);
 }
 
+.shop__search-open {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 2.1rem;
+  padding: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.shop__search-open svg,
+.shop__search-icon,
+.shop__search-close svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+
+.shop__search-open svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.shop__search-open:focus-visible,
+.shop__search-close:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.shop__search {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  padding: 0 0.35rem 0 0.85rem;
+}
+
+.shop__search:focus-within {
+  border-color: rgba(127, 214, 162, 0.55);
+  background: rgba(242, 239, 228, 0.1);
+}
+
+.shop__search-icon {
+  flex: none;
+  width: 0.95rem;
+  height: 0.95rem;
+}
+
+.shop__search input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  /* 16px stops iOS zooming the page when the field is focused */
+  font-size: 1rem;
+}
+
+.shop__search input::placeholder {
+  color: var(--ink-dim);
+}
+
+/* the close button is the way to clear it, and a second × would crowd it */
+.shop__search input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.shop__search-close {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 1.6rem;
+  height: 1.6rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink-dim);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.shop__search-close svg {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
 .shop__sort select {
-  padding: 0.55rem 2.2rem 0.55rem 1rem;
+  height: 2.1rem;
+  padding: 0 1.9rem 0 0.85rem;
   border: 1px solid var(--line);
   border-radius: 999px;
   background-color: rgba(242, 239, 228, 0.06);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a9bcae' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 0.75rem center;
-  background-size: 1rem;
+  background-position: right 0.6rem center;
+  background-size: 0.9rem;
   color: var(--ink);
   font: inherit;
-  /* 16px stops iOS zooming the page when the control is used */
-  font-size: 1rem;
+  font-size: 0.85rem;
   appearance: none;
   -webkit-appearance: none;
   cursor: pointer;
+}
+
+/* iPhones zoom the whole page when a menu's text is under 16px, so there it stays
+   16px and only the pill around it is smaller. */
+@supports (-webkit-touch-callout: none) {
+  .shop__sort select {
+    font-size: 1rem;
+  }
 }
 
 .shop__sort select:focus-visible {
