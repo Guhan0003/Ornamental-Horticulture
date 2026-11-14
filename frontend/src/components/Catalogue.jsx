@@ -9,6 +9,7 @@ import {
   sortPlants,
 } from '../lib/commerce.js'
 import { groupPlants } from '../lib/groups.js'
+import Leaf from './Leaf.jsx'
 import { handOver } from './PlantView.jsx'
 
 const SCROLL_KEY = 'stomatalworld.home-scroll'
@@ -251,6 +252,12 @@ function PlantCard({ plant, onOpen }) {
         ) : off > 0 ? (
           <span className="shop-card__badge">{off}% off</span>
         ) : null}
+
+        {/* The pot logo in the photo is too small to read at this size, so every
+            card carries the brand leaf itself. */}
+        <span className="shop-card__mark" aria-hidden="true">
+          <Leaf className="shop-card__mark-leaf" />
+        </span>
       </span>
 
       <span className="shop-card__body">

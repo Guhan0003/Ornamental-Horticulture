@@ -512,6 +512,42 @@ button.status {
   font-weight: 500;
 }
 
+/* The StomatalWorld leaf in a small white circle, top right of every photo. The
+   top left is taken by the discount and sold-out tags. */
+.shop-card__mark {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
+  display: grid;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  background: #fffdf8;
+  color: #0c1f14;
+  box-shadow: 0 1px 5px rgba(12, 31, 20, 0.3);
+  pointer-events: none;
+}
+
+.shop-card__mark-leaf {
+  width: 64%;
+  height: 64%;
+}
+
+/* a heavier line, so the leaf holds up at this size */
+.shop-card__mark-leaf path {
+  stroke-width: 3.2;
+}
+
+@media (min-width: 640px) {
+  .shop-card__mark {
+    top: 0.6rem;
+    right: 0.6rem;
+    width: 2rem;
+    height: 2rem;
+  }
+}
+
 /* Dimmed with a filter, not opacity: the blurred preview sits behind the photo
    and would show through a see-through one as a double image. */
 .shop-card--sold .shop-card__frame img {
