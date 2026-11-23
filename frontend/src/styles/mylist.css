@@ -1,0 +1,705 @@
+/* ==========================================================================
+   My list: the + on each plant's card, the pill that says how many are on the
+   list, and the sheet that sends them all to the shop in one WhatsApp message.
+   Cream paper and leaf green, like the rest of the public site.
+   ========================================================================== */
+
+:root {
+  --ml-forest: #0c1f14;
+  --ml-paper: #fffdf8;
+  --ml-cream: #f5f2e9;
+  --ml-muted: #5b6a60;
+  --ml-leaf: #2e7a4c;
+  --ml-green: #1f9b55;
+  --ml-mint: #7fd6a2;
+  --ml-line: rgba(12, 31, 20, 0.12);
+  --ml-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* ---------------- the + on a card ---------------- */
+
+/* The card and its button are neighbours, so this wrapper is what the grid sees. */
+.shop-card-wrap {
+  position: relative;
+  display: flex;
+  flex: 1;
+  min-width: 0;
+}
+
+/* A layer exactly the size of the photo (3:4, inside the card's 1px border),
+   with clicks passing through it everywhere except the button on it. */
+.shop-card__tools {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  left: 1px;
+  aspect-ratio: 3 / 4;
+  pointer-events: none;
+}
+
+.card-add {
+  position: absolute;
+  right: 0.4rem;
+  bottom: 0.4rem;
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: 1px solid rgba(12, 31, 20, 0.16);
+  border-radius: 50%;
+  background: var(--ml-paper);
+  color: var(--ml-forest);
+  box-shadow: 0 1px 5px rgba(12, 31, 20, 0.3);
+  cursor: pointer;
+  pointer-events: auto;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color 0.18s,
+    border-color 0.18s,
+    color 0.18s,
+    transform 0.15s;
+}
+
+/* The button is small on a small card; this makes the part a thumb can hit larger. */
+.card-add::before {
+  content: '';
+  position: absolute;
+  inset: -0.5rem;
+}
+
+.card-add svg {
+  width: 1rem;
+  height: 1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.card-add:active {
+  transform: scale(0.9);
+}
+
+.card-add.is-in {
+  border-color: var(--ml-leaf);
+  background: var(--ml-leaf);
+  color: #fff;
+  animation: ml-pop 0.32s var(--ml-ease);
+}
+
+.card-add:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.card-add:focus-visible {
+  outline: 2px solid var(--ml-leaf);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) {
+  .card-add:not(:disabled):not(.is-in):hover {
+    border-color: var(--ml-leaf);
+    color: var(--ml-leaf);
+  }
+}
+
+@media (min-width: 640px) {
+  .card-add {
+    right: 0.6rem;
+    bottom: 0.6rem;
+    width: 2.2rem;
+    height: 2.2rem;
+  }
+
+  .card-add svg {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+}
+
+/* ---------------- the button on a plant's own page ---------------- */
+
+.pl-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  min-height: 3rem;
+  margin-top: 0.6rem;
+  padding: 0.55rem 1.2rem;
+  border: 1.5px solid var(--pl-leaf, var(--ml-leaf));
+  border-radius: 999px;
+  background: transparent;
+  color: var(--pl-leaf, var(--ml-leaf));
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.98rem;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color 0.2s,
+    color 0.2s,
+    transform 0.14s;
+}
+
+.pl-add svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.pl-add:active {
+  transform: scale(0.97);
+}
+
+.pl-add.is-in {
+  background: var(--pl-mint-soft, #cdeedb);
+  border-color: transparent;
+  color: var(--pl-forest, var(--ml-forest));
+}
+
+.pl-add:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pl-add:focus-visible {
+  outline: 2px solid var(--pl-forest, var(--ml-forest));
+  outline-offset: 3px;
+}
+
+@media (hover: hover) {
+  .pl-add:not(:disabled):not(.is-in):hover {
+    background: rgba(46, 122, 76, 0.08);
+  }
+}
+
+/* ---------------- the pill ---------------- */
+
+/* Bottom centre of the home page, on the same line as the contact button and the
+   back-to-top button either side of it. */
+.my-list-pill {
+  position: fixed;
+  z-index: 58;
+  bottom: calc(1rem + env(safe-area-inset-bottom));
+  left: 50%;
+  translate: -50% 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 3rem;
+  padding: 0 0.55rem 0 0.95rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ml-forest);
+  color: #f2efe4;
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  box-shadow: 0 10px 26px rgba(12, 31, 20, 0.32);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  animation: ml-pill-in 0.45s var(--ml-ease) both;
+}
+
+.my-list-pill:active {
+  scale: 0.96;
+}
+
+.my-list-pill:focus-visible {
+  outline: 2px solid var(--ml-mint);
+  outline-offset: 3px;
+}
+
+.my-list-pill__icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.my-list-pill__count {
+  display: grid;
+  place-items: center;
+  min-width: 1.9rem;
+  height: 1.9rem;
+  padding: 0 0.3rem;
+  border-radius: 999px;
+  background: var(--ml-mint);
+  color: var(--ml-forest);
+  font-size: 0.9rem;
+  font-weight: 700;
+  animation: ml-pop 0.32s var(--ml-ease);
+}
+
+/* A plant's page has its order bar along the bottom, so the pill goes above it. */
+body.is-plant .my-list-pill {
+  left: auto;
+  right: calc(0.75rem + env(safe-area-inset-right));
+  bottom: calc(5.4rem + env(safe-area-inset-bottom));
+  translate: none;
+}
+
+/* ---------------- the sheet ---------------- */
+
+.my-list-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  background: rgba(12, 31, 20, 0.45);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+  animation: ml-fade 0.25s ease both;
+}
+
+.my-list-backdrop.is-closing {
+  animation: ml-fade-out 0.24s ease both;
+}
+
+.my-list {
+  position: fixed;
+  z-index: 71;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 30rem);
+  max-height: min(88svh, 42rem);
+  margin: 0 auto;
+  padding-bottom: env(safe-area-inset-bottom);
+  /* Clips the footer's cream to the sheet's rounded corners. */
+  overflow: hidden;
+  border-radius: 1.5rem 1.5rem 0 0;
+  background: var(--ml-paper);
+  color: var(--ml-forest);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  box-shadow: 0 -12px 40px rgba(12, 31, 20, 0.28);
+  overscroll-behavior: contain;
+  outline: none;
+  animation: ml-sheet-in 0.34s var(--ml-ease) both;
+}
+
+.my-list.is-closing {
+  animation: ml-sheet-out 0.24s ease both;
+}
+
+@media (min-width: 640px) {
+  .my-list {
+    bottom: 1.5rem;
+    border-radius: 1.5rem;
+  }
+}
+
+.my-list__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.2rem 1.1rem 0.8rem 1.25rem;
+}
+
+.my-list__title {
+  margin: 0;
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-size: 1.5rem;
+  letter-spacing: -0.01em;
+}
+
+.my-list__sub {
+  margin: 0.1rem 0 0;
+  font-size: 0.85rem;
+  color: var(--ml-muted);
+}
+
+.my-list__close,
+.my-list__remove {
+  display: grid;
+  place-items: center;
+  flex: none;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--ml-cream);
+  color: var(--ml-muted);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.my-list__close {
+  width: 2.2rem;
+  height: 2.2rem;
+}
+
+.my-list__remove {
+  width: 1.9rem;
+  height: 1.9rem;
+}
+
+.my-list__close svg,
+.my-list__remove svg {
+  width: 1rem;
+  height: 1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.my-list__close:focus-visible,
+.my-list__remove:focus-visible {
+  outline: 2px solid var(--ml-leaf);
+  outline-offset: 2px;
+}
+
+.my-list__empty {
+  margin: 0;
+  padding: 0.5rem 1.25rem 2rem;
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: var(--ml-muted);
+}
+
+/* The plants scroll; the heading above and the total and button below stay put. */
+.my-list__items {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 0;
+  padding: 0 1.25rem;
+  overflow-y: auto;
+  list-style: none;
+  overscroll-behavior: contain;
+}
+
+.my-list__item {
+  display: grid;
+  grid-template-columns: 3.4rem minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid var(--ml-line);
+}
+
+.my-list__item.is-sold {
+  opacity: 0.6;
+}
+
+/* No quantity box on a sold-out plant, but the remove button stays in its column. */
+.my-list__item.is-sold .my-list__remove {
+  grid-column: 4;
+}
+
+.my-list__thumb {
+  display: block;
+  width: 3.4rem;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: 0.6rem;
+  background-color: var(--ml-cream);
+}
+
+.my-list__thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.my-list__info {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.my-list__name {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 1.02rem;
+  line-height: 1.2;
+}
+
+.my-list__price {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--ml-leaf);
+}
+
+.my-list__item.is-sold .my-list__price {
+  font-weight: 500;
+  color: var(--ml-muted);
+}
+
+.my-list__qty {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.15rem;
+  border: 1px solid var(--ml-line);
+  border-radius: 999px;
+  background: var(--ml-paper);
+}
+
+.my-list__qty span {
+  min-width: 1.3rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.my-list__qty button {
+  display: grid;
+  place-items: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--ml-cream);
+  color: var(--ml-forest);
+  font: inherit;
+  font-size: 1.15rem;
+  line-height: 1;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.my-list__qty button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.my-list__qty button:focus-visible {
+  outline: 2px solid var(--ml-leaf);
+  outline-offset: 1px;
+}
+
+.my-list__foot {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.9rem 1.25rem 1rem;
+  border-top: 1px solid var(--ml-line);
+  background: var(--ml-cream);
+}
+
+.my-list__total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--ml-muted);
+}
+
+.my-list__total strong {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--ml-forest);
+}
+
+.my-list__note {
+  margin: 0;
+  font-size: 0.84rem;
+  line-height: 1.5;
+  color: var(--ml-muted);
+}
+
+/* The label and the field share one line, to leave the room for the plants. */
+.my-list__pin {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.my-list__label {
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.my-list__pincode {
+  width: 100%;
+  height: 2.6rem;
+  padding: 0 1rem;
+  border: 1px solid var(--ml-line);
+  border-radius: 999px;
+  background: var(--ml-paper);
+  color: var(--ml-forest);
+  font: inherit;
+  /* 16px stops iOS zooming the page when the field is used */
+  font-size: 1rem;
+}
+
+.my-list__pincode:focus-visible {
+  outline: 2px solid var(--ml-leaf);
+  outline-offset: 1px;
+}
+
+.my-list__estimate {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--ml-muted);
+}
+
+.my-list__estimate strong {
+  color: var(--ml-forest);
+}
+
+.my-list__send {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-height: 3.2rem;
+  margin-top: 0.2rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 999px;
+  background: var(--ml-green);
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform 0.14s,
+    background-color 0.2s;
+}
+
+.my-list__send:active {
+  transform: scale(0.98);
+}
+
+@media (hover: hover) {
+  .my-list__send:hover {
+    background: #188449;
+  }
+}
+
+.my-list__send:focus-visible {
+  outline: 2px solid var(--ml-forest);
+  outline-offset: 3px;
+}
+
+.my-list__send-icon {
+  width: 1.3rem;
+  height: 1.3rem;
+  flex: none;
+}
+
+.my-list__hint {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--ml-muted);
+  text-align: center;
+}
+
+/* Beside the close button, small and out of the way of the send button. */
+.my-list__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.my-list__clear {
+  padding: 0.4rem 0.6rem;
+  border: 0;
+  background: none;
+  color: var(--ml-muted);
+  font: inherit;
+  font-size: 0.82rem;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.my-list__clear:focus-visible {
+  outline: 2px solid var(--ml-leaf);
+  outline-offset: 2px;
+}
+
+/* ---------------- movement ---------------- */
+
+@keyframes ml-pop {
+  0% {
+    transform: scale(0.6);
+  }
+  60% {
+    transform: scale(1.18);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes ml-pill-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.8rem) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes ml-sheet-in {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes ml-sheet-out {
+  from {
+    transform: none;
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes ml-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes ml-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-add.is-in,
+  .my-list-pill,
+  .my-list-pill__count,
+  .my-list-backdrop,
+  .my-list-backdrop.is-closing,
+  .my-list,
+  .my-list.is-closing {
+    animation: none;
+  }
+}

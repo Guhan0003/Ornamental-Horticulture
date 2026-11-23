@@ -9,6 +9,7 @@ import {
   sortPlants,
 } from '../lib/commerce.js'
 import { groupPlants } from '../lib/groups.js'
+import { CardAdd } from './ListButton.jsx'
 import Leaf from './Leaf.jsx'
 import { handOver } from './PlantView.jsx'
 
@@ -301,51 +302,62 @@ function PlantCard({ plant, onOpen }) {
   const off = discountPercent(plant.price_minor, plant.original_price_minor)
 
   return (
-    <Link
-      className={`shop-card${sold ? ' shop-card--sold' : ''}`}
-      to={`/${plant.slug}`}
-      viewTransition
-      onClick={(event) => {
-        onOpen()
-        handOver(event)
-      }}
-    >
-      <span
-        className="shop-card__frame"
-        style={{
-          backgroundColor: plant.image.background || undefined,
-          backgroundImage: plant.image.placeholder ? `url("${plant.image.placeholder}")` : undefined,
+    <div className="shop-card-wrap">
+      <Link
+        className={`shop-card${sold ? ' shop-card--sold' : ''}`}
+        to={`/${plant.slug}`}
+        viewTransition
+        onClick={(event) => {
+          onOpen()
+          handOver(event)
         }}
       >
-        <img src={imageSrc(plant.image.url)} alt="" loading="lazy" decoding="async" />
-        {sold ? (
-          <span className="shop-card__badge shop-card__badge--sold">Sold out</span>
-        ) : off > 0 ? (
-          <span className="shop-card__badge">{off}% off</span>
-        ) : null}
+        <span
+          className="shop-card__frame"
+          style={{
+            backgroundColor: plant.image.background || undefined,
+            backgroundImage: plant.image.placeholder ? `url("${plant.image.placeholder}")` : undefined,
+          }}
+        >
+          <img src={imageSrc(plant.image.url)} alt="" loading="lazy" decoding="async" />
+          {sold ? (
+            <span className="shop-card__badge shop-card__badge--sold">Sold out</span>
+          ) : off > 0 ? (
+            <span className="shop-card__badge">{off}% off</span>
+          ) : null}
 
-        {/* The pot logo in the photo is too small to read at this size, so every
-            card carries the brand leaf itself. */}
-        <span className="shop-card__mark" aria-hidden="true">
-          <Leaf className="shop-card__mark-leaf" />
-        </span>
-      </span>
-
-      <span className="shop-card__body">
-        <span className="shop-card__name">{plant.common_name}</span>
-
-        {plant.price_minor == null ? (
-          // Sold out already says what the badge needs to; "ask for price" on top is noise.
-          !sold && <span className="shop-card__ask">Ask for price</span>
-        ) : (
-          <span className={`shop-card__price${sold ? ' is-sold' : ''}`}>
-            <strong>{formatPrice(plant.price_minor, plant.currency)}</strong>
-            {off > 0 && !sold && <s>{formatPrice(plant.original_price_minor, plant.currency)}</s>}
+          {/* The pot logo in the photo is too small to read at this size, so every
+              card carries the brand leaf itself. */}
+          <span className="shop-card__mark" aria-hidden="true">
+            <Leaf className="shop-card__mark-leaf" />
           </span>
-        )}
+        </span>
 
-        {plant.price_note && <span className="shop-card__note">{plant.price_note}</span>}
-      </span>
-    </Link>
+        <span className="shop-card__body">
+          <span className="shop-card__name">{plant.common_name}</span>
+
+          {plant.price_minor == null ? (
+            // Sold out already says what the badge needs to; "ask for price" on top is noise.
+            !sold && <span className="shop-card__ask">Ask for price</span>
+          ) : (
+            <span className={`shop-card__price${sold ? ' is-sold' : ''}`}>
+              <strong>{formatPrice(plant.price_minor, plant.currency)}</strong>
+              {off > 0 && !sold && <s>{formatPrice(plant.original_price_minor, plant.currency)}</s>}
+            </span>
+          )}
+
+          {plant.price_note && <span className="shop-card__note">{plant.price_note}</span>}
+        </span>
+      </Link>
+
+      {/* Beside the link, not inside it: a button cannot sit inside a link. This
+          layer is the size of the photo, so the button lands on its bottom-right
+          corner, opposite the leaf. */}
+      {!sold && (
+        <div className="shop-card__tools">
+          <CardAdd plant={plant} />
+        </div>
+      )}
+    </div>
   )
 }

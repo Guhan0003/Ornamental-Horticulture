@@ -5,6 +5,7 @@ import PlantPage from './pages/PlantPage.jsx'
 import NotFound from './pages/NotFound.jsx'
 import ContactButton from './components/ContactButton.jsx'
 import ErrorBoundary from './components/ErrorBoundary.jsx'
+import MyList from './components/MyList.jsx'
 
 // Loaded only when an admin route is opened. A customer in a shop is on a
 // phone and a weak connection; the dashboard has no business in that download.
@@ -35,6 +36,9 @@ export default function App() {
 
       {/* bottom-left contact button on every public page; hidden in the admin */}
       <ContactButton />
+
+      {/* bottom-centre "My list" pill and its sheet on every public page; hidden in the admin */}
+      <MyList />
     </ErrorBoundary>
   )
 }

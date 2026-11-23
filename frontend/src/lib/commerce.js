@@ -110,6 +110,12 @@ export function buyAction(plant, pageUrl, pincode) {
   return { label, href: `https://wa.me/${digits(contact.whatsapp)}?text=${encodeURIComponent(text)}` }
 }
 
+/** A WhatsApp chat to the shop with `text` already typed in. Null when no number is set. */
+export function whatsappLink(text) {
+  if (!contact.whatsapp) return null
+  return `https://wa.me/${digits(contact.whatsapp)}?text=${encodeURIComponent(text)}`
+}
+
 /* ---------------- asking for a real photo ---------------- */
 
 /**

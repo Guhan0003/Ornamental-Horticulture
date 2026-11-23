@@ -16,6 +16,17 @@ and each page has an **Order on WhatsApp** button. What exists:
   else; Sundays skipped). The pincode goes into the WhatsApp order message. It is
   pure front-end (`frontend/src/lib/delivery.js`), so it is an estimate, not a
   promise from a courier. Telangana is not on the short list.
+- **My list** (2026-11-23): a customer who wants several plants taps the + on a
+  card, or *Add to my list* on a plant's page, and one WhatsApp message goes to the
+  shop with every plant, how many of each, a total and the delivery pincode. It is a
+  list, not a basket: no payment, no stock held, and the shop still answers by
+  hand, so it stays inside stage 1. It lives on the customer's phone
+  (`localStorage`, up to 15 plants, up to 9 of each) and looks up today's price and
+  stock whenever it is opened; a sold-out plant stays on it but is left out of the
+  message and the total, and a plant with no price is listed as "price on request".
+  Sending the list counts a WhatsApp tap on each plant in it. The rules and the
+  message are in `frontend/src/lib/list.js` (tested), the phone's copy in
+  `listStore.js`, and the screens in `MyList.jsx` and `ListButton.jsx`.
 
 **The switch in §4 was not built.** It was written for a launch that was still
 weeks away; the shop's decision since is that prices are the point of the site,

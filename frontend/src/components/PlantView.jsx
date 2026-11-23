@@ -5,6 +5,7 @@ import DeliveryCheck from './DeliveryCheck.jsx'
 import Gallery from './Gallery.jsx'
 import Icon from './Icon.jsx'
 import Leaf from './Leaf.jsx'
+import { PlantAdd } from './ListButton.jsx'
 import PhotoLine from './PhotoLine.jsx'
 import { imageSrc, prefetchPlant, recordTap } from '../lib/api.js'
 import {
@@ -216,6 +217,8 @@ function BuyPanel({ plant, panelRef, pincode, onPincode }) {
       {!sold && <DeliveryCheck pincode={pincode} onCheck={onPincode} />}
 
       <OrderLink plant={plant} className="pl-cta" pincode={pincode} />
+      {/* For someone who wants this and something else: collect them and send one message. */}
+      <PlantAdd plant={plant} />
     </section>
   )
 }
