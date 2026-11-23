@@ -17,10 +17,10 @@ export const contact = {
   avatar: '',
 
   // Written the way people should see it. Links are built from the digits.
-  phone: '+91 63693 00291',
+  phone: '+91 86087 05789',
 
   // Include the country code. Can be the same number as phone.
-  whatsapp: '+91 63693 00291',
+  whatsapp: '+91 86087 05789',
   // Pre-filled message when someone opens WhatsApp.
   whatsappMessage: 'Hi! I saw your plants at StomatalWorld and have a question.',
 
