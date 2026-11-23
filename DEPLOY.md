@@ -135,7 +135,24 @@ Then check on a phone:
   early, delete the row in Supabase → Table editor → `login_attempts`.
 - **Custom domain:** add it to the frontend project, then add it to the backend's
   allowed origins, e.g. `CORS_ORIGINS=["https://plants.example.com","https://stomatalworld.vercel.app"]`.
-  Preview deployments are already covered by `CORS_ORIGIN_REGEX`.
+  Preview deployments are already covered by `CORS_ORIGIN_REGEX`. Then point the link
+  previews at it (see the next point).
+- **Link previews and the sitemap:** a plant's link pasted into WhatsApp shows its photo,
+  name and price, and Google gets a sitemap, because of two small functions in `api/`.
+  `vercel.json` sends only crawlers (WhatsApp, Google, Facebook, Telegram and the like)
+  to `api/plant.js`, which writes the plant's own tags into the page; people scanning a
+  label get the normal page with nothing in the way. `/sitemap.xml` is built from the
+  plant list by `api/sitemap.js`, so a plant added in the dashboard appears there on its
+  own. Both read the plant list from the API, and the logic lives in `server/share.js`
+  (`node --test server/share.test.js`).
+  - To check one: `curl -A "WhatsApp/2.23" https://stomatalworld.vercel.app/peace-lily`
+    should show that plant's `og:title` and `og:image`.
+  - WhatsApp remembers a preview for a while. To see a changed one straight away, paste
+    the link into Facebook's Sharing Debugger and press *Scrape Again*.
+  - With a custom domain, set `SITE_URL` (for example `https://plants.example.com`) in
+    the frontend project's environment variables, and change the address in
+    `frontend/index.html` (`og:image`) and `frontend/public/robots.txt` (`Sitemap:`).
+    `API_URL` can be set the same way if the API ever moves.
 - **If the API ever moves off `*.vercel.app`:** the frontend's
   `Content-Security-Policy` in `vercel.json` allows `connect-src https:`, so a new
   API host keeps working — but tighten it to the exact origin once the address
