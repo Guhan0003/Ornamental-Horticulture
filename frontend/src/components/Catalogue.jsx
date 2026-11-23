@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { imageSrc } from '../lib/api.js'
 import {
@@ -43,6 +43,10 @@ function matching(plants, query) {
  * — because that is how someone holding one asks for the next one. Any price
  * order flattens it back to a single grid, since a cheapest-first list cut into
  * eight sections is not a cheapest-first list.
+ *
+ * With ten families the page is eight screens tall, so a row of chips under the
+ * bar jumps to any of them and stays at the top while you scroll, and a round
+ * button takes you back up once you are well down the page.
  *
  * `plants` is null while the list loads.
  */
@@ -91,6 +95,13 @@ export default function Catalogue({ plants, failed, onRetry }) {
   const closeSearch = () => {
     setSearching(false)
     setQuery('')
+  }
+
+  const jumpTo = (name) => {
+    const shelf = document.getElementById(headingId(name))?.closest('.shelf')
+    if (!shelf) return
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    shelf.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' })
   }
 
   return (
@@ -159,6 +170,23 @@ export default function Catalogue({ plants, failed, onRetry }) {
         </div>
       )}
 
+      {/* While a search is open the families shown are only the matching ones, so
+          the jump row steps aside until it is closed. */}
+      {grouped && !searching && sections.length > 1 && (
+        <nav className="shop__jump" aria-label="Jump to a plant family">
+          {sections.map((section) => (
+            <button
+              key={section.name}
+              type="button"
+              className="shop__chip"
+              onClick={() => jumpTo(section.name)}
+            >
+              {section.name}
+            </button>
+          ))}
+        </nav>
+      )}
+
       {failed ? (
         <div className="shop__message" role="alert">
           <p>Couldn’t load the plants. It’s usually the signal.</p>
@@ -208,7 +236,50 @@ export default function Catalogue({ plants, failed, onRetry }) {
           ))}
         </ul>
       )}
+
+      {plants?.length > 8 && <BackToTop />}
     </section>
+  )
+}
+
+/** A round button, bottom right, that appears once you are well down the page. */
+function BackToTop() {
+  const [shown, setShown] = useState(false)
+
+  useEffect(() => {
+    let frame = 0
+    const update = () => {
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(() => setShown(window.scrollY > window.innerHeight * 1.2))
+    }
+
+    update()
+    window.addEventListener('scroll', update, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', update)
+      cancelAnimationFrame(frame)
+    }
+  }, [])
+
+  const goUp = () => {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' })
+  }
+
+  return (
+    <button
+      type="button"
+      className={`to-top${shown ? ' is-shown' : ''}`}
+      aria-label="Back to top"
+      // Out of the tab order and hidden from readers until it can be used.
+      tabIndex={shown ? 0 : -1}
+      aria-hidden={!shown}
+      onClick={goUp}
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="m6 14 6-6 6 6" />
+      </svg>
+    </button>
   )
 }
 

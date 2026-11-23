@@ -379,7 +379,114 @@ button.status {
   color: var(--ink);
 }
 
+/* ---------------- the jump row: one chip for each plant family ---------------- */
+
+/* Stays at the top of the screen while the shop scrolls beneath it. */
+.shop__jump {
+  position: sticky;
+  top: env(safe-area-inset-top);
+  z-index: 5;
+  display: flex;
+  gap: 0.4rem;
+  /* As wide as the screen, so the cards do not show at its sides as they pass under. */
+  margin: 0 -1.5rem 0.75rem;
+  padding: 0.5rem 1.5rem;
+  overflow-x: auto;
+  background: var(--bg);
+  scrollbar-width: none;
+}
+
+.shop__jump::-webkit-scrollbar {
+  display: none;
+}
+
+.shop__chip {
+  flex: none;
+  padding: 0.35rem 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(12, 31, 20, 0.05);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.82rem;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.shop__chip:active {
+  background: rgba(46, 122, 76, 0.16);
+}
+
+@media (hover: hover) {
+  .shop__chip:hover {
+    border-color: rgba(46, 122, 76, 0.5);
+  }
+}
+
+.shop__chip:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---------------- back to top ---------------- */
+
+.to-top {
+  position: fixed;
+  z-index: 30;
+  right: calc(1rem + env(safe-area-inset-right));
+  bottom: calc(1rem + env(safe-area-inset-bottom));
+  display: grid;
+  place-items: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--bg-2);
+  color: var(--ink);
+  box-shadow: 0 4px 14px rgba(12, 31, 20, 0.18);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  opacity: 0;
+  transform: translateY(0.5rem) scale(0.9);
+  pointer-events: none;
+  transition:
+    opacity 0.2s,
+    transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.to-top.is-shown {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.to-top.is-shown:active {
+  transform: scale(0.92);
+}
+
+.to-top svg {
+  width: 1.2rem;
+  height: 1.2rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.to-top:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
 /* ---------------- a shelf: one family of plants under its own heading ------- */
+
+/* Room for the sticky jump row, so a family's heading is not hidden under it. */
+.shelf {
+  scroll-margin-top: 3.4rem;
+}
 
 .shelf + .shelf {
   margin-top: 2rem;
