@@ -18,7 +18,11 @@ and each page has an **Order on WhatsApp** button. What exists:
   promise from a courier. Telangana is not on the short list.
 - **My list** (2026-11-23): a customer who wants several plants taps the + on a
   card, or *Add to my list* on a plant's page, and one WhatsApp message goes to the
-  shop with every plant, how many of each, a total and the delivery pincode. It is a
+  shop with every plant (bold name, price, and a link to its page), how many of
+  each, a total and the delivery pincode. WhatsApp cannot attach photos to a message
+  that is opened from a link, so the pictures come from the links: it turns the
+  first one into a card with that plant's photo and price (`api/plant.js` writes
+  those tags), and the others open the plant's page when tapped. It is a
   list, not a basket: no payment, no stock held, and the shop still answers by
   hand, so it stays inside stage 1. It lives on the customer's phone
   (`localStorage`, up to 15 plants, up to 9 of each) and looks up today's price and

@@ -197,18 +197,20 @@ test('a sold-out plant stays on the list but is not counted', () => {
 
 /* ---------------- the message ---------------- */
 
-test('the message lists each plant with its price, then the total', () => {
+test('the message lists each plant in bold with its price, then the total', () => {
   const items = setQty(list(birkin, pothos), 'philodendron-birkin', 2)
 
   assert.equal(
     listMessage(items),
     [
-      'Hi! I’d like to order these from StomatalWorld:',
+      '🌿 *My plant order*',
       '',
-      '1. Philodendron Birkin × 2 — ₹898',
-      '2. Neon Pothos — ₹299',
+      '🌱 *Philodendron Birkin* × 2 — ₹898',
+      '🌱 *Neon Pothos* — ₹299',
       '',
-      'Total: ₹1,197',
+      '🧾 *Total: ₹1,197*',
+      '',
+      'Please confirm availability. Thank you! 🙏',
     ].join('\n'),
   )
 })
@@ -217,13 +219,15 @@ test('a plant with no price says so, and the total says it is not the whole tota
   assert.equal(
     listMessage(list(birkin, lily), '600001'),
     [
-      'Hi! I’d like to order these from StomatalWorld:',
+      '🌿 *My plant order*',
       '',
-      '1. Philodendron Birkin — ₹449',
-      '2. Peace Lily — price on request',
+      '🌱 *Philodendron Birkin* — ₹449',
+      '🌱 *Peace Lily* — _price on request_',
       '',
-      'Total so far: ₹449 (plus 1 on request)',
-      'Delivery pincode: 600001.',
+      '🧾 *Total so far: ₹449* _(plus 1 on request)_',
+      '📍 Delivery pincode: 600001',
+      '',
+      'Please confirm availability. Thank you! 🙏',
     ].join('\n'),
   )
 })
@@ -231,15 +235,16 @@ test('a plant with no price says so, and the total says it is not the whole tota
 test('with no prices at all there is no total to give', () => {
   const message = listMessage(list(lily))
   assert.ok(!message.includes('Total'))
-  assert.ok(message.endsWith('1. Peace Lily — price on request'))
+  assert.ok(!message.includes('🧾'))
+  assert.ok(message.includes('🌱 *Peace Lily* — _price on request_'))
 })
 
 test('a plant the shop has to check on is marked for it', () => {
   const message = listMessage(list(plant('maybe-plant', { availability: 'ask' })))
-  assert.ok(message.includes('please confirm it is available'))
+  assert.ok(message.includes('_(please confirm it is available)_'))
 })
 
-test('sold-out plants are left out of the message and the numbering', () => {
+test('sold-out plants are left out of the message', () => {
   const items = [
     ...list(birkin),
     { ...snapshot(plant('gone-plant')), availability: 'sold_out', qty: 1 },
@@ -248,15 +253,79 @@ test('sold-out plants are left out of the message and the numbering', () => {
   const message = listMessage(items)
 
   assert.ok(!message.includes('Gone Plant'))
-  assert.ok(message.includes('2. Neon Pothos'))
+  assert.equal((message.match(/🌱/g) || []).length, 2)
+  assert.ok(message.includes('*Neon Pothos*'))
+})
+
+test('it opens with a heading and closes with a thank you, whatever is on the list', () => {
+  for (const items of [list(birkin), list(lily), list(birkin, pothos, lily)]) {
+    const lines = listMessage(items, '600001').split('\n')
+    assert.equal(lines[0], '🌿 *My plant order*')
+    assert.equal(lines.at(-1), 'Please confirm availability. Thank you! 🙏')
+  }
+})
+
+test('a plant name with WhatsApp’s own marks in it cannot turn the line bold or italic', () => {
+  const odd = plant('odd-plant', { common_name: 'Black *Gold* _Pothos_ ~new~ `x`' })
+  const message = listMessage(list(odd))
+
+  assert.ok(message.includes('🌱 *Black Gold Pothos new x* — ₹299'))
+  assert.ok(!message.includes('*Gold*'))
+  assert.ok(!message.includes('_Pothos_'))
+})
+
+test('with the site address, each plant carries a link to its own page', () => {
+  const items = setQty(list(birkin, pothos), 'philodendron-birkin', 2)
+
+  assert.equal(
+    listMessage(items, '600001', 'https://shop.example'),
+    [
+      '🌿 *My plant order*',
+      '',
+      '🌱 *Philodendron Birkin* × 2 — ₹898',
+      'https://shop.example/philodendron-birkin',
+      '',
+      '🌱 *Neon Pothos* — ₹299',
+      'https://shop.example/neon-pothos',
+      '',
+      '🧾 *Total: ₹1,197*',
+      '📍 Delivery pincode: 600001',
+      '',
+      'Please confirm availability. Thank you! 🙏',
+    ].join('\n'),
+  )
+})
+
+test('the first link in the message is the first plant on the list, the one WhatsApp shows a photo for', () => {
+  const message = listMessage(list(pothos, birkin, lily), null, 'https://shop.example')
+  assert.equal(message.match(/https?:\/\/\S+/)[0], 'https://shop.example/neon-pothos')
+})
+
+test('a trailing slash on the address does not double up, and an odd slug cannot break the link', () => {
+  const message = listMessage(list(plant('a-b', {}), plant('c d?e', {})), null, 'https://shop.example///')
+
+  assert.ok(message.includes('\nhttps://shop.example/a-b\n'))
+  assert.ok(message.includes('\nhttps://shop.example/c%20d%3Fe\n'))
+  assert.ok(!message.includes('//a-b'))
+})
+
+test('a plant that is sold out gets no link, because it is not in the message', () => {
+  const items = [
+    ...list(birkin),
+    { ...snapshot(plant('gone-plant')), availability: 'sold_out', qty: 1 },
+  ]
+  assert.ok(!listMessage(items, null, 'https://shop.example').includes('gone-plant'))
 })
 
 test('the send button opens a chat with the shop and the whole message typed in', () => {
   const items = list(birkin, pothos)
-  const action = listAction(items, '600001')
+  const action = listAction(items, '600001', 'https://shop.example')
 
   assert.match(action.href, /^https:\/\/wa\.me\/\d{10,15}\?text=/)
-  assert.equal(decodeURIComponent(action.href.split('?text=')[1]), listMessage(items, '600001'))
+  assert.equal(
+    decodeURIComponent(action.href.split('?text=')[1]),
+    listMessage(items, '600001', 'https://shop.example'),
+  )
   assert.equal(action.plants, 2)
 })
 
@@ -272,6 +341,7 @@ test('a full list still fits in one message link', () => {
     items = setQty(items, `a-rather-long-plant-name-number-${n}`, 9)
   }
 
-  const { href } = listAction(items, '600001')
+  // With a link under every plant, which is the longest the message can be.
+  const { href } = listAction(items, '600001', 'https://stomatalworld.vercel.app')
   assert.ok(href.length < 4000, `link is ${href.length} characters`)
 })

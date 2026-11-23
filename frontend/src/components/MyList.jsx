@@ -51,7 +51,11 @@ export default function MyList() {
   const onAdmin = location.pathname.startsWith('/admin')
   const pincode = isPincode(draft) ? draft : null
   const sum = useMemo(() => totals(items), [items])
-  const action = useMemo(() => listAction(items, pincode), [items, pincode])
+  // The site's own address goes in, so each plant in the message links to its page.
+  const action = useMemo(
+    () => listAction(items, pincode, window.location.origin),
+    [items, pincode],
+  )
   const estimate = useMemo(() => (pincode ? estimateDelivery(pincode) : null), [pincode])
 
   // Going to another page puts the list away.

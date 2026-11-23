@@ -153,47 +153,70 @@ export function totals(items) {
 
 /* ---------------- the message ---------------- */
 
+// WhatsApp turns *this* into bold and _this_ into italic, so a plant name with one of
+// those marks in it would make half of its line bold or italic. Spaces are safe.
+const plain = (text) => String(text).replace(/[*_~`]/g, ' ').replace(/\s+/g, ' ').trim()
+
+/** A plant's own page, as a link WhatsApp can open. */
+const plantUrl = (origin, slug) => `${origin.replace(/\/+$/, '')}/${encodeURIComponent(slug)}`
+
 /**
  * The whole list as the customer's first message in the chat, so the shop can
  * read it, add it up and answer without asking anything.
+ *
+ * Written the way a modern WhatsApp message looks: a bold heading, one line a
+ * plant with the name in bold, the total in bold, and a few emoji to mark the
+ * parts, so it can be read at a glance among a day of other chats. Only the
+ * marks WhatsApp itself understands (*bold* and _italic_) are used, so it reads
+ * as plain text anywhere else.
+ *
+ * Given the site's address (`origin`), each plant also carries a link to its
+ * page, so the shop can see the photo of exactly the plant that was meant. A
+ * message can only carry text, never an attached photo, but WhatsApp turns the
+ * first link in a message into a card showing that page's photo, name and price
+ * (see api/plant.js), so the first plant on the list shows its picture in the
+ * chat. Without an origin the message has no links.
  */
-export function listMessage(items, pincode) {
+export function listMessage(items, pincode, origin) {
   const live = items.filter((item) => !isSoldOut(item))
 
-  const lines = live.map((item, index) => {
+  const lines = live.map((item) => {
     const many = item.qty > 1 ? ` × ${item.qty}` : ''
     const price =
       item.price_minor == null
-        ? 'price on request'
+        ? '_price on request_'
         : formatPrice(item.price_minor * item.qty, item.currency)
-    const check = item.availability === 'ask' ? ' (please confirm it is available)' : ''
-    return `${index + 1}. ${item.name}${many} — ${price}${check}`
+    const check = item.availability === 'ask' ? ' _(please confirm it is available)_' : ''
+    const line = `🌱 *${plain(item.name)}*${many} — ${price}${check}`
+    return origin ? `${line}\n${plantUrl(origin, item.slug)}` : line
   })
 
   const sum = totals(items)
-  const message = ['Hi! I’d like to order these from StomatalWorld:', '', ...lines, '']
+  // A plant with a link is two lines, so the plants are set apart by a blank line.
+  const message = ['🌿 *My plant order*', '', lines.join(origin ? '\n\n' : '\n'), '']
 
   if (sum.priced > 0) {
     message.push(
       sum.unpriced > 0
-        ? `Total so far: ${formatPrice(sum.total, sum.currency)} (plus ${sum.unpriced} on request)`
-        : `Total: ${formatPrice(sum.total, sum.currency)}`,
+        ? `🧾 *Total so far: ${formatPrice(sum.total, sum.currency)}* _(plus ${sum.unpriced} on request)_`
+        : `🧾 *Total: ${formatPrice(sum.total, sum.currency)}*`,
     )
   }
-  if (pincode) message.push(`Delivery pincode: ${pincode}.`)
+  if (pincode) message.push(`📍 Delivery pincode: ${pincode}`)
 
-  return message.join('\n').replace(/\n+$/, '')
+  message.push('', 'Please confirm availability. Thank you! 🙏')
+  return message.join('\n')
 }
 
 /**
  * The send button: where it goes and what it says. Null when there is nothing
  * that can be sent, or the shop has no WhatsApp number set in data/contact.js.
  */
-export function listAction(items, pincode) {
+export function listAction(items, pincode, origin) {
   const sum = totals(items)
   if (sum.plants === 0) return null
 
-  const href = whatsappLink(listMessage(items, pincode))
+  const href = whatsappLink(listMessage(items, pincode, origin))
   if (!href) return null
 
   return { label: 'Send my list on WhatsApp', href, plants: sum.plants }
