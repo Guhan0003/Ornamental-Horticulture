@@ -6,7 +6,7 @@ import Gallery from './Gallery.jsx'
 import Icon from './Icon.jsx'
 import Leaf from './Leaf.jsx'
 import PhotoLine from './PhotoLine.jsx'
-import { imageSrc, prefetchPlant } from '../lib/api.js'
+import { imageSrc, prefetchPlant, recordTap } from '../lib/api.js'
 import {
   availabilityLabel,
   buyAction,
@@ -165,7 +165,15 @@ function OrderLink({ plant, className, pincode }) {
   if (!action) return null
 
   return (
-    <a className={className} href={action.href} target="_blank" rel="noreferrer">
+    <a
+      className={className}
+      href={action.href}
+      target="_blank"
+      rel="noreferrer"
+      // Whatever the button says (order, check, ask the price), pressing it is a
+      // customer reaching out about this plant, and the dashboard counts that.
+      onClick={() => recordTap(plant.slug)}
+    >
       <Glyph name="whatsapp" className="pl-cta__icon" />
       {action.label}
     </a>

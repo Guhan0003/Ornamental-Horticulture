@@ -9,9 +9,10 @@ from app.schemas.plant import (
     PlantUpdate,
     price_problem,
 )
+from app.services import taps
 from app.services.photos import discard_unused, photo_urls
 from app.services.related import find_related
-from app.services.views import record_view
+from app.services.views import looks_like_a_person, record_view
 
 router = APIRouter()
 
@@ -43,6 +44,20 @@ def get_plant(slug: str, db: DbSession, request: Request, background: Background
     if not request.headers.get("x-prefetch"):
         background.add_task(record_view, slug, request.headers.get("user-agent", ""))
     return page
+
+
+@router.post("/{slug}/tap", status_code=status.HTTP_204_NO_CONTENT)
+def count_order_tap(slug: str, db: DbSession, request: Request):
+    """
+    The WhatsApp order button on this plant's page was pressed.
+
+    Public, like opening the page, and just as quiet: it answers with nothing. A
+    plant that does not exist, or a crawler, counts for nothing, so the numbers
+    cannot be padded by guessing addresses or by link previews.
+    """
+    _get_or_404(db, slug)
+    if looks_like_a_person(request.headers.get("user-agent", "")):
+        taps.record_tap(db, slug)
 
 
 @router.post("", response_model=PlantRead, status_code=status.HTTP_201_CREATED)

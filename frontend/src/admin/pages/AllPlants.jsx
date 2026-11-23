@@ -8,11 +8,16 @@ const matches = (plant, query) =>
     value.toLowerCase().includes(query),
   )
 
-/** "34 scans in 30 days", or today's number when the page is being watched. */
-const viewsLabel = ({ recent, today }) =>
-  today > 0
-    ? `${recent} scan${recent === 1 ? '' : 's'} in 30 days · ${today} today`
-    : `${recent} scan${recent === 1 ? '' : 's'} in 30 days`
+/**
+ * "34 scans · 5 WhatsApp taps in 30 days", plus today's scans when the page is
+ * being watched. A scan is the page being opened; a tap is the order button on it
+ * being pressed, so the pair says which plants people look at and which they ask about.
+ */
+const viewsLabel = ({ recent, today, taps_recent: taps = 0 }) => {
+  const scans = `${recent} scan${recent === 1 ? '' : 's'}`
+  const asked = `${taps} WhatsApp tap${taps === 1 ? '' : 's'}`
+  return today > 0 ? `${scans} · ${asked} in 30 days · ${today} today` : `${scans} · ${asked} in 30 days`
+}
 
 const updatedLabel = (iso) =>
   new Date(iso).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })

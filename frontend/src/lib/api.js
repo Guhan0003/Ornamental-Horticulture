@@ -128,6 +128,23 @@ export function prefetchPlant(slug) {
 /** A plant's page changed, so what we remembered about it is stale. */
 export const forgetPlant = (slug) => visited.delete(slug)
 
+/**
+ * Count one press of a plant's WhatsApp order button.
+ *
+ * Fire and forget. It runs in the same moment WhatsApp opens, so it goes as a
+ * beacon, which the browser finishes in the background even if the page is left,
+ * and it can never slow the order down or show anyone an error.
+ */
+export function recordTap(slug) {
+  const url = `${BASE_URL}/api/v1/plants/${encodeURIComponent(slug)}/tap`
+  try {
+    if (navigator.sendBeacon?.(url)) return
+    fetch(url, { method: 'POST', keepalive: true }).catch(() => {})
+  } catch {
+    /* counting is never worth a broken button */
+  }
+}
+
 /** Every plant, A–Z, as small summaries. */
 export const listPlants = () => request('/plants')
 

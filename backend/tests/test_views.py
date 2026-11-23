@@ -117,7 +117,16 @@ def test_counts_come_back_most_looked_at_first(client, admin_headers, db_session
 
     rows = client.get("/api/v1/views", headers=admin_headers).json()
     assert [row["slug"] for row in rows] == ["zz-plant", "peace-lily"]
-    assert rows[0] == {"slug": "zz-plant", "total": 2, "recent": 2, "today": 2}
+    assert rows[0] == {
+        "slug": "zz-plant",
+        "total": 2,
+        "recent": 2,
+        "today": 2,
+        # Nobody has pressed this plant's order button.
+        "taps_total": 0,
+        "taps_recent": 0,
+        "taps_today": 0,
+    }
 
 
 def test_history_fills_in_the_quiet_days(client, admin_headers, db_session):
