@@ -1,0 +1,45 @@
+{
+  "slug": "philodendron-pluto",
+  "common_name": "Philodendron Pluto",
+  "scientific_name": "Philodendron 'Pluto'",
+  "price_minor": 54900,
+  "availability": "in_stock",
+  "image": {
+    "file": "philodendron-pluto.jpg",
+    "alt": "A Philodendron Pluto in a white pot, its dark bronze-green leaves deeply cut along the edges, with red new growth rising from the centre"
+  },
+  "profile": {
+    "environment": "Indoor",
+    "light": {
+      "label": "Bright indirect light",
+      "note": "Tolerates partial shade; keep out of direct sun",
+      "ideal": [2],
+      "tolerates": [1]
+    },
+    "landscape_use": {
+      "items": ["Sheltered shaded patios"],
+      "note": "Frost-free zones only; keep out of direct sun"
+    },
+    "home_use": {
+      "items": ["Table top accent", "Desk plant", "Floor plant in a bright corner"]
+    }
+  },
+  "snap": "A self-heading Philodendron with dark, glossy leaves, deeply cut along the edges, that unfurl red and darken to bronze. It grows as an upright clump and does not climb, so it needs no pole. A hybrid of unknown parentage, and an easy one to keep. Toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "Pluto is a hybrid of garden origin, not a wild species, and its parentage is not on record. It is self-heading: instead of climbing, it builds an upright clump from a central crown, so it stays tidy and needs no pole. The leaves are glossy, with deeply toothed, wavy margins."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Let the soil dry out well between waterings, then water thoroughly. Overwatering is what troubles it most, so use a well-draining, organic-rich mix and never leave the pot standing in water. Bright indirect light suits it best; a little shade is fine, but direct sun scorches the leaves."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "New leaves unfurl red, then deepen to bronze and usually to dark green as they mature, so a healthy plant shows several colours at once. The red spikes rising from the centre are new growth on its way."
+    }
+  ]
+}
