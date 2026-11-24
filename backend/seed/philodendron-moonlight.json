@@ -1,0 +1,45 @@
+{
+  "slug": "philodendron-moonlight",
+  "common_name": "Philodendron Moonlight",
+  "scientific_name": "Philodendron 'Moonlight'",
+  "price_minor": 39900,
+  "availability": "in_stock",
+  "image": {
+    "file": "philodendron-moonlight.jpg",
+    "alt": "A Philodendron Moonlight in a white pot, a dense clump of glossy, neon lime-green leaves"
+  },
+  "profile": {
+    "environment": "Indoor",
+    "light": {
+      "label": "Bright indirect light",
+      "note": "Lower light fades the colour; direct sun burns",
+      "ideal": [2],
+      "tolerates": [1]
+    },
+    "landscape_use": {
+      "items": ["Sheltered shaded patios"],
+      "note": "Frost-free zones only; keep out of direct sun"
+    },
+    "home_use": {
+      "items": ["Table top accent", "Desk plant", "Shelf by a bright window"]
+    }
+  },
+  "snap": "A compact, self-heading Philodendron whose leaves open neon lime and soften to green as they mature, so the whole plant glows. It grows as a dense, upright clump, never climbing or trailing. Easy to keep, and toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "Moonlight is a cultivated hybrid, not a wild species, and its parentage is not firmly established. It is self-heading: instead of climbing or trailing, it builds a dense, upright clump from a central crown, so it stays tidy and needs no pole."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Light is what keeps the colour. In a dim spot the neon fades to a dull green and the plant gets leggy, while direct sun burns the leaves, so give it bright indirect light. Let the soil dry partially between waterings, and err on the dry side: overwatering is the usual way to lose it."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "The colour is the whole point. New leaves emerge in a fluorescent lime-chartreuse and soften to green as they mature, so the plant is always a mix of shades, brightest on the newest growth."
+    }
+  ]
+}
