@@ -1,0 +1,46 @@
+{
+  "slug": "philodendron-subhastatum",
+  "common_name": "Philodendron Subhastatum",
+  "scientific_name": "Philodendron subhastatum",
+  "price_minor": 59900,
+  "availability": "in_stock",
+  "image": {
+    "file": "philodendron-subhastatum.jpg",
+    "alt": "A Philodendron Subhastatum seen from below, its long dark green leaves turned to show deep red undersides picked out in fine lime-green veins"
+  },
+  "profile": {
+    "environment": "Indoor",
+    "light": {
+      "label": "Bright indirect light",
+      "note": "Direct sun can scorch the leaves",
+      "ideal": [2],
+      "tolerates": [1]
+    },
+    "landscape_use": {
+      "items": ["Climbing tree trunks in shade", "Sheltered shaded patios"],
+      "note": "Frost-free zones only; keep out of direct sun"
+    },
+    "home_use": {
+      "items": ["Climbing a moss pole or trellis", "Floor plant by a bright window", "Statement plant for a bright corner"],
+      "note": "Give it something to climb"
+    }
+  },
+  "snap": "A climbing Philodendron from the wet forests of Colombia and Ecuador, with long leaves that are dark green on top and deep red underneath, the red veined in fine lime green. It climbs rather than mounds, so give it a moss pole or trellis. Toxic to cats and dogs if chewed.",
+  "deep_dive": [
+    {
+      "icon": "origin",
+      "title": "Origin & Habit",
+      "body": "Native to the wet forests of Colombia and Ecuador, where it grows as a climbing hemiepiphyte, scrambling up tree trunks and holding on with aerial roots. Indoors it behaves the same way: it wants something to climb, and without a pole or trellis it sprawls instead of building height."
+    },
+    {
+      "icon": "water",
+      "title": "Key Care Rule",
+      "body": "Keep the mix evenly moist but never soggy, and water again once the top couple of centimetres have started to dry. A chunky, fast-draining mix lets the roots breathe. Bright indirect light keeps the foliage rich; direct sun scorches it, and it dislikes cold, so keep it frost-free and away from chilly draughts."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Special Feature",
+      "body": "The leaves are dark green above and deep red below, with fine lime-green veins that stand out sharply against the red. The red is strongest on younger leaves and can soften as they mature. The name describes the shape: subhastate means almost spear-shaped, with a broad lobed base."
+    }
+  ]
+}
