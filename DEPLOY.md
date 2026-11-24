@@ -167,6 +167,11 @@ Then check on a phone:
   - To see it working: `curl -sI -H "Origin: https://stomatalworld.vercel.app"
     https://stomatalworld-api.vercel.app/api/v1/plants` twice; the second answer should
     say `x-vercel-cache: HIT`.
+  - Two smaller things keep the first load quick. The site sends a `Content-Type` only on
+    requests that carry data, because on a plain read the browser would otherwise ask the
+    API's permission first (an extra round trip of about a quarter of a second, for every
+    plant page). And `frontend/index.html` opens the connection to the API early
+    (`preconnect`); if the API ever moves, change that address too.
 - **If the API ever moves off `*.vercel.app`:** the frontend's
   `Content-Security-Policy` in `vercel.json` allows `connect-src https:`, so a new
   API host keeps working — but tighten it to the exact origin once the address

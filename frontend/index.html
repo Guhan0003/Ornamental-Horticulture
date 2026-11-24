@@ -26,6 +26,11 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <title>Ornamental Horticulture — StomatalWorld</title>
+    <!-- The plants come from here, a different address from the page, and opening a
+         connection to it takes a moment. Starting now, while the page's script is
+         still downloading, means it is already open when the plant list is asked for.
+         If the API ever moves, change this and PRODUCTION_API in src/lib/api.js. -->
+    <link rel="preconnect" href="https://stomatalworld-api.vercel.app" crossorigin />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

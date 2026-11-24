@@ -41,7 +41,14 @@ export class ApiError extends Error {
 
 async function request(path, { auth = false, raw, ...options } = {}) {
   const headers = { ...options.headers }
-  if (!raw) headers['Content-Type'] = 'application/json'
+
+  // A content type says what a request is sending, so only a request that sends
+  // something gets one. On a plain read it is not just pointless: the API is a
+  // different address from the page, and a browser will not send a cross-site
+  // request with that header until it has first asked the server's permission in
+  // a separate round trip. That cost about a quarter of a second before the plant
+  // list or any plant's page could start loading.
+  if (!raw && options.body !== undefined) headers['Content-Type'] = 'application/json'
 
   if (auth) {
     const token = getToken()
