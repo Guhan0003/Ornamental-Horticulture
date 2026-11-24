@@ -82,28 +82,105 @@ test('the order button opens WhatsApp with the plant, the price and the page', (
   assert.match(action.href, /^https:\/\/wa\.me\/\d+\?text=/)
   assert.equal(
     message(action),
-    'Hi! I’d like to order the Peace Lily (₹399) from StomatalWorld. https://x.example/peace-lily',
+    [
+      '🌿 *Plant order*',
+      '',
+      '🌱 *Peace Lily* — ₹399',
+      '',
+      '📸 *See the plant with its photo*',
+      'https://x.example/peace-lily',
+      '',
+      'Please confirm availability. Thank you! 🙏',
+    ].join('\n'),
   )
 })
 
-test('a checked pincode goes into the order message', () => {
+test('a checked pincode goes into the order message, under the plant', () => {
   const text = message(buyAction(lily, 'https://x.example/peace-lily', '600001'))
-  assert.match(text, /Delivery pincode: 600001\./)
-  assert.ok(text.endsWith('https://x.example/peace-lily'))
+
+  assert.equal(
+    text,
+    [
+      '🌿 *Plant order*',
+      '',
+      '🌱 *Peace Lily* — ₹399',
+      '📍 Delivery pincode: 600001',
+      '',
+      '📸 *See the plant with its photo*',
+      'https://x.example/peace-lily',
+      '',
+      'Please confirm availability. Thank you! 🙏',
+    ].join('\n'),
+  )
+})
+
+test('with no page address the message has no link and no photo line', () => {
+  const text = message(buyAction(lily))
+
+  assert.ok(!text.includes('http'))
+  assert.ok(!text.includes('📸'))
+  assert.ok(text.endsWith('Please confirm availability. Thank you! 🙏'))
+})
+
+test('it opens and closes the way the My list message does, so the shop reads one shape', () => {
+  const variants = [
+    lily,
+    { ...lily, availability: 'ask' },
+    { ...lily, price_minor: null },
+    { ...lily, availability: 'sold_out' },
+  ]
+  for (const plant of variants) {
+    const lines = message(buyAction(plant, 'https://x.example/peace-lily', '600001')).split('\n')
+
+    assert.match(lines[0], /^🌿 \*.+\*$/)
+    assert.equal(lines[1], '')
+    assert.match(lines[2], /^🌱 \*Peace Lily\*/)
+    assert.match(lines.at(-1), / Thank you! 🙏$/)
+  }
 })
 
 test('the button says the honest thing for a plant that cannot simply be ordered', () => {
   const sold = buyAction({ ...lily, availability: 'sold_out' }, '', '600001')
   assert.equal(sold.label, 'Ask when it’s back')
   assert.doesNotMatch(message(sold), /pincode/)
+  assert.equal(
+    message(sold),
+    ['🌿 *Back in stock?*', '', '🌱 *Peace Lily* — _sold out_', '', 'Will it be back soon? Thank you! 🙏'].join('\n'),
+  )
 
   const unpriced = buyAction({ ...lily, price_minor: null })
   assert.equal(unpriced.label, 'Ask for the price')
-  assert.match(message(unpriced), /What is the price of the Peace Lily\?/)
+  assert.equal(
+    message(unpriced),
+    ['🌿 *Price enquiry*', '', '🌱 *Peace Lily*', '', 'What is the price? Thank you! 🙏'].join('\n'),
+  )
 
   const ask = buyAction({ ...lily, availability: 'ask' }, '', '560001')
   assert.equal(ask.label, 'Check availability')
-  assert.match(message(ask), /Is the Peace Lily \(₹399\) available\? Delivery pincode: 560001\./)
+  assert.equal(
+    message(ask),
+    [
+      '🌿 *Availability check*',
+      '',
+      '🌱 *Peace Lily* — ₹399',
+      '📍 Delivery pincode: 560001',
+      '',
+      'Is it available? Thank you! 🙏',
+    ].join('\n'),
+  )
+})
+
+test('a plant name with WhatsApp’s own marks in it cannot turn its line bold or italic', () => {
+  const odd = { ...lily, common_name: 'Black *Gold* _Pothos_ ~new~ `x`' }
+  const text = message(buyAction(odd))
+
+  assert.ok(text.includes('🌱 *Black Gold Pothos new x* — ₹399'))
+  assert.ok(!text.includes('*Gold*'))
+  assert.ok(!text.includes('_Pothos_'))
+})
+
+test('a plant with a price in rupees and paise shows both', () => {
+  assert.ok(message(buyAction({ ...lily, price_minor: 7550 })).includes('🌱 *Peace Lily* — ₹75.50'))
 })
 
 test('asking for a real photo opens WhatsApp naming the plant and the page', () => {

@@ -71,6 +71,27 @@ export function toMinor(text) {
 
 const digits = (value) => value.replace(/[^\d]/g, '')
 
+// WhatsApp turns *this* into bold and _this_ into italic, so a plant name with one of
+// those marks in it would make half of its line bold or italic. Spaces are safe.
+export const plainText = (text) => String(text).replace(/[*_~`]/g, ' ').replace(/\s+/g, ' ').trim()
+
+/**
+ * One plant's message, laid out like the My list one (see list.js) so the shop reads
+ * the same shape whichever way an order arrives: a bold heading, the plant in bold with
+ * its price, the delivery pincode, a link to the plant's page, and a thank you. WhatsApp
+ * turns that link into a card with the plant's photo and price (see api/plant.js).
+ *
+ * `detail` is what comes after the name on its line (the price, or "sold out"), and
+ * `closing` is the one-line question or request the message ends on.
+ */
+function plantMessage({ heading, name, detail, pincode, pageUrl, closing }) {
+  const lines = ['🌿 *' + heading + '*', '', `🌱 *${plainText(name)}*${detail ? ` — ${detail}` : ''}`]
+  if (pincode) lines.push(`📍 Delivery pincode: ${pincode}`)
+  if (pageUrl) lines.push('', '📸 *See the plant with its photo*', pageUrl)
+  lines.push('', `${closing} Thank you! 🙏`)
+  return lines.join('\n')
+}
+
 /**
  * What the order button says and where it goes: a WhatsApp chat to the shop,
  * already naming the plant and its price, so the customer only has to press
@@ -78,7 +99,8 @@ const digits = (value) => value.replace(/[^\d]/g, '')
  * "Order" on something that cannot be ordered is a broken promise.
  *
  * When the customer has checked a delivery pincode it goes in the message too,
- * so the shop does not have to ask where it is going.
+ * so the shop does not have to ask where it is going. (Not for a plant that
+ * cannot be bought or has no price: there is nothing to deliver yet.)
  *
  * Null when the shop has no WhatsApp number (set in the dashboard's Settings).
  */
@@ -87,28 +109,50 @@ export function buyAction(plant, pageUrl, pincode) {
   if (!contact.whatsapp) return null
 
   const price = formatPrice(plant.price_minor, plant.currency)
-  const name = price ? `${plant.common_name} (${price})` : plant.common_name
+  const name = plant.common_name
 
   let label
   let message
   if (isSoldOut(plant)) {
     label = 'Ask when it’s back'
-    message = `Hi! Will the ${plant.common_name} be back in stock?`
+    message = plantMessage({
+      heading: 'Back in stock?',
+      name,
+      detail: '_sold out_',
+      pageUrl,
+      closing: 'Will it be back soon?',
+    })
   } else if (plant.price_minor == null) {
     label = 'Ask for the price'
-    message = `Hi! What is the price of the ${plant.common_name}?`
+    message = plantMessage({
+      heading: 'Price enquiry',
+      name,
+      pageUrl,
+      closing: 'What is the price?',
+    })
   } else if (plant.availability === 'ask') {
     label = 'Check availability'
-    message = `Hi! Is the ${name} available?`
-    if (pincode) message += ` Delivery pincode: ${pincode}.`
+    message = plantMessage({
+      heading: 'Availability check',
+      name,
+      detail: price,
+      pincode,
+      pageUrl,
+      closing: 'Is it available?',
+    })
   } else {
     label = 'Order on WhatsApp'
-    message = `Hi! I’d like to order the ${name} from StomatalWorld.`
-    if (pincode) message += ` Delivery pincode: ${pincode}.`
+    message = plantMessage({
+      heading: 'Plant order',
+      name,
+      detail: price,
+      pincode,
+      pageUrl,
+      closing: 'Please confirm availability.',
+    })
   }
 
-  const text = pageUrl ? `${message} ${pageUrl}` : message
-  return { label, href: `https://wa.me/${digits(contact.whatsapp)}?text=${encodeURIComponent(text)}` }
+  return { label, href: `https://wa.me/${digits(contact.whatsapp)}?text=${encodeURIComponent(message)}` }
 }
 
 /** A WhatsApp chat to the shop with `text` already typed in. Null when no number is set. */

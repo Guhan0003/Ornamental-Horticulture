@@ -13,7 +13,7 @@
  * keeps the shop's way of selling exactly as it is — someone replies on
  * WhatsApp — and only saves the customer typing.
  */
-import { formatPrice, isSoldOut, whatsappLink } from './commerce.js'
+import { formatPrice, isSoldOut, plainText, whatsappLink } from './commerce.js'
 
 /** A message with more than this many plants gets too long to read in a chat. */
 export const MAX_ITEMS = 15
@@ -153,10 +153,6 @@ export function totals(items) {
 
 /* ---------------- the message ---------------- */
 
-// WhatsApp turns *this* into bold and _this_ into italic, so a plant name with one of
-// those marks in it would make half of its line bold or italic. Spaces are safe.
-const plain = (text) => String(text).replace(/[*_~`]/g, ' ').replace(/\s+/g, ' ').trim()
-
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 const trimmed = (origin) => origin.replace(/\/+$/, '')
 
@@ -228,7 +224,7 @@ export function listMessage(items, pincode, origin) {
         ? '_price on request_'
         : formatPrice(item.price_minor * item.qty, item.currency)
     const check = item.availability === 'ask' ? ' _(please confirm it is available)_' : ''
-    return `🌱 *${plain(item.name)}*${many} — ${price}${check}`
+    return `🌱 *${plainText(item.name)}*${many} — ${price}${check}`
   })
 
   const sum = totals(items)

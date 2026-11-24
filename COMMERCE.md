@@ -10,7 +10,11 @@ and each page has an **Order on WhatsApp** button. What exists:
 - The admin form's *Price & availability* section.
 - The home page shop grid, sortable by name or price, sold-out last.
 - The order button, which adapts: *Order on WhatsApp*, *Check availability*,
-  *Ask for the price* or *Ask when it's back*.
+  *Ask for the price* or *Ask when it's back*. Its message (2026-11-24) is laid out
+  like the My list one, so the shop reads one shape whichever way an order arrives:
+  a bold heading, the plant in bold with its price, the pincode, a link to the plant's
+  page (which WhatsApp turns into a card with its photo) and a thank you. The wording
+  is in `buyAction` in `frontend/src/lib/commerce.js`.
 - A delivery check on the plant page: a pincode in, a date range out (1–3
   working days to Tamil Nadu, Andhra Pradesh, Kerala and Karnataka, 2–5 anywhere
   else; Sundays skipped). The pincode goes into the WhatsApp order message. It is
