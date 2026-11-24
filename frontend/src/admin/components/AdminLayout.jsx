@@ -18,6 +18,7 @@ export default function AdminLayout() {
             All plants
           </NavLink>
           <NavLink to="/admin/new">Add plant</NavLink>
+          <NavLink to="/admin/settings">Settings</NavLink>
         </nav>
 
         <div className="admin__account">

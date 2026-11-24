@@ -1,11 +1,12 @@
 from fastapi import APIRouter
 
-from app.api.v1.endpoints import auth, media, plants, views
+from app.api.v1.endpoints import auth, media, plants, settings, views
 
 api_router = APIRouter()
 
 # Public reads, admin writes.
 api_router.include_router(plants.router, prefix="/plants", tags=["plants"])
+api_router.include_router(settings.router, prefix="/settings", tags=["settings"])
 
 # Admin — behind the login.
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])

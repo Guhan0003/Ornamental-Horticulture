@@ -2,7 +2,7 @@ import { useEffect, useId, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import Leaf from './Leaf.jsx'
 import PhotoLine from './PhotoLine.jsx'
-import { contact } from '../data/contact.js'
+import { useContact } from '../lib/contactStore.js'
 import { realPhotoAction } from '../lib/commerce.js'
 import '../styles/contact.css'
 
@@ -60,6 +60,7 @@ function channels(details) {
  * card with a description and links to call, WhatsApp, email and Instagram.
  */
 export default function ContactButton() {
+  const contact = useContact()
   const location = useLocation()
   const titleId = useId()
   const [open, setOpen] = useState(false)

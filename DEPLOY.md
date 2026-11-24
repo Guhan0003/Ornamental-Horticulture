@@ -180,6 +180,24 @@ Then check on a phone:
     API's permission first (an extra round trip of about a quarter of a second, for every
     plant page). And `frontend/index.html` opens the connection to the API early
     (`preconnect`); if the API ever moves, change that address too.
+- **Contact details are edited in the dashboard.** *Settings* changes the call and
+  WhatsApp numbers, the email, Instagram and the contact card's greeting for the whole
+  shop, with nothing to deploy. They live in the `site_settings` table (migration
+  `0007`, so run `alembic upgrade head` before the code goes live, as for any schema
+  change) and are served at `GET /api/v1/settings`, kept at the CDN like the plant list
+  and read fresh (`?fresh=1`) by the dashboard. `frontend/src/data/contact.js` is only
+  what the site uses until something is saved, and if the server cannot be reached; if
+  the number ever changes for good, change it there too. A change reaches customers
+  within a minute or two, and when the shop has been quiet the very first visitor can
+  still see the old numbers once, so after saving, open the shop twice.
+- **The order page.** A customer's *My list* message ends with one link,
+  `/order?p=slug.qty,slug`, to a page that shows every plant in the order with its
+  photo. Like a plant's page, it has a crawler-only function (`api/order.js`, sent there by
+  `vercel.json`, before the rule for plants because `order` looks like a plant's
+  address) that writes the link-preview card, so WhatsApp shows "Plant order — 3 plants ·
+  ₹1,197" with the first plant's photo. To check it:
+  `curl -A "WhatsApp/2.23" "https://stomatalworld.vercel.app/order?p=peace-lily"` should show
+  that `og:title`. `order` is a reserved address, so no plant can be given it.
 - **If the API ever moves off `*.vercel.app`:** the frontend's
   `Content-Security-Policy` in `vercel.json` allows `connect-src https:`, so a new
   API host keeps working — but tighten it to the exact origin once the address

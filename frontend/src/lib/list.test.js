@@ -8,6 +8,8 @@ import {
   hasItem,
   listAction,
   listMessage,
+  orderUrl,
+  parseOrder,
   parseStored,
   refreshItems,
   removeItem,
@@ -274,7 +276,7 @@ test('a plant name with WhatsApp’s own marks in it cannot turn the line bold o
   assert.ok(!message.includes('_Pothos_'))
 })
 
-test('with the site address, each plant carries a link to its own page', () => {
+test('with the site address, the message ends with one link to a page of every plant’s photo', () => {
   const items = setQty(list(birkin, pothos), 'philodendron-birkin', 2)
 
   assert.equal(
@@ -283,38 +285,103 @@ test('with the site address, each plant carries a link to its own page', () => {
       '🌿 *My plant order*',
       '',
       '🌱 *Philodendron Birkin* × 2 — ₹898',
-      'https://shop.example/philodendron-birkin',
-      '',
       '🌱 *Neon Pothos* — ₹299',
-      'https://shop.example/neon-pothos',
       '',
       '🧾 *Total: ₹1,197*',
       '📍 Delivery pincode: 600001',
+      '',
+      '📸 *See every plant with its photo*',
+      'https://shop.example/order?p=philodendron-birkin.2,neon-pothos',
       '',
       'Please confirm availability. Thank you! 🙏',
     ].join('\n'),
   )
 })
 
-test('the first link in the message is the first plant on the list, the one WhatsApp shows a photo for', () => {
+test('there is exactly one link, so the card WhatsApp shows is the order’s', () => {
   const message = listMessage(list(pothos, birkin, lily), null, 'https://shop.example')
-  assert.equal(message.match(/https?:\/\/\S+/)[0], 'https://shop.example/neon-pothos')
+  assert.equal(message.match(/https?:\/\/\S+/g).length, 1)
 })
 
-test('a trailing slash on the address does not double up, and an odd slug cannot break the link', () => {
-  const message = listMessage(list(plant('a-b', {}), plant('c d?e', {})), null, 'https://shop.example///')
-
-  assert.ok(message.includes('\nhttps://shop.example/a-b\n'))
-  assert.ok(message.includes('\nhttps://shop.example/c%20d%3Fe\n'))
-  assert.ok(!message.includes('//a-b'))
+test('without the site address there is no link and no photo line', () => {
+  const message = listMessage(list(birkin, pothos), '600001')
+  assert.ok(!message.includes('http'))
+  assert.ok(!message.includes('📸'))
 })
 
-test('a plant that is sold out gets no link, because it is not in the message', () => {
+test('a trailing slash on the address does not double up', () => {
+  const message = listMessage(list(birkin), null, 'https://shop.example///')
+
+  assert.ok(message.includes('\nhttps://shop.example/order?p=philodendron-birkin\n'))
+})
+
+test('a plant that is sold out is not in the link, because it is not in the message', () => {
   const items = [
     ...list(birkin),
     { ...snapshot(plant('gone-plant')), availability: 'sold_out', qty: 1 },
   ]
-  assert.ok(!listMessage(items, null, 'https://shop.example').includes('gone-plant'))
+  const message = listMessage(items, null, 'https://shop.example')
+
+  assert.ok(!message.includes('gone-plant'))
+  assert.ok(message.includes('order?p=philodendron-birkin\n'))
+})
+
+test('a list of only sold-out plants has no link either', () => {
+  const items = [{ ...snapshot(plant('gone-plant')), availability: 'sold_out', qty: 1 }]
+  assert.ok(!listMessage(items, null, 'https://shop.example').includes('http'))
+})
+
+/* ---------------- the order link ---------------- */
+
+test('an order link names each plant, with how many only when it is more than one', () => {
+  const items = setQty(setQty(list(birkin, pothos, lily), 'neon-pothos', 3), 'peace-lily', 1)
+  assert.equal(
+    orderUrl(items, 'https://shop.example'),
+    'https://shop.example/order?p=philodendron-birkin,neon-pothos.3,peace-lily',
+  )
+})
+
+test('reading a link back gives the same plants, in the same order, with the same numbers', () => {
+  const items = setQty(setQty(list(pothos, birkin, lily), 'philodendron-birkin', 2), 'peace-lily', 9)
+  const url = orderUrl(items, 'https://shop.example')
+
+  assert.deepEqual(parseOrder(new URL(url).searchParams.get('p')), [
+    { slug: 'neon-pothos', qty: 1 },
+    { slug: 'philodendron-birkin', qty: 2 },
+    { slug: 'peace-lily', qty: 9 },
+  ])
+})
+
+test('a link that is damaged or made up cannot do anything but name plants', () => {
+  assert.deepEqual(parseOrder('a-plant,,../etc/passwd,<script>,with space,UPPER.2,a.b.c,x.2.3'), [
+    { slug: 'a-plant', qty: 1 },
+    { slug: 'upper', qty: 2 },
+  ])
+  assert.deepEqual(parseOrder(''), [])
+  assert.deepEqual(parseOrder(null), [])
+  assert.deepEqual(parseOrder(undefined), [])
+})
+
+test('a plant named twice counts once, and a quantity is kept within 1 to 9', () => {
+  assert.deepEqual(parseOrder('a-plant.2,a-plant.5,b-plant.0,c-plant.99,d-plant.x,e-plant.-3'), [
+    { slug: 'a-plant', qty: 2 },
+    { slug: 'b-plant', qty: 1 },
+    { slug: 'c-plant', qty: 9 },
+    { slug: 'd-plant', qty: 1 },
+    { slug: 'e-plant', qty: 1 },
+  ])
+})
+
+test('a link cannot ask for more plants than a list can hold', () => {
+  const many = Array.from({ length: 40 }, (_, n) => `plant-${n}`).join(',')
+  assert.equal(parseOrder(many).length, MAX_ITEMS)
+})
+
+test('a plant address that was damaged in storage is left out of the link, not passed on', () => {
+  const odd = { ...snapshot(plant('ok-plant')), slug: 'c d?e', qty: 1 }
+  const items = [odd, ...list(birkin)]
+
+  assert.equal(orderUrl(items, 'https://shop.example'), 'https://shop.example/order?p=philodendron-birkin')
 })
 
 test('the send button opens a chat with the shop and the whole message typed in', () => {
@@ -341,7 +408,7 @@ test('a full list still fits in one message link', () => {
     items = setQty(items, `a-rather-long-plant-name-number-${n}`, 9)
   }
 
-  // With a link under every plant, which is the longest the message can be.
+  // The longest the message can be: the most plants, the longest names, the most of each.
   const { href } = listAction(items, '600001', 'https://stomatalworld.vercel.app')
   assert.ok(href.length < 4000, `link is ${href.length} characters`)
 })

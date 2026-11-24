@@ -1,0 +1,267 @@
+/* ==========================================================================
+   The order page: every plant in a customer's order, with its photo.
+   Cream paper and leaf green, like the rest of the public site, and laid out
+   for a phone first: two plants to a row, the photo as large as it can be.
+   ========================================================================== */
+
+.order {
+  max-width: 62rem;
+  margin: 0 auto;
+  min-height: 100svh;
+  padding: 1rem 1rem calc(6rem + env(safe-area-inset-bottom));
+  color: var(--ml-forest, #0c1f14);
+}
+
+.order__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--ml-forest, #0c1f14);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.order__leaf {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--ml-leaf, #2e7a4c);
+}
+
+.order__title {
+  margin: 1.25rem 0 0.2rem;
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(1.9rem, 8vw, 2.6rem);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.order__sub {
+  margin: 0 0 1.1rem;
+  color: var(--ml-muted, #5b6a60);
+  font-size: 0.95rem;
+}
+
+/* ---------------- the plants ---------------- */
+
+.order__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.1rem 0.8rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.order-tile {
+  display: grid;
+  gap: 0.15rem;
+  color: inherit;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.order-tile__photo {
+  position: relative;
+  display: block;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border: 1px solid var(--ml-line, rgba(12, 31, 20, 0.12));
+  border-radius: 0.9rem;
+  background-color: #dfe2dc;
+  background-size: cover;
+  background-position: center;
+}
+
+.order-tile__photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.order-tile:active .order-tile__photo {
+  transform: scale(0.985);
+}
+
+.order-tile__qty {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  min-width: 2.1rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: var(--ml-forest, #0c1f14);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.3;
+  text-align: center;
+  box-shadow: 0 1px 6px rgba(12, 31, 20, 0.35);
+}
+
+.order-tile__badge {
+  position: absolute;
+  left: 0.5rem;
+  bottom: 0.5rem;
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(255, 253, 248, 0.94);
+  color: #8a3b2a;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.order-tile.is-sold .order-tile__photo img {
+  opacity: 0.55;
+}
+
+.order-tile__name {
+  margin-top: 0.45rem;
+  font-size: 0.98rem;
+  font-weight: 600;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.order-tile__price b {
+  font-weight: 600;
+}
+
+.order-tile__price small,
+.order-tile__ask {
+  color: var(--ml-muted, #5b6a60);
+  font-size: 0.8rem;
+}
+
+.order-tile__ask {
+  color: #8a5a12;
+}
+
+/* ---------------- the total ---------------- */
+
+.order__total {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.2rem 0.75rem;
+  margin: 1.5rem 0 0;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--ml-line, rgba(12, 31, 20, 0.12));
+  border-radius: 1rem;
+  background: var(--ml-paper, #fffdf8);
+}
+
+.order__total span {
+  flex: 1;
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ml-muted, #5b6a60);
+}
+
+.order__total strong {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-size: 1.7rem;
+}
+
+.order__total small {
+  flex-basis: 100%;
+  text-align: right;
+  color: var(--ml-muted, #5b6a60);
+}
+
+.order__note {
+  margin: 0.9rem 0 0;
+  font-size: 0.88rem;
+  color: #8a5a12;
+}
+
+.order__foot {
+  margin: 1rem 0 0;
+  font-size: 0.85rem;
+  color: var(--ml-muted, #5b6a60);
+}
+
+.order__shop {
+  display: inline-block;
+  margin-top: 1.5rem;
+  color: var(--ml-leaf, #2e7a4c);
+  font-weight: 600;
+  text-underline-offset: 0.2em;
+}
+
+.order__empty {
+  margin: 1.5rem 0 0;
+  padding: 1.1rem;
+  border: 1px dashed var(--ml-line, rgba(12, 31, 20, 0.2));
+  border-radius: 1rem;
+  background: var(--ml-paper, #fffdf8);
+  color: var(--ml-muted, #5b6a60);
+}
+
+.order__retry {
+  display: block;
+  margin-top: 0.8rem;
+  padding: 0.6rem 1.1rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ml-forest, #0c1f14);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ---------------- loading ---------------- */
+
+.order-tile--skeleton .order-tile__photo,
+.order-tile__line {
+  background: linear-gradient(100deg, #e8e4d8 30%, #f3f0e6 50%, #e8e4d8 70%);
+  background-size: 200% 100%;
+  animation: order-shimmer 1.4s linear infinite;
+}
+
+.order-tile__line {
+  height: 0.8rem;
+  margin-top: 0.45rem;
+  border-radius: 0.4rem;
+}
+
+.order-tile__line--short {
+  width: 55%;
+}
+
+@keyframes order-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .order-tile--skeleton .order-tile__photo,
+  .order-tile__line {
+    animation: none;
+  }
+}
+
+/* ---------------- larger screens ---------------- */
+
+@media (min-width: 36rem) {
+  .order {
+    padding-inline: 1.5rem;
+  }
+
+  .order__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.4rem 1rem;
+  }
+}
+
+@media (min-width: 56rem) {
+  .order__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}

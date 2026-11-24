@@ -7,7 +7,7 @@ SLUG_PATTERN = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 
 # Plant pages live at the top level (/peace-lily), so a slug must not shadow a
 # route the site itself uses.
-RESERVED_SLUGS = frozenset({"admin", "api", "assets"})
+RESERVED_SLUGS = frozenset({"admin", "api", "assets", "order"})
 
 
 def _check_slug(value: str) -> str:

@@ -157,8 +157,49 @@ export function totals(items) {
 // those marks in it would make half of its line bold or italic. Spaces are safe.
 const plain = (text) => String(text).replace(/[*_~`]/g, ' ').replace(/\s+/g, ' ').trim()
 
-/** A plant's own page, as a link WhatsApp can open. */
-const plantUrl = (origin, slug) => `${origin.replace(/\/+$/, '')}/${encodeURIComponent(slug)}`
+const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+const trimmed = (origin) => origin.replace(/\/+$/, '')
+
+/**
+ * The address of the page that shows this order with a photo of every plant:
+ * `/order?p=philodendron-birkin.2,neon-pothos`. Each plant is its address, then a
+ * dot and how many when it is more than one. Nothing else goes in the link, so
+ * there is nothing private in it and nothing to look up: the page reads the
+ * shop's own plant list for the names, photos and prices.
+ *
+ * A plant's address is only letters, numbers and hyphens, so neither a dot nor a
+ * comma can appear inside one. WhatsApp reads that as a link in full, and none of
+ * its own formatting marks (`*`, `_`, `~`) is in it.
+ */
+export function orderUrl(items, origin) {
+  const parts = items
+    .filter((item) => !isSoldOut(item) && SLUG.test(item.slug))
+    .map((item) => (item.qty > 1 ? `${item.slug}.${item.qty}` : item.slug))
+  return `${trimmed(origin)}/order?p=${parts.join(',')}`
+}
+
+/**
+ * The plants an order link names, in the order it names them: [{ slug, qty }].
+ *
+ * The link is whatever someone typed or was sent, so nothing in it is trusted. A
+ * part that is not a plant's address is skipped, a plant named twice counts once,
+ * a quantity outside 1–9 is brought back into it, and it stops at the most a list
+ * can hold.
+ */
+export function parseOrder(text) {
+  const seen = new Set()
+  const order = []
+
+  for (const part of String(text ?? '').split(',')) {
+    const [slug, qty = '1', extra] = part.trim().toLowerCase().split('.')
+    if (extra !== undefined || !SLUG.test(slug) || slug.length > 160 || seen.has(slug)) continue
+
+    seen.add(slug)
+    order.push({ slug, qty: clampQty(qty) })
+    if (order.length === MAX_ITEMS) break
+  }
+  return order
+}
 
 /**
  * The whole list as the customer's first message in the chat, so the shop can
@@ -170,12 +211,12 @@ const plantUrl = (origin, slug) => `${origin.replace(/\/+$/, '')}/${encodeURICom
  * marks WhatsApp itself understands (*bold* and _italic_) are used, so it reads
  * as plain text anywhere else.
  *
- * Given the site's address (`origin`), each plant also carries a link to its
- * page, so the shop can see the photo of exactly the plant that was meant. A
- * message can only carry text, never an attached photo, but WhatsApp turns the
- * first link in a message into a card showing that page's photo, name and price
- * (see api/plant.js), so the first plant on the list shows its picture in the
- * chat. Without an origin the message has no links.
+ * Given the site's address (`origin`), it ends with one link to a page that shows
+ * every plant in the order with its photo, so the shop can see exactly which plants
+ * were meant. A message can only carry text, never attached photos, so this is how
+ * the pictures get there. WhatsApp also turns that link into a card at the top of
+ * the message, showing the first plant's photo and how many plants and what total
+ * the order has (see api/order.js). Without an origin the message has no link.
  */
 export function listMessage(items, pincode, origin) {
   const live = items.filter((item) => !isSoldOut(item))
@@ -187,13 +228,11 @@ export function listMessage(items, pincode, origin) {
         ? '_price on request_'
         : formatPrice(item.price_minor * item.qty, item.currency)
     const check = item.availability === 'ask' ? ' _(please confirm it is available)_' : ''
-    const line = `🌱 *${plain(item.name)}*${many} — ${price}${check}`
-    return origin ? `${line}\n${plantUrl(origin, item.slug)}` : line
+    return `🌱 *${plain(item.name)}*${many} — ${price}${check}`
   })
 
   const sum = totals(items)
-  // A plant with a link is two lines, so the plants are set apart by a blank line.
-  const message = ['🌿 *My plant order*', '', lines.join(origin ? '\n\n' : '\n'), '']
+  const message = ['🌿 *My plant order*', '', lines.join('\n'), '']
 
   if (sum.priced > 0) {
     message.push(
@@ -204,13 +243,17 @@ export function listMessage(items, pincode, origin) {
   }
   if (pincode) message.push(`📍 Delivery pincode: ${pincode}`)
 
+  if (origin && live.length > 0) {
+    message.push('', '📸 *See every plant with its photo*', orderUrl(live, origin))
+  }
+
   message.push('', 'Please confirm availability. Thank you! 🙏')
   return message.join('\n')
 }
 
 /**
  * The send button: where it goes and what it says. Null when there is nothing
- * that can be sent, or the shop has no WhatsApp number set in data/contact.js.
+ * that can be sent, or the shop has no WhatsApp number (set in the dashboard's Settings).
  */
 export function listAction(items, pincode, origin) {
   const sum = totals(items)

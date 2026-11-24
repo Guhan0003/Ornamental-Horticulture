@@ -12,7 +12,13 @@
  * as before; the crawler just gets something to read before it does.
  */
 
-const { DEFAULT_API_URL, DEFAULT_SITE_URL, injectMeta, plantMeta } = require('../server/share.js')
+const {
+  DEFAULT_API_URL,
+  DEFAULT_SITE_URL,
+  injectMeta,
+  plantMeta,
+  requestOrigin,
+} = require('../server/share.js')
 
 const API_URL = (process.env.API_URL || DEFAULT_API_URL).replace(/\/$/, '')
 const SITE_URL = (process.env.SITE_URL || DEFAULT_SITE_URL).replace(/\/$/, '')
@@ -25,25 +31,13 @@ const USER_AGENT = 'StomatalWorld-share-bot/1.0'
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 const TIMEOUT = 8000
 
-/** The address this request arrived on. Used only to fetch the page it would have got. */
-function requestOrigin(req) {
-  const host = String(req.headers['x-forwarded-host'] || req.headers.host || '')
-    .split(',')[0]
-    .trim()
-  const proto = String(req.headers['x-forwarded-proto'] || 'https')
-    .split(',')[0]
-    .trim()
-
-  return /^[a-z0-9.-]+(:\d+)?$/i.test(host) && /^https?$/.test(proto) ? `${proto}://${host}` : SITE_URL
-}
-
 module.exports = async function handler(req, res) {
   const slug = String((req.query && req.query.slug) || '').toLowerCase()
   res.setHeader('Content-Type', 'text/html; charset=utf-8')
 
   let html
   try {
-    const page = await fetch(`${requestOrigin(req)}/index.html`, {
+    const page = await fetch(`${requestOrigin(req.headers, SITE_URL)}/index.html`, {
       headers: { 'user-agent': USER_AGENT },
       signal: AbortSignal.timeout(TIMEOUT),
     })

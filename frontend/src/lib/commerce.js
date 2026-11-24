@@ -5,7 +5,7 @@
  * Money arrives as whole paise (`price_minor`) and is only turned into rupees
  * here, for display, so no arithmetic ever happens on a float.
  */
-import { contact } from '../data/contact.js'
+import { getContact } from './contactStore.js'
 
 export const AVAILABILITY = [
   { value: 'in_stock', label: 'In stock' },
@@ -80,9 +80,10 @@ const digits = (value) => value.replace(/[^\d]/g, '')
  * When the customer has checked a delivery pincode it goes in the message too,
  * so the shop does not have to ask where it is going.
  *
- * Null when the shop has no WhatsApp number set in data/contact.js.
+ * Null when the shop has no WhatsApp number (set in the dashboard's Settings).
  */
 export function buyAction(plant, pageUrl, pincode) {
+  const contact = getContact()
   if (!contact.whatsapp) return null
 
   const price = formatPrice(plant.price_minor, plant.currency)
@@ -112,6 +113,7 @@ export function buyAction(plant, pageUrl, pincode) {
 
 /** A WhatsApp chat to the shop with `text` already typed in. Null when no number is set. */
 export function whatsappLink(text) {
+  const contact = getContact()
   if (!contact.whatsapp) return null
   return `https://wa.me/${digits(contact.whatsapp)}?text=${encodeURIComponent(text)}`
 }
@@ -126,6 +128,7 @@ export function whatsappLink(text) {
  * Null when no WhatsApp number is set, so the caller shows no dead button.
  */
 export function realPhotoAction(plant, pageUrl) {
+  const contact = getContact()
   if (!contact.whatsapp) return null
 
   const message = plant

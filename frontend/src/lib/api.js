@@ -189,6 +189,16 @@ export function recordView(slug) {
  */
 export const listPlants = ({ fresh = false } = {}) => request(fresh ? '/plants?fresh=1' : '/plants')
 
+/**
+ * The contact details the owner has saved in the dashboard. Public, because every
+ * page builds its call and WhatsApp buttons from them. Anything never saved is left
+ * out, and the site keeps the details built into it for those.
+ *
+ * Kept at the CDN like the list; the dashboard passes `fresh` so it shows what was
+ * last saved.
+ */
+export const getSettings = ({ fresh = false } = {}) => request(fresh ? '/settings?fresh=1' : '/settings')
+
 /* ---------------- auth ---------------- */
 
 export async function login(email, password) {
@@ -250,6 +260,10 @@ export function deletePlant(slug) {
   forgetPlant(slug)
   return request(`/plants/${encodeURIComponent(slug)}`, { method: 'DELETE', auth: true })
 }
+
+/** Save the contact details. All five are sent every time; returns what was saved. */
+export const saveSettings = (data) =>
+  request('/settings', { method: 'PUT', body: body(data), auth: true })
 
 /** How often each plant has been looked at. Admin only. */
 export const listViewCounts = (days = 30) => request(`/views?days=${days}`, { auth: true })

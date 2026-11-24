@@ -149,6 +149,127 @@ function injectMeta(html, meta, snap) {
   return page.replace('</head>', `    ${tags.join('\n    ')}\n  </head>`)
 }
 
+/* ---------------- an order, for the link in a customer's WhatsApp message ---------------- */
+
+const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+// Keep in step with MAX_ITEMS and MAX_QTY in frontend/src/lib/list.js.
+const MAX_ORDER_PLANTS = 15
+const MAX_ORDER_QTY = 9
+
+/**
+ * The plants an order link names, in order: [{ slug, qty }]. The same reading as the
+ * page's own (frontend/src/lib/list.js), because a link preview must describe the
+ * same order the page will show. Nothing in a link is trusted: anything that is not
+ * a plant's address is skipped, a plant named twice counts once, and a quantity is
+ * kept between 1 and 9.
+ */
+function parseOrder(text) {
+  const seen = new Set()
+  const order = []
+
+  for (const part of String(text == null ? '' : text).split(',')) {
+    const [slug, qty = '1', extra] = part.trim().toLowerCase().split('.')
+    if (extra !== undefined || !SLUG.test(slug) || slug.length > 160 || seen.has(slug)) continue
+
+    seen.add(slug)
+    const n = Math.trunc(Number(qty))
+    order.push({ slug, qty: Number.isFinite(n) ? Math.min(MAX_ORDER_QTY, Math.max(1, n)) : 1 })
+    if (order.length === MAX_ORDER_PLANTS) break
+  }
+  return order
+}
+
+/**
+ * What a link to an order shows in WhatsApp: how many plants and what they come to,
+ * the names of the first few, and the first plant's photo.
+ *
+ * `plants` is the shop's list. A plant that is sold out or no longer there is left
+ * out, as it is on the page and in the message itself.
+ */
+function orderMeta(wanted, plants, { siteUrl = DEFAULT_SITE_URL, apiUrl = DEFAULT_API_URL } = {}) {
+  const bySlug = new Map(plants.map((plant) => [plant.slug, plant]))
+  const rows = wanted
+    .filter(({ slug }) => bySlug.has(slug))
+    .map(({ slug, qty }) => ({ plant: bySlug.get(slug), qty }))
+    .filter(({ plant }) => plant.availability !== 'sold_out')
+
+  const pieces = rows.reduce((sum, { qty }) => sum + qty, 0)
+  const priced = rows.filter(({ plant }) => plant.price_minor != null)
+  const total = priced.reduce((sum, { plant, qty }) => sum + plant.price_minor * qty, 0)
+  const currency = (priced[0] && priced[0].plant.currency) || 'INR'
+
+  const count = `${rows.length} ${rows.length === 1 ? 'plant' : 'plants'}`
+  let ogTitle = rows.length ? `Plant order — ${count}` : 'Plant order'
+  if (priced.length) {
+    ogTitle += ` · ${formatPrice(total, currency)}`
+    if (priced.length < rows.length) ogTitle += ' + more'
+  }
+
+  const names = rows.map(({ plant, qty }) => (qty > 1 ? `${plant.common_name} × ${qty}` : plant.common_name))
+  const shown = names.slice(0, 4).join(', ') + (names.length > 4 ? ` and ${names.length - 4} more` : '')
+  const description = rows.length
+    ? clip(`${shown}. Tap to see every plant with its photo.`, 180)
+    : 'A plant order from StomatalWorld.'
+
+  const first = rows[0] && rows[0].plant
+  const parts = wanted.map(({ slug, qty }) => (qty > 1 ? `${slug}.${qty}` : slug)).join(',')
+
+  return {
+    title: `Plant order — ${SITE_NAME}`,
+    ogTitle,
+    description,
+    url: `${siteUrl}/order${parts ? `?p=${parts}` : ''}`,
+    image: first ? absoluteUrl(first.image && first.image.url, apiUrl) : '',
+    imageAlt: first ? (first.image && first.image.alt) || first.common_name : '',
+    pieces,
+  }
+}
+
+/**
+ * Put an order's tags into the page's <head>, in place of the generic ones.
+ *
+ * Marked noindex: one person's order is not something for a search engine to list,
+ * and the address is not in the sitemap either.
+ */
+function injectOrderMeta(html, meta) {
+  let page = html
+  for (const tag of REPLACED_TAGS) page = page.replace(tag, '')
+
+  const e = escapeHtml
+  const tags = [
+    `<title>${e(meta.title)}</title>`,
+    `<meta name="description" content="${e(meta.description)}" />`,
+    `<meta name="robots" content="noindex" />`,
+    `<link rel="canonical" href="${e(meta.url)}" />`,
+    `<meta property="og:type" content="website" />`,
+    `<meta property="og:site_name" content="${SITE_NAME}" />`,
+    `<meta property="og:title" content="${e(meta.ogTitle)}" />`,
+    `<meta property="og:description" content="${e(meta.description)}" />`,
+    `<meta property="og:url" content="${e(meta.url)}" />`,
+    meta.image ? `<meta property="og:image" content="${e(meta.image)}" />` : '',
+    meta.image ? `<meta property="og:image:alt" content="${e(meta.imageAlt)}" />` : '',
+    `<meta name="twitter:card" content="summary_large_image" />`,
+  ].filter(Boolean)
+
+  return page.replace('</head>', `    ${tags.join('\n    ')}\n  </head>`)
+}
+
+/**
+ * The address a request arrived on, used only to fetch the page it would have got.
+ * Falls back to the site's own address if the headers look wrong, so a made-up
+ * host header can never make this function fetch somewhere else.
+ */
+function requestOrigin(headers, fallback = DEFAULT_SITE_URL) {
+  const host = String(headers['x-forwarded-host'] || headers.host || '')
+    .split(',')[0]
+    .trim()
+  const proto = String(headers['x-forwarded-proto'] || 'https')
+    .split(',')[0]
+    .trim()
+
+  return /^[a-z0-9.-]+(:\d+)?$/i.test(host) && /^https?$/.test(proto) ? `${proto}://${host}` : fallback
+}
+
 /** sitemap.xml: the home page and every plant, with the day it last changed. */
 function sitemapXml(plants, siteUrl = DEFAULT_SITE_URL) {
   const entry = (loc, lastmod) =>
@@ -172,7 +293,11 @@ module.exports = {
   escapeHtml,
   formatPrice,
   injectMeta,
+  injectOrderMeta,
+  orderMeta,
+  parseOrder,
   plantMeta,
   productJsonLd,
+  requestOrigin,
   sitemapXml,
 }

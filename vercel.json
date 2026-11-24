@@ -30,6 +30,17 @@
   "rewrites": [
     { "source": "/sitemap.xml", "destination": "/api/sitemap" },
     {
+      "source": "/order",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": ".*(WhatsApp|whatsapp|facebookexternalhit|Facebot|Twitterbot|TelegramBot|Slackbot|LinkedInBot|Discordbot|Googlebot|bingbot|Applebot|Pinterestbot|SkypeUriPreview|Embedly).*"
+        }
+      ],
+      "destination": "/api/order"
+    },
+    {
       "source": "/:slug([a-z0-9-]+)",
       "has": [
         {

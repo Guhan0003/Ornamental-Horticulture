@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom'
 import { Glyph } from './ContactButton.jsx'
 import * as api from '../lib/api.js'
 import { formatPrice } from '../lib/commerce.js'
+import { useContact } from '../lib/contactStore.js'
 import {
   estimateDelivery,
   formatRange,
@@ -37,6 +38,8 @@ export default function MyList() {
   const titleId = useId()
   const pincodeId = useId()
   const { items, open } = useList()
+  // The send button is built from the shop's WhatsApp number, so it follows it.
+  const contact = useContact()
 
   const pillRef = useRef(null)
   const panelRef = useRef(null)
@@ -51,10 +54,11 @@ export default function MyList() {
   const onAdmin = location.pathname.startsWith('/admin')
   const pincode = isPincode(draft) ? draft : null
   const sum = useMemo(() => totals(items), [items])
-  // The site's own address goes in, so each plant in the message links to its page.
+  // The site's own address goes in, so the message ends with a link to a page of every plant's photo.
   const action = useMemo(
     () => listAction(items, pincode, window.location.origin),
-    [items, pincode],
+    // `contact` is read inside listAction; listed so a new number rebuilds the link.
+    [items, pincode, contact],
   )
   const estimate = useMemo(() => (pincode ? estimateDelivery(pincode) : null), [pincode])
 

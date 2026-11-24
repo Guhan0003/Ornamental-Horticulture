@@ -8,8 +8,12 @@ const {
   escapeHtml,
   formatPrice,
   injectMeta,
+  injectOrderMeta,
+  orderMeta,
+  parseOrder,
   plantMeta,
   productJsonLd,
+  requestOrigin,
   sitemapXml,
 } = require('./share.js')
 
@@ -161,4 +165,115 @@ test('an empty shop still gives a valid sitemap with just the home page', () => 
   const xml = sitemapXml([], SITE)
   assert.equal((xml.match(/<url>/g) || []).length, 1)
   assert.ok(!xml.includes('<lastmod>'))
+})
+
+/* ---------------- an order's link preview ---------------- */
+
+const shopList = [
+  { ...birkin, slug: 'philodendron-birkin', price_minor: 44900, currency: 'INR', availability: 'in_stock', image: { url: 'https://img.example/birkin.webp', alt: 'A Birkin' } },
+  { slug: 'neon-pothos', common_name: 'Neon Pothos', price_minor: 29900, currency: 'INR', availability: 'in_stock', image: { url: '/media/neon.webp' } },
+  { slug: 'peace-lily', common_name: 'Peace Lily', price_minor: null, currency: 'INR', availability: 'in_stock', image: { url: 'https://img.example/lily.webp' } },
+  { slug: 'gone-plant', common_name: 'Gone Plant', price_minor: 10000, currency: 'INR', availability: 'sold_out', image: { url: 'https://img.example/gone.webp' } },
+]
+
+test('an order link is read the same way the page reads it', () => {
+  assert.deepEqual(parseOrder('philodendron-birkin.2,neon-pothos'), [
+    { slug: 'philodendron-birkin', qty: 2 },
+    { slug: 'neon-pothos', qty: 1 },
+  ])
+  assert.deepEqual(parseOrder('a-plant.2,a-plant.5,b-plant.0,c-plant.99,d-plant.x'), [
+    { slug: 'a-plant', qty: 2 },
+    { slug: 'b-plant', qty: 1 },
+    { slug: 'c-plant', qty: 9 },
+    { slug: 'd-plant', qty: 1 },
+  ])
+  assert.deepEqual(parseOrder('../etc/passwd,<script>,with space,a.b.c,'), [])
+  assert.deepEqual(parseOrder(undefined), [])
+  assert.equal(parseOrder(Array.from({ length: 40 }, (_, n) => `plant-${n}`).join(',')).length, 15)
+})
+
+test('the card says how many plants and what they come to, with the first plant’s photo', () => {
+  const meta = orderMeta(parseOrder('philodendron-birkin.2,neon-pothos'), shopList, { siteUrl: SITE, apiUrl: API })
+
+  assert.equal(meta.ogTitle, 'Plant order — 2 plants · ₹1,197')
+  assert.equal(meta.image, 'https://img.example/birkin.webp')
+  assert.equal(meta.imageAlt, 'A Birkin')
+  assert.equal(meta.url, `${SITE}/order?p=philodendron-birkin.2,neon-pothos`)
+  assert.ok(meta.description.startsWith('Philodendron Birkin × 2, Neon Pothos.'))
+})
+
+test('a plant with no price says the total is not all of it', () => {
+  const meta = orderMeta(parseOrder('neon-pothos,peace-lily'), shopList, { siteUrl: SITE, apiUrl: API })
+  assert.equal(meta.ogTitle, 'Plant order — 2 plants · ₹299 + more')
+})
+
+test('with no priced plant there is no total in the title', () => {
+  assert.equal(orderMeta(parseOrder('peace-lily'), shopList).ogTitle, 'Plant order — 1 plant')
+})
+
+test('a plant that is sold out or gone is left out, as it is on the page', () => {
+  const meta = orderMeta(parseOrder('gone-plant,neon-pothos,not-in-the-shop'), shopList, { siteUrl: SITE, apiUrl: API })
+
+  assert.equal(meta.ogTitle, 'Plant order — 1 plant · ₹299')
+  assert.ok(!meta.description.includes('Gone'))
+  assert.equal(meta.image, `${API}/media/neon.webp`)
+})
+
+test('an order with nothing left in it still gives a plain card', () => {
+  const meta = orderMeta(parseOrder('gone-plant'), shopList)
+  assert.equal(meta.ogTitle, 'Plant order')
+  assert.equal(meta.image, '')
+})
+
+test('a long order names the first four and counts the rest', () => {
+  const many = Array.from({ length: 6 }, (_, n) => ({ ...shopList[1], slug: `p-${n}`, common_name: `Plant ${n}` }))
+  const meta = orderMeta(parseOrder(many.map((p) => p.slug).join(',')), many)
+  assert.ok(meta.description.startsWith('Plant 0, Plant 1, Plant 2, Plant 3 and 2 more.'))
+})
+
+test('the order’s tags replace the generic ones, and say not to list it', () => {
+  const meta = orderMeta(parseOrder('philodendron-birkin.2,neon-pothos'), shopList, { siteUrl: SITE, apiUrl: API })
+  const page = injectOrderMeta(BASE, meta)
+
+  assert.equal((page.match(/<title>/g) || []).length, 1)
+  assert.equal((page.match(/property="og:title"/g) || []).length, 1)
+  assert.equal((page.match(/property="og:image"/g) || []).length, 1)
+  assert.equal((page.match(/rel="canonical"/g) || []).length, 1)
+  assert.ok(page.includes('<meta name="robots" content="noindex" />'))
+  assert.ok(page.includes('content="Plant order — 2 plants · ₹1,197"'))
+  assert.ok(page.includes('content="https://img.example/birkin.webp"'))
+  assert.ok(!page.includes('Generic title'))
+})
+
+test('a plant name with quotes or tags cannot break the order’s card', () => {
+  const odd = [{ ...shopList[1], slug: 'odd', common_name: '"><script>alert(1)</script>' }]
+  const page = injectOrderMeta(BASE, orderMeta(parseOrder('odd'), odd))
+
+  assert.ok(!page.includes('<script>alert'))
+})
+
+test('the address a request arrived on is used only if it looks like an address', () => {
+  assert.equal(requestOrigin({ host: 'shop.example' }, 'https://fallback.example'), 'https://shop.example')
+  assert.equal(
+    requestOrigin({ 'x-forwarded-host': 'a.example, b.example', 'x-forwarded-proto': 'http' }),
+    'http://a.example',
+  )
+  assert.equal(requestOrigin({ host: 'evil.example/../x' }, 'https://fallback.example'), 'https://fallback.example')
+  assert.equal(requestOrigin({ host: 'shop.example', 'x-forwarded-proto': 'javascript' }, 'https://fb.example'), 'https://fb.example')
+})
+
+test('only crawlers are sent to the order card, and before the rule for plants', () => {
+  const { rewrites } = JSON.parse(require('node:fs').readFileSync(`${__dirname}/../vercel.json`, 'utf8'))
+  const order = rewrites.findIndex((rule) => rule.source === '/order')
+  const plant = rewrites.findIndex((rule) => rule.source.startsWith('/:slug'))
+
+  assert.ok(order >= 0 && plant >= 0)
+  // "order" looks like any plant's address, so whichever comes first wins.
+  assert.ok(order < plant)
+  assert.equal(rewrites[order].destination, '/api/order')
+  assert.equal(rewrites[order].has[0].value, rewrites[plant].has[0].value)
+
+  const crawler = new RegExp(`^${rewrites[order].has[0].value}$`)
+  assert.ok(crawler.test('WhatsApp/2.23.20.0 A'))
+  assert.ok(!crawler.test('Mozilla/5.0 (iPhone; CPU iPhone OS 17_0) AppleWebKit/605.1.15 Safari/604.1'))
 })

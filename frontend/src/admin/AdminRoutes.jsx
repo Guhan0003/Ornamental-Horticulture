@@ -8,6 +8,7 @@ import Login from './pages/Login.jsx'
 import AllPlants from './pages/AllPlants.jsx'
 import AddPlant from './pages/AddPlant.jsx'
 import EditPlant from './pages/EditPlant.jsx'
+import Settings from './pages/Settings.jsx'
 
 /**
  * The public pages are cream; the dashboard keeps its dark forest palette. This
@@ -53,6 +54,7 @@ export default function AdminRoutes() {
           <Route index element={<AllPlants />} />
           <Route path="new" element={<AddPlant />} />
           <Route path="plants/:slug" element={<EditPlant />} />
+          <Route path="settings" element={<Settings />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/admin" replace />} />

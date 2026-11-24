@@ -18,11 +18,16 @@ and each page has an **Order on WhatsApp** button. What exists:
   promise from a courier. Telangana is not on the short list.
 - **My list** (2026-11-23): a customer who wants several plants taps the + on a
   card, or *Add to my list* on a plant's page, and one WhatsApp message goes to the
-  shop with every plant (bold name, price, and a link to its page), how many of
-  each, a total and the delivery pincode. WhatsApp cannot attach photos to a message
-  that is opened from a link, so the pictures come from the links: it turns the
-  first one into a card with that plant's photo and price (`api/plant.js` writes
-  those tags), and the others open the plant's page when tapped. It is a
+  shop with every plant (bold name and price), how many of each, a total and the
+  delivery pincode. WhatsApp cannot attach photos to a message that is opened from
+  a link, so the pictures come from one link at the end (2026-11-24): the
+  **order page**, `/order?p=philodendron-birkin.2,neon-pothos`, shows every plant in
+  the order with its photo, its count and the total, and each photo opens that
+  plant's page. WhatsApp turns that link into a card at the top of the message
+  ("Plant order — 3 plants · ₹1,197", with the first plant's photo; `api/order.js`
+  writes those tags for crawlers only). The link holds only the plants and counts,
+  nothing private, and the page reads names, photos and prices from the shop's own
+  list, so it always shows the plants as they are now. It is a
   list, not a basket: no payment, no stock held, and the shop still answers by
   hand, so it stays inside stage 1. It lives on the customer's phone
   (`localStorage`, up to 15 plants, up to 9 of each) and looks up today's price and
@@ -30,7 +35,17 @@ and each page has an **Order on WhatsApp** button. What exists:
   message and the total, and a plant with no price is listed as "price on request".
   Sending the list counts a WhatsApp tap on each plant in it. The rules and the
   message are in `frontend/src/lib/list.js` (tested), the phone's copy in
-  `listStore.js`, and the screens in `MyList.jsx` and `ListButton.jsx`.
+  `listStore.js`, the screens in `MyList.jsx` and `ListButton.jsx`, and the order
+  page in `pages/OrderPage.jsx`. `order` is reserved, so no plant can take its
+  address.
+- **Settings** (2026-11-24): the shop's call number, WhatsApp number, email,
+  Instagram handle and the greeting in the contact card are edited in the dashboard
+  (*Settings*) instead of in `frontend/src/data/contact.js`, which is now only the
+  starting point and the fallback. They are kept in the `site_settings` table and
+  served at `GET /api/v1/settings`, which the CDN keeps like the plant list, so a
+  change reaches customers within a minute or two (and the very first visitor after
+  a quiet spell can see the old numbers once). A setting never saved uses the
+  built-in value; one saved empty hides that contact.
 
 **The switch in §4 was not built.** It was written for a launch that was still
 weeks away; the shop's decision since is that prices are the point of the site,

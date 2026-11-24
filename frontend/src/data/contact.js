@@ -1,6 +1,11 @@
 /**
  * Contact details shown in the popup behind the round button at the bottom
  * left of every public page. Leave any value as '' and it is simply not shown.
+ *
+ * The phone, WhatsApp, email, Instagram and WhatsApp message below can be changed
+ * from the dashboard's Settings page, without touching the code. What is saved there
+ * wins; what is written here is only used until something is saved, and whenever the
+ * server cannot be reached. Everything else in this file is changed here.
  */
 export const contact = {
   name: 'StomatalWorld',

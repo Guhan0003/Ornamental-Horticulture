@@ -201,6 +201,10 @@
   line-height: 1.5;
 }
 
+.field small a {
+  color: var(--accent);
+}
+
 .field__warn {
   color: var(--warn) !important;
 }
