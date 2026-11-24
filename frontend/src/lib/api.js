@@ -145,8 +145,14 @@ export function recordTap(slug) {
   }
 }
 
-/** Every plant, A–Z, as small summaries. */
-export const listPlants = () => request('/plants')
+/**
+ * Every plant, A–Z, as small summaries.
+ *
+ * Visitors get a copy the CDN keeps for a minute, which is what makes the shop
+ * open quickly. The dashboard passes `fresh` so that what has just been saved is
+ * never hidden behind it.
+ */
+export const listPlants = ({ fresh = false } = {}) => request(fresh ? '/plants?fresh=1' : '/plants')
 
 /* ---------------- auth ---------------- */
 

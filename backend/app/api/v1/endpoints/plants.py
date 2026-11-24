@@ -1,4 +1,4 @@
-from fastapi import APIRouter, BackgroundTasks, HTTPException, Request, status
+from fastapi import APIRouter, BackgroundTasks, HTTPException, Request, Response, status
 
 from app.api.deps import CurrentUser, DbSession
 from app.models.plant import Plant, RetiredSlug
@@ -24,9 +24,33 @@ def _get_or_404(db: DbSession, slug: str) -> Plant:
     return plant
 
 
+# The list is what the home page waits for, and it lives in Sydney while the
+# people reading it are mostly in India, so every visit used to spend about 0.7s
+# travelling there and back. Everyone is shown the same list, so the CDN keeps it
+# close to them instead: for a minute, and then for five more it hands out the old
+# copy instantly while fetching a new one. A change in the dashboard therefore
+# shows up within a minute or two.
+#
+# Only this list. A plant's own page is deliberately not cached, because counting
+# a scan happens when the request reaches the server, and a cached answer would
+# never reach it.
+LIST_CACHE = "public, max-age=0, s-maxage=60, stale-while-revalidate=300"
+
+
 @router.get("", response_model=list[PlantSummary])
-def list_plants(db: DbSession):
-    """Every plant, A–Z. Feeds the home page search and the admin list."""
+def list_plants(db: DbSession, response: Response, fresh: bool = False):
+    """
+    Every plant, A–Z. Feeds the home page, the My list sheet and the admin list.
+
+    `?fresh=1` skips the cache. The dashboard asks that way, so what you have
+    just saved is never hidden behind a copy from a minute ago.
+    """
+    # Varies on Origin whoever asks. The API tells each website whether it may
+    # read the answer, and the cache has to keep a separate copy for each one, and
+    # one for a caller that sends no origin at all (a crawler, a sitemap build), or
+    # that copy would be handed to a browser with no permission in it.
+    response.headers["Vary"] = "Origin"
+    response.headers["Cache-Control"] = "no-store" if fresh else LIST_CACHE
     return db.query(Plant).order_by(Plant.common_name).all()
 
 

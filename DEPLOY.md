@@ -153,6 +153,20 @@ Then check on a phone:
     the frontend project's environment variables, and change the address in
     `frontend/index.html` (`og:image`) and `frontend/public/robots.txt` (`Sitemap:`).
     `API_URL` can be set the same way if the API ever moves.
+- **Speed:** the shop's plant list (`GET /api/v1/plants`) is kept at Vercel's CDN for a
+  minute, and for five more it is served instantly while a fresh copy is fetched, so the
+  shop opens in a fraction of a second instead of waiting on the server in Sydney. A change
+  made in the dashboard shows on the shop within a minute or two. The dashboard asks with
+  `?fresh=1` and is always current.
+  - A plant's own page is deliberately **not** cached: a scan is counted when the request
+    reaches the server, and a cached page would never get there. Do not add `s-maxage` to
+    it without first moving the counting somewhere else (a beacon, as the order-button
+    taps use).
+  - The list answers with `Vary: Origin`, so the cache keeps one copy per website that
+    asks. Keep that if the CORS settings change or a custom domain is added.
+  - To see it working: `curl -sI -H "Origin: https://stomatalworld.vercel.app"
+    https://stomatalworld-api.vercel.app/api/v1/plants` twice; the second answer should
+    say `x-vercel-cache: HIT`.
 - **If the API ever moves off `*.vercel.app`:** the frontend's
   `Content-Security-Policy` in `vercel.json` allows `connect-src https:`, so a new
   API host keeps working — but tighten it to the exact origin once the address

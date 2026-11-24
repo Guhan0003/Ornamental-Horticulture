@@ -30,8 +30,10 @@ export default function AllPlants() {
   const [views, setViews] = useState({})
 
   useEffect(() => {
+    // Fresh, not the copy the shop is shown: after saving a plant, this list
+    // must say so straight away.
     api
-      .listPlants()
+      .listPlants({ fresh: true })
       .then(setPlants)
       .catch((e) => setError(e.message))
 
