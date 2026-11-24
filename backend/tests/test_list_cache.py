@@ -18,7 +18,20 @@ def test_the_list_is_kept_at_the_edge_for_a_minute_then_served_stale_while_it_re
 
     assert "public" in control
     assert "s-maxage=60" in control
-    assert "stale-while-revalidate=300" in control
+    assert "stale-while-revalidate=3600" in control
+
+
+def test_a_sleeping_server_never_makes_a_visitor_wait_for_an_hour(client):
+    """
+    The server goes to sleep after a few quiet minutes and takes seconds to wake.
+    The old copy is kept for an hour so that a visitor is handed it at once while
+    the server wakes in the background. Shorten this and the first visitor after
+    every quiet spell waits again.
+    """
+    control = cache_control(client.get("/api/v1/plants", headers=PHONE))
+    stale_for = int(control.split("stale-while-revalidate=")[1].split(",")[0])
+
+    assert stale_for >= 3600
 
 
 def test_the_browser_itself_always_asks_again(client):

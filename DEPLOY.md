@@ -154,10 +154,13 @@ Then check on a phone:
     `frontend/index.html` (`og:image`) and `frontend/public/robots.txt` (`Sitemap:`).
     `API_URL` can be set the same way if the API ever moves.
 - **Speed:** the shop's plant list (`GET /api/v1/plants`) is kept at Vercel's CDN for a
-  minute, and for five more it is served instantly while a fresh copy is fetched, so the
-  shop opens in a fraction of a second instead of waiting on the server in Sydney. A change
-  made in the dashboard shows on the shop within a minute or two. The dashboard asks with
-  `?fresh=1` and is always current.
+  minute, and for an hour more it is served instantly while a fresh copy is fetched, so the
+  shop opens in a fraction of a second instead of waiting on the server in Sydney, and
+  never waits for that server to wake up (it sleeps after a few quiet minutes, and waking
+  it was measured at up to 11 seconds). The cost: a change made in the dashboard shows on
+  the shop within a minute when it is busy, but when it has been quiet the first visitor
+  sees the old list once and the next visitor sees the new one, so after editing, open the
+  shop twice to check. The dashboard asks with `?fresh=1` and is always current.
   - A plant's own page is deliberately **not** cached: a scan is counted when the request
     reaches the server, and a cached page would never get there. Do not add `s-maxage` to
     it without first moving the counting somewhere else (a beacon, as the order-button
