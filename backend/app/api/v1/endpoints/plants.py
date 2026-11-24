@@ -24,25 +24,39 @@ def _get_or_404(db: DbSession, slug: str) -> Plant:
     return plant
 
 
-# The list is what the home page waits for, and it lives in Sydney while the
-# people reading it are mostly in India, so every visit used to spend about 0.7s
-# travelling there and back. Everyone is shown the same list, so the CDN keeps it
-# close to them instead: for a minute, and then for an hour more it hands out the
-# old copy instantly while fetching a new one.
+# The shop's list and a plant's data are what the pages wait for, and they live in
+# Sydney while the people reading them are mostly in India, so every visit used to
+# spend about 0.7s travelling there and back. Everyone is shown the same thing, so
+# the CDN keeps it close to them instead: for a minute, and then for an hour more it
+# hands out the old copy instantly while fetching a new one.
 #
 # The hour is not about freshness, it is about the server sleeping. After a few
 # quiet minutes the function in Sydney goes to sleep, and the first request to
 # wake it was measured at up to 11 seconds. Serving the old copy while it wakes in
 # the background means a visitor is never the one who waits, as long as someone
-# has opened the shop in the last hour. The price is that the first visitor after
-# a quiet spell can see the list as it was when the last one left, once; the next
+# has opened the page in the last hour. The price is that the first visitor after
+# a quiet spell can see it as it was when the last one left, once; the next
 # visitor sees the fresh one. A change in the dashboard therefore shows up within a
 # minute when the shop is busy, and on the second visit when it is quiet.
 #
-# Only this list. A plant's own page is deliberately not cached, because counting
-# a scan happens when the request reaches the server, and a cached answer would
-# never reach it.
-LIST_CACHE = "public, max-age=0, s-maxage=60, stale-while-revalidate=3600"
+# This is safe for a plant's data only because scans are no longer counted when the
+# data is fetched. A cached answer never reaches the server, so counting there would
+# stop working; the plant page reports itself with POST /plants/{slug}/view instead,
+# which is never cached.
+EDGE_CACHE = "public, max-age=0, s-maxage=60, stale-while-revalidate=3600"
+
+
+def _cache(response: Response, fresh: bool) -> None:
+    """
+    Let the CDN keep this answer, or (`fresh`) not.
+
+    Varies on Origin whoever asks. The API tells each website whether it may read
+    the answer, and the cache has to keep a separate copy for each one, and one for
+    a caller that sends no origin at all (a crawler, a sitemap build), or that copy
+    would be handed to a browser with no permission in it.
+    """
+    response.headers["Vary"] = "Origin"
+    response.headers["Cache-Control"] = "no-store" if fresh else EDGE_CACHE
 
 
 @router.get("", response_model=list[PlantSummary])
@@ -53,29 +67,45 @@ def list_plants(db: DbSession, response: Response, fresh: bool = False):
     `?fresh=1` skips the cache. The dashboard asks that way, so what you have
     just saved is never hidden behind a copy from a minute ago.
     """
-    # Varies on Origin whoever asks. The API tells each website whether it may
-    # read the answer, and the cache has to keep a separate copy for each one, and
-    # one for a caller that sends no origin at all (a crawler, a sitemap build), or
-    # that copy would be handed to a browser with no permission in it.
-    response.headers["Vary"] = "Origin"
-    response.headers["Cache-Control"] = "no-store" if fresh else LIST_CACHE
+    _cache(response, fresh)
     return db.query(Plant).order_by(Plant.common_name).all()
 
 
 @router.get("/{slug}", response_model=PlantRead)
-def get_plant(slug: str, db: DbSession, request: Request, background: BackgroundTasks):
-    """Everything needed to render one plant page, in a single request."""
+def get_plant(slug: str, db: DbSession, response: Response, fresh: bool = False):
+    """
+    Everything needed to render one plant page, in a single request.
+
+    Reading a plant does not count as a view, so it can be kept at the CDN and so a
+    page fetched ahead of time, in case a suggestion gets tapped, is not somebody
+    looking at a plant. The page counts itself (POST /{slug}/view) when it is shown.
+    `?fresh=1` skips the cache; the dashboard's editor asks that way.
+    """
     plant = _get_or_404(db, slug)
 
     page = PlantRead.model_validate(plant)
     page.related = [PlantSummary.model_validate(other) for other in find_related(db, plant)]
 
-    # Counted after the response has gone out: someone on a shop's Wi-Fi
-    # should never wait on our analytics. A page we fetched ahead of time, in
-    # case a suggestion gets tapped, is not somebody looking at a plant.
-    if not request.headers.get("x-prefetch"):
-        background.add_task(record_view, slug, request.headers.get("user-agent", ""))
+    _cache(response, fresh)
     return page
+
+
+@router.post("/{slug}/view", status_code=status.HTTP_204_NO_CONTENT)
+def count_page_view(
+    slug: str, db: DbSession, request: Request, background: BackgroundTasks
+):
+    """
+    A plant's page was shown to someone: this is a scan.
+
+    Sent by the page itself once it is on screen, which is what makes a scan mean
+    "a person looked at this plant" rather than "something fetched its data".
+    Quiet like the order-button tap: it answers with nothing and counts after the
+    response has gone out, so nobody on a shop's Wi-Fi waits on analytics. A plant
+    that does not exist, or a crawler, counts for nothing, so the numbers cannot be
+    padded by guessing addresses or by link previews.
+    """
+    _get_or_404(db, slug)
+    background.add_task(record_view, slug, request.headers.get("user-agent", ""))
 
 
 @router.post("/{slug}/tap", status_code=status.HTTP_204_NO_CONTENT)

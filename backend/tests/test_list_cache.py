@@ -1,9 +1,10 @@
 """
-The shop's plant list is kept at the CDN so it loads quickly in India; nothing
-else is. These are the promises that makes safe.
+The shop's plant list and each plant's data are kept at the CDN so they load
+quickly in India. Nothing that counts, writes or belongs to the admin is. These
+are the promises that make that safe.
 """
 
-from tests.test_views import PHONE, add
+from tests.test_views import PHONE, add, scan
 
 SHOP = "https://stomatalworld.vercel.app"
 ELSEWHERE = "http://localhost:5173"
@@ -39,15 +40,17 @@ def test_the_browser_itself_always_asks_again(client):
     assert "max-age=0" in cache_control(client.get("/api/v1/plants", headers=PHONE))
 
 
-def test_every_answer_varies_on_origin_even_with_no_origin_sent(client):
+def test_every_answer_varies_on_origin_even_with_no_origin_sent(client, admin_headers):
     """
-    A crawler or a server asking for the list sends no origin. If that answer were
-    cached without this, the next browser would be given a copy with no permission
-    in it and could not read the shop.
+    A crawler or a server asking sends no origin. If that answer were cached
+    without this, the next browser would be given a copy with no permission in it
+    and could not read the shop.
     """
-    for headers in (PHONE, {**PHONE, "Origin": SHOP}, {**PHONE, "Origin": ELSEWHERE}):
-        response = client.get("/api/v1/plants", headers=headers)
-        assert "origin" in response.headers.get("vary", "").lower(), headers
+    add(client, admin_headers)
+    for path in ("/api/v1/plants", "/api/v1/plants/peace-lily"):
+        for headers in (PHONE, {**PHONE, "Origin": SHOP}, {**PHONE, "Origin": ELSEWHERE}):
+            response = client.get(path, headers=headers)
+            assert "origin" in response.headers.get("vary", "").lower(), (path, headers)
 
 
 def test_each_website_is_told_it_may_read_the_list_and_only_itself(client):
@@ -81,16 +84,59 @@ def test_a_fresh_copy_is_the_same_list(client, admin_headers):
     assert [plant["slug"] for plant in fresh] == ["peace-lily", "zz-plant"]
 
 
-def test_a_plants_own_page_is_never_kept_at_the_edge(client, admin_headers):
+# ------------------------------------------------------------------ a plant's data
+
+
+def test_a_plants_data_is_kept_at_the_edge_the_same_way(client, admin_headers):
     """
-    Counting a scan happens when the request reaches the server. A cached page
-    would never reach it, and the dashboard's scan numbers would quietly stop.
+    The page a QR label opens used to wait on the server for this every time. It is
+    only safe to keep because scans are counted by the page, not by this request.
     """
     add(client, admin_headers)
     control = cache_control(client.get("/api/v1/plants/peace-lily", headers=PHONE))
 
+    assert "public" in control
+    assert "s-maxage=60" in control
+    assert "stale-while-revalidate=3600" in control
+    assert "max-age=0" in control
+
+
+def test_the_dashboards_editor_can_ask_for_a_fresh_plant(client, admin_headers):
+    add(client, admin_headers)
+    control = cache_control(client.get("/api/v1/plants/peace-lily?fresh=1", headers=PHONE))
+
+    assert "no-store" in control
     assert "s-maxage" not in control
-    assert "public" not in control
+
+
+def test_a_fresh_plant_shows_an_edit_straight_away(client, admin_headers):
+    add(client, admin_headers)
+    client.patch(
+        "/api/v1/plants/peace-lily",
+        headers=admin_headers,
+        json={"price_minor": 55500, "price_note": "after the edit"},
+    )
+
+    fresh = client.get("/api/v1/plants/peace-lily?fresh=1", headers=PHONE).json()
+    assert fresh["price_minor"] == 55500
+    assert fresh["price_note"] == "after the edit"
+
+
+def test_a_plant_that_is_not_there_is_never_kept(client):
+    """A wrong address must not be remembered as a page that exists, or the reverse."""
+    response = client.get("/api/v1/plants/no-such-plant", headers=PHONE)
+
+    assert response.status_code == 404
+    assert "s-maxage" not in cache_control(response)
+
+
+# ------------------------------------------------------------------ what is never kept
+
+
+def test_the_signal_that_counts_a_scan_is_never_kept_at_the_edge(client, admin_headers):
+    """If the CDN answered it, the server would never hear about the scan."""
+    add(client, admin_headers)
+    assert "s-maxage" not in cache_control(scan(client))
 
 
 def test_nothing_in_the_admin_is_kept_at_the_edge(client, admin_headers):

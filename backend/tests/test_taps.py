@@ -9,7 +9,7 @@ from alembic import command
 
 from app.models.plant_tap import PlantTap
 from tests.test_price_migration import at_revision_0003, point  # noqa: F401
-from tests.test_views import PHONE, add
+from tests.test_views import PHONE, add, scan
 
 CRAWLER = {"User-Agent": "WhatsApp/2.23.20.0 A"}
 
@@ -71,7 +71,7 @@ def test_a_tap_is_not_a_view(client, admin_headers, db_session):
 def test_the_dashboard_counts_carry_views_and_taps_together(client, admin_headers):
     add(client, admin_headers)
     for _ in range(2):
-        client.get("/api/v1/plants/peace-lily", headers=PHONE)
+        scan(client)
     tap(client)
 
     row = counts(client, admin_headers)["peace-lily"]
@@ -81,7 +81,7 @@ def test_the_dashboard_counts_carry_views_and_taps_together(client, admin_header
 
 def test_a_plant_that_was_looked_at_but_never_tapped_shows_zero_taps(client, admin_headers):
     add(client, admin_headers)
-    client.get("/api/v1/plants/peace-lily", headers=PHONE)
+    scan(client)
 
     row = counts(client, admin_headers)["peace-lily"]
     assert row["total"] == 1
@@ -111,7 +111,7 @@ def test_the_code_can_ship_before_its_migration(client, admin_headers, db_sessio
     must still list its plants.
     """
     add(client, admin_headers)
-    client.get("/api/v1/plants/peace-lily", headers=PHONE)
+    scan(client)
     PlantTap.__table__.drop(db_session.get_bind())
 
     assert tap(client).status_code == 204

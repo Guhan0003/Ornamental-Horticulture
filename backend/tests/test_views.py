@@ -1,5 +1,10 @@
 """
 Counting scans: which printed labels actually get used.
+
+A scan is counted when a plant's page tells the server it was shown
+(POST /plants/{slug}/view), not when its data is fetched. Fetching can be done by
+a CDN, a prefetch or a link preview, and the data is kept at the CDN, so counting
+there would be counting machines.
 """
 
 from datetime import date, timedelta
@@ -20,31 +25,39 @@ def add(client, admin_headers, slug="peace-lily"):
     assert response.status_code == 201, response.text
 
 
+def scan(client, slug="peace-lily", headers=PHONE):
+    """What a plant's page does once it is on someone's screen."""
+    return client.post(f"/api/v1/plants/{slug}/view", headers=headers)
+
+
 def counted(db_session, slug):
     row = db_session.query(PlantView).filter_by(slug=slug, day=date.today()).first()
     return row.views if row else 0
 
 
-def test_opening_a_page_counts_a_view(client, admin_headers, db_session):
+def test_a_page_that_is_shown_counts_a_view(client, admin_headers, db_session):
     add(client, admin_headers)
-    client.get("/api/v1/plants/peace-lily", headers=PHONE)
+    response = scan(client)
+
+    assert response.status_code == 204
+    assert response.content == b""
     assert counted(db_session, "peace-lily") == 1
 
 
 def test_views_add_up_over_the_day(client, admin_headers, db_session):
     add(client, admin_headers)
     for _ in range(3):
-        client.get("/api/v1/plants/peace-lily", headers=PHONE)
+        scan(client)
     assert counted(db_session, "peace-lily") == 3
 
 
 def test_a_page_that_does_not_exist_counts_nothing(client, admin_headers, db_session):
-    client.get("/api/v1/plants/no-such-plant", headers=PHONE)
+    assert scan(client, "no-such-plant").status_code == 404
     assert counted(db_session, "no-such-plant") == 0
 
 
 def test_the_search_list_is_not_a_view(client, admin_headers, db_session):
-    """Only opening a plant's own page counts."""
+    """Only a plant's own page being shown counts."""
     add(client, admin_headers)
     client.get("/api/v1/plants", headers=PHONE)
     assert counted(db_session, "peace-lily") == 0
@@ -53,24 +66,33 @@ def test_the_search_list_is_not_a_view(client, admin_headers, db_session):
 def test_counting_survives_a_plant_being_deleted(client, admin_headers, db_session):
     """A slug is permanent, so its history outlives the row."""
     add(client, admin_headers)
-    client.get("/api/v1/plants/peace-lily", headers=PHONE)
+    scan(client)
     client.delete("/api/v1/plants/peace-lily", headers=admin_headers)
     assert counted(db_session, "peace-lily") == 1
 
 
-def test_a_prefetched_page_is_not_a_view(client, admin_headers, db_session):
+def test_fetching_a_plants_data_is_never_a_view(client, admin_headers, db_session):
     """
-    Opening one plant fetches its three suggestions ahead of time. Counting
-    those would mean every page view inflated three others, and the numbers
-    would say nothing about which labels people actually scan.
+    The data is kept at the CDN, fetched ahead of time for the three suggestions
+    under a plant, and read by link previews. None of that is somebody looking at
+    a plant, and a cached answer would never reach the server to be counted anyway.
+    Only the page saying it was shown counts.
     """
     add(client, admin_headers)
+    client.get("/api/v1/plants/peace-lily", headers=PHONE)
     client.get("/api/v1/plants/peace-lily", headers={**PHONE, "X-Prefetch": "1"})
     assert counted(db_session, "peace-lily") == 0
 
-    # The same page, actually opened, still counts.
-    client.get("/api/v1/plants/peace-lily", headers=PHONE)
+    # The same page, actually shown, counts.
+    scan(client)
     assert counted(db_session, "peace-lily") == 1
+
+
+def test_the_signal_is_never_kept_at_the_edge(client, admin_headers):
+    """If the CDN answered it, the server would never hear about the scan."""
+    add(client, admin_headers)
+    control = scan(client).headers.get("cache-control", "")
+    assert "s-maxage" not in control
 
 
 # ------------------------------------------------------------------ bots
@@ -94,7 +116,19 @@ def test_a_phone_is_a_person():
 def test_a_crawler_does_not_inflate_the_count(client, admin_headers, db_session):
     """A number padded by bots is worse than no number."""
     add(client, admin_headers)
-    client.get("/api/v1/plants/peace-lily", headers={"User-Agent": "Googlebot/2.1"})
+    assert scan(client, headers={"User-Agent": "Googlebot/2.1"}).status_code == 204
+    assert counted(db_session, "peace-lily") == 0
+
+
+def test_a_link_preview_is_not_a_view(client, admin_headers, db_session):
+    add(client, admin_headers)
+    scan(client, headers={"User-Agent": "WhatsApp/2.23.20.0 A"})
+    assert counted(db_session, "peace-lily") == 0
+
+
+def test_a_signal_with_no_user_agent_is_not_a_view(client, admin_headers, db_session):
+    add(client, admin_headers)
+    scan(client, headers={"User-Agent": ""})
     assert counted(db_session, "peace-lily") == 0
 
 
@@ -111,9 +145,9 @@ def test_counts_come_back_most_looked_at_first(client, admin_headers, db_session
     add(client, admin_headers, "peace-lily")
     add(client, admin_headers, "zz-plant")
 
-    client.get("/api/v1/plants/zz-plant", headers=PHONE)
-    client.get("/api/v1/plants/zz-plant", headers=PHONE)
-    client.get("/api/v1/plants/peace-lily", headers=PHONE)
+    scan(client, "zz-plant")
+    scan(client, "zz-plant")
+    scan(client, "peace-lily")
 
     rows = client.get("/api/v1/views", headers=admin_headers).json()
     assert [row["slug"] for row in rows] == ["zz-plant", "peace-lily"]

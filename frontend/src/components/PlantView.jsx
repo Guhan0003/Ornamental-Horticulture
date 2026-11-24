@@ -7,7 +7,7 @@ import Icon from './Icon.jsx'
 import Leaf from './Leaf.jsx'
 import { PlantAdd } from './ListButton.jsx'
 import PhotoLine from './PhotoLine.jsx'
-import { imageSrc, prefetchPlant, recordTap } from '../lib/api.js'
+import { imageSrc, prefetchPlant, recordTap, recordView } from '../lib/api.js'
 import {
   availabilityLabel,
   buyAction,
@@ -34,6 +34,14 @@ export default function PlantView({ plant }) {
   const photos = [image, ...(plant.gallery ?? [])]
 
   usePageChrome(plant.common_name, backdrop)
+
+  // The page is on someone's screen, which is what a scan is. It is counted here,
+  // by the page, and not by the request that fetched the data: that data is kept
+  // at the CDN, and a request the CDN answers never reaches the server to count it.
+  useEffect(() => {
+    recordView(plant.slug)
+  }, [plant.slug])
+
   const rootRef = useReveal(plant.slug)
   const buyRef = useRef(null)
   const pastBuy = useScrolledPast(buyRef)

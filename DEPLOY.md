@@ -153,20 +153,25 @@ Then check on a phone:
     the frontend project's environment variables, and change the address in
     `frontend/index.html` (`og:image`) and `frontend/public/robots.txt` (`Sitemap:`).
     `API_URL` can be set the same way if the API ever moves.
-- **Speed:** the shop's plant list (`GET /api/v1/plants`) is kept at Vercel's CDN for a
-  minute, and for an hour more it is served instantly while a fresh copy is fetched, so the
-  shop opens in a fraction of a second instead of waiting on the server in Sydney, and
-  never waits for that server to wake up (it sleeps after a few quiet minutes, and waking
+- **Speed:** the shop's plant list (`GET /api/v1/plants`) and each plant's data
+  (`GET /api/v1/plants/{slug}`, what a QR scan opens) are kept at Vercel's CDN for a minute,
+  and for an hour more they are served instantly while a fresh copy is fetched, so the
+  pages open in a fraction of a second instead of waiting on the server in Sydney, and
+  never wait for that server to wake up (it sleeps after a few quiet minutes, and waking
   it was measured at up to 11 seconds). The cost: a change made in the dashboard shows on
   the shop within a minute when it is busy, but when it has been quiet the first visitor
-  sees the old list once and the next visitor sees the new one, so after editing, open the
-  shop twice to check. The dashboard asks with `?fresh=1` and is always current.
-  - A plant's own page is deliberately **not** cached: a scan is counted when the request
-    reaches the server, and a cached page would never get there. Do not add `s-maxage` to
-    it without first moving the counting somewhere else (a beacon, as the order-button
-    taps use).
-  - The list answers with `Vary: Origin`, so the cache keeps one copy per website that
-    asks. Keep that if the CORS settings change or a custom domain is added.
+  sees the old version once and the next visitor sees the new one, so after editing, open
+  the shop twice to check. The dashboard asks with `?fresh=1` (the list, and the plant
+  editor) and is always current.
+  - **Scans are counted by the page, not by the data request.** A request the CDN answers
+    never reaches the server, so the plant page tells the server it was shown with
+    `POST /api/v1/plants/{slug}/view` (a beacon, like the order-button taps), once per plant
+    per visit. Crawlers and link previews are ignored there, as before, and fetching
+    a plant's data (a prefetch for the three suggestions, a link preview) is never a view.
+    Never cache the `/view` or `/tap` endpoints, and do not move the counting back to
+    `GET /plants/{slug}`: tests guard both.
+  - The list and plants answer with `Vary: Origin`, so the cache keeps one copy per website
+    that asks. Keep that if the CORS settings change or a custom domain is added.
   - To see it working: `curl -sI -H "Origin: https://stomatalworld.vercel.app"
     https://stomatalworld-api.vercel.app/api/v1/plants` twice; the second answer should
     say `x-vercel-cache: HIT`.

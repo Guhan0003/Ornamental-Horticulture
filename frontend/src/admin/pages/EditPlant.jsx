@@ -18,8 +18,10 @@ export default function EditPlant() {
     let cancelled = false
     setPlant(null)
     setError(null)
+    // Fresh: the editor must work on what was last saved, not a copy the shop is
+    // shown for a minute.
     api
-      .getPlant(slug)
+      .getPlant(slug, { fresh: true })
       .then((data) => !cancelled && setPlant(data))
       .catch((e) => !cancelled && setError(e.status === 404 ? 'There is no plant at this address.' : e.message))
     return () => {

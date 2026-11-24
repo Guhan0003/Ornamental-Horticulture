@@ -100,12 +100,20 @@ export const imageSrc = (url) => (!url || /^https?:\/\//.test(url) ? url : `${BA
  */
 const visited = new Map()
 
-/** One plant, with everything its page needs. */
-export function getPlant(slug) {
-  const cached = visited.get(slug)
-  if (cached) return Promise.resolve(cached)
+/**
+ * One plant, with everything its page needs.
+ *
+ * Visitors get a copy the CDN keeps for a minute, which is what makes a QR scan
+ * open quickly. The dashboard's editor passes `fresh` so that it always works on
+ * what was last saved, never on a copy from a minute ago.
+ */
+export function getPlant(slug, { fresh = false } = {}) {
+  if (!fresh) {
+    const cached = visited.get(slug)
+    if (cached) return Promise.resolve(cached)
+  }
 
-  return request(`/plants/${encodeURIComponent(slug)}`).then((plant) => {
+  return request(`/plants/${encodeURIComponent(slug)}${fresh ? '?fresh=1' : ''}`).then((plant) => {
     visited.set(slug, plant)
     return plant
   })
@@ -124,10 +132,10 @@ export function prefetchPlant(slug) {
   const link = navigator.connection
   if (link?.saveData || /2g/.test(link?.effectiveType ?? '')) return
 
-  // Marked so the backend doesn't count it as somebody looking at the plant.
-  // Without this, opening one page would count a view for all three
-  // suggestions and the scan numbers would be fiction.
-  request(`/plants/${encodeURIComponent(slug)}`, { headers: { 'X-Prefetch': '1' } })
+  // Fetching a plant is not counted as a view (a page counts itself when it is
+  // shown, see recordView), so nothing needs marking, and with no special header
+  // the browser does not have to ask the server's permission first either.
+  request(`/plants/${encodeURIComponent(slug)}`)
     .then((plant) => visited.set(slug, plant))
     .catch(() => {})
 }
@@ -136,20 +144,40 @@ export function prefetchPlant(slug) {
 export const forgetPlant = (slug) => visited.delete(slug)
 
 /**
- * Count one press of a plant's WhatsApp order button.
+ * Tell the server something happened, without waiting for an answer.
  *
- * Fire and forget. It runs in the same moment WhatsApp opens, so it goes as a
- * beacon, which the browser finishes in the background even if the page is left,
- * and it can never slow the order down or show anyone an error.
+ * A beacon is finished by the browser in the background, even if the page is left
+ * in the same moment, and it cannot slow anything down or show anyone an error.
  */
-export function recordTap(slug) {
-  const url = `${BASE_URL}/api/v1/plants/${encodeURIComponent(slug)}/tap`
+function beacon(path) {
+  const url = `${BASE_URL}/api/v1${path}`
   try {
     if (navigator.sendBeacon?.(url)) return
     fetch(url, { method: 'POST', keepalive: true }).catch(() => {})
   } catch {
-    /* counting is never worth a broken button */
+    /* counting is never worth a broken page */
   }
+}
+
+/** Count one press of a plant's WhatsApp order button. */
+export const recordTap = (slug) => beacon(`/plants/${encodeURIComponent(slug)}/tap`)
+
+// Plants already counted during this page's life, so shuffling back and forth
+// between pages in one visit is one scan, as it was when scans were counted by
+// fetching the data (which a visit did once per plant).
+const counted = new Set()
+
+/**
+ * Count a plant's page as shown to someone: this is a scan.
+ *
+ * Called once the page is on screen. It used to be counted by the request that
+ * fetched the plant's data, but that data is now kept at the CDN for speed, and a
+ * request the CDN answers never reaches the server to be counted.
+ */
+export function recordView(slug) {
+  if (counted.has(slug)) return
+  counted.add(slug)
+  beacon(`/plants/${encodeURIComponent(slug)}/view`)
 }
 
 /**
