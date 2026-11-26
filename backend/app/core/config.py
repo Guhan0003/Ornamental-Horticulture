@@ -53,12 +53,18 @@ class Settings(BaseSettings):
     IMAGE_MAX_DIMENSION: int = 1600
     IMAGE_QUALITY: int = 80
 
-    # Origins allowed to call this API (the Vercel frontend, plus local dev).
-    # Override with a JSON list to add a custom domain without a code change.
+    # Origins allowed to call this API (the shop, plus local dev).
+    # Override with a JSON list to add another domain without a code change.
     CORS_ORIGINS: list[str] = [
         "http://localhost:5173",
         # `npm run preview` — a production build, checked locally.
         "http://localhost:4173",
+        # The shop's own domain. `www` is where it answers; the apex redirects
+        # there, but a browser sends the origin it started on, so both are listed.
+        "https://www.stomatalworld.app",
+        "https://stomatalworld.app",
+        # The Vercel addresses still answer, so a link shared or a label printed
+        # before the domain moved keeps working — and must keep being allowed.
         "https://stomatalworld.vercel.app",
         "https://ornamental-horticulture.vercel.app",
     ]

@@ -33,6 +33,13 @@ const BASE = `<!doctype html>
     <meta property="og:image" content="https://shop.example/og-image.png" />
     <meta name="twitter:card" content="summary" />
     <link rel="canonical" href="https://shop.example/" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "StomatalWorld"
+      }
+    </script>
   </head>
   <body><div id="root"></div></body>
 </html>`
@@ -95,6 +102,11 @@ test('injecting leaves exactly one title, description, canonical and image', () 
   assert.equal((page.match(/rel="canonical"/g) || []).length, 1)
   assert.equal((page.match(/property="og:image"/g) || []).length, 1)
   assert.equal((page.match(/name="twitter:card"/g) || []).length, 1)
+
+  // The base page says who the shop is; a plant's page says what the plant is.
+  // Two blocks would describe one page as both, so the first is taken out.
+  assert.equal((page.match(/application\/ld\+json/g) || []).length, 1)
+  assert.ok(!page.includes('"@type": "Organization"'))
 
   assert.ok(!page.includes('The generic site description'))
   assert.ok(!page.includes('Generic title'))

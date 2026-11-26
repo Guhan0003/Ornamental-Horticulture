@@ -6,7 +6,7 @@ are the promises that make that safe.
 
 from tests.test_views import PHONE, add, scan
 
-SHOP = "https://stomatalworld.vercel.app"
+SHOP = "https://www.stomatalworld.app"
 ELSEWHERE = "http://localhost:5173"
 
 

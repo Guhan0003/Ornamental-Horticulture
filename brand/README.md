@@ -60,6 +60,15 @@ plain forest.
 
 The `.svg` files are the source; the `-1080.png` files are what to upload.
 
+## QR codes
+
+`instagram/qr-philodendron-pink-princess.svg` (and its PNG) is the one QR code made so
+far, by hand, for a post. **It encodes the old address**,
+`https://stomatalworld.vercel.app/philodendron-pink-princess`, which still resolves — so
+it works, and anything already printed from it keeps working. Any new one should encode
+the domain instead: `https://www.stomatalworld.app/<slug>`. Generating them for the whole
+catalogue is Phase 2 in the [README](../README.md#phases).
+
 ## Regenerating
 
 The wordmark outlines were produced by instantiating the Fraunces variable font at

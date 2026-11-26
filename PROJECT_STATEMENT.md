@@ -22,6 +22,10 @@ Every plant in the store carries a **QR code** on or below it. The customer scan
 their phone and lands directly on that plant's page: name, description, care instructions,
 and the details that matter.
 
+```
+https://www.stomatalworld.app/peace-lily
+```
+
 ## Update, 2026-11-09: it is also a shop
 
 The site now sells the plants. Every plant has a price, the home page lists them all
@@ -45,7 +49,13 @@ That single decision drives everything:
 
 ## Current status
 
-Pre-launch. Target: **live within a month.**
+**Live at [www.stomatalworld.app](https://www.stomatalworld.app)**, with the catalogue
+priced and orders arriving on WhatsApp. The site answered at `stomatalworld.vercel.app`
+first and still does, because that is the address on the QR labels printed before the
+domain moved — and a printed label can never be changed.
+
+Phase 2, QR codes for every plant and printable labels from the dashboard, is the work
+in front of us.
 
 ## Roadmap
 

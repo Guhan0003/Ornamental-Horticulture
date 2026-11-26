@@ -9,7 +9,9 @@
       content="Live plants, ready to take home. See every plant with its price and order on WhatsApp — Ornamental Horticulture by StomatalWorld."
     />
     <!-- How the home page looks when its link is shared. A plant's own address gets
-         its own version of these, written in by api/plant.js. -->
+         its own version of these, written in by api/plant.js. The address here is
+         the shop's own domain; if it ever moves, change it in server/share.js and
+         frontend/public/robots.txt too. -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="StomatalWorld" />
     <meta property="og:title" content="StomatalWorld — Live plants, ready to take home" />
@@ -17,10 +19,29 @@
       property="og:description"
       content="See every plant with its price and order on WhatsApp."
     />
-    <meta property="og:image" content="https://stomatalworld.vercel.app/og-image.png" />
+    <meta property="og:image" content="https://www.stomatalworld.app/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
+    <!-- Who the site belongs to, for a search for the shop's name rather than for a
+         plant. A plant's page gets its own Product version of this instead, written
+         in by api/plant.js, which takes this one out. `sameAs` is the Instagram
+         handle built into src/data/contact.js: a crawler cannot run the page, so it
+         can't read the one saved in Settings. If the handle ever changes for good,
+         change it in both places. -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "StomatalWorld",
+        "alternateName": "Stomatal World",
+        "description": "Ornamental horticulture: live indoor and outdoor plants, with a page for every plant.",
+        "url": "https://www.stomatalworld.app/",
+        "logo": "https://www.stomatalworld.app/favicon-512.png",
+        "image": "https://www.stomatalworld.app/og-image.png",
+        "sameAs": ["https://www.instagram.com/stomatalworld"]
+      }
+    </script>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />

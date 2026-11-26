@@ -409,6 +409,6 @@ test('a full list still fits in one message link', () => {
   }
 
   // The longest the message can be: the most plants, the longest names, the most of each.
-  const { href } = listAction(items, '600001', 'https://stomatalworld.vercel.app')
+  const { href } = listAction(items, '600001', 'https://www.stomatalworld.app')
   assert.ok(href.length < 4000, `link is ${href.length} characters`)
 })

@@ -26,13 +26,27 @@ current directory.
 
 | | |
 |---|---|
-| `GET /api/v1/plants` | Every plant, A–Z, as a summary (name, photo, address). Public. |
-| `GET /api/v1/plants/{slug}` | One plant, with everything its page needs. Public. |
+| `GET /api/v1/plants` | Every plant, A–Z, as a summary (name, photo, address, price). Public. |
+| `GET /api/v1/plants/{slug}` | One plant, with everything its page needs, and three suggestions. Public. |
+| `POST /api/v1/plants/{slug}/view` | The page was shown to someone: one scan. Sent by the page as a beacon, answers `204`, counts after the response. Public. |
+| `POST /api/v1/plants/{slug}/tap` | The WhatsApp order button was pressed. Same shape as `/view`. Public. |
 | `POST /api/v1/plants` | Add a plant. Admin. |
 | `PATCH /api/v1/plants/{slug}` | Edit a plant; omitted fields are left alone. The slug can't change. Admin. |
 | `DELETE /api/v1/plants/{slug}` | Delete a plant and retire its address for good. Admin. |
+| `GET /api/v1/settings` | The shop's contact details, as saved in the dashboard. Public: every page builds its call and WhatsApp buttons from them. |
+| `PUT /api/v1/settings` | Save all five contact details at once. Admin. |
+| `GET /api/v1/views` | Scans and WhatsApp taps per plant — all time, the last `days` (30), and today. Admin. |
+| `GET /api/v1/views/{slug}` | One plant, day by day, with the quiet days as zero. Admin. |
 | `POST /api/v1/media` | Upload a photo; returns its URL, a blurred preview and a backdrop colour. Admin. |
 | `POST /api/v1/auth/login` · `GET /api/v1/auth/me` | The single admin login. |
+
+The two public reads — the list and a plant — are kept at the CDN for a minute, and
+served stale for an hour after that while a fresh copy is fetched, because the server
+sleeps and waking it was measured at up to 11 seconds (`api/v1/caching.py`). `?fresh=1`
+skips that, and the dashboard always asks that way. Nothing that counts, writes or
+belongs to the admin is ever cached. **Scans are counted by `POST /{slug}/view`, not by
+reading the plant** — a request the CDN answers never reaches the server. Tests guard
+both halves of that.
 
 ## A plant
 
@@ -72,9 +86,10 @@ Deep Dive icons: `origin`, `water`, `sun`, `sparkle`, `paw`, `pot`, `landscape`,
 
 `seed/peace-lily.json` is a complete example.
 
-**Addresses are permanent.** A slug can't be edited, can't be `admin`, `api` or `assets`
-(plant pages live at the top level of the site), and when a plant is deleted its slug goes
-into `retired_slugs` so no other plant can ever take it — an old QR label may still point
+**Addresses are permanent.** A slug can't be edited, and can't be `admin`, `api`,
+`assets` or `order` (plant pages live at the top level of the site, so a slug must not
+shadow a route the site uses itself). When a plant is deleted its slug goes into
+`retired_slugs` so no other plant can ever take it — an old QR label may still point
 there.
 
 ## The admin login
@@ -122,7 +137,14 @@ return 404. Every response also carries `X-Content-Type-Options: nosniff`,
 
 `CORS_ORIGINS` lists the sites allowed to call the API, and
 `CORS_ORIGIN_REGEX` matches preview deployments, whose hostname changes every
-push. Both are environment variables, so a custom domain needs no code change.
+push. Both are environment variables, so another domain needs no code change.
+
+The default list is the shop — `https://www.stomatalworld.app`, plus
+`https://stomatalworld.app`, which redirects there but is the origin a browser sends
+when it started on the apex — the Vercel addresses the site answered on before the
+domain (`stomatalworld.vercel.app`, `ornamental-horticulture.vercel.app`), and
+localhost for development. An old address stays on the list as long as an old QR label
+might still send someone to it.
 
 ## Photos clean up after themselves
 
@@ -154,6 +176,9 @@ aren't needed.
 
 Migration `0002` adds `login_attempts`, which holds the failed-login counts.
 
+Migration `0003` adds `plant_views`, one row per plant per day: how often each page was
+opened, which is how we tell which printed labels get scanned.
+
 Migration `0004` adds the price columns **and moves data**: a Deep Dive point titled
 like `Price-399/- with white decor pot` becomes `price_minor=39900` and
 `price_note="with white decor pot"`, and the point is removed from the page. Anything
@@ -166,6 +191,14 @@ Migration `0005` adds `plants.gallery` (more photos after the cover) with an emp
 for every plant that exists, so the site looks the same until someone adds a second photo.
 It only adds a column, so the old code keeps working against it: run it before deploying
 the code that reads it.
+
+Migration `0006` adds `plant_taps`, shaped like `plant_views`: how often each plant's
+WhatsApp order button was pressed.
+
+Migration `0007` adds `site_settings`, the contact details the dashboard edits. Both
+`0006` and `0007` only add a table, and the code that reads them treats a missing table
+as "nothing saved yet" rather than an error, so the code can ship a moment before its
+migration without a customer feeling it. Run them before deploying all the same.
 
 ## Tests
 
@@ -182,28 +215,42 @@ Each test runs against a fresh in-memory database, so they are isolated and fast
 app/
 ├── main.py               create_app: CORS, security headers, media, health
 ├── core/
-│   ├── config.py         settings from environment
+│   ├── config.py         settings from environment (including the allowed origins)
 │   └── security.py       password hashing + JWT
 ├── db/                   declarative base, engine, get_db
 ├── models/
 │   ├── plant.py          Plant and RetiredSlug
+│   ├── plant_view.py     scans per plant per day
+│   ├── plant_tap.py      order-button presses per plant per day
+│   ├── site_setting.py   one row per editable contact detail
 │   └── login_attempt.py  failed-login counts, per client
 ├── schemas/              request/response shapes and validation
-├── api/v1/endpoints/
-│   ├── auth.py           login, me
-│   ├── plants.py         public reads, admin add/edit/delete
-│   └── media.py          photo upload
+├── api/v1/
+│   ├── caching.py        the one place that decides what the CDN may keep
+│   └── endpoints/
+│       ├── auth.py       login, me
+│       ├── plants.py     public reads, the scan and tap beacons, admin add/edit/delete
+│       ├── settings.py   read the contact details, and save them
+│       ├── views.py      the dashboard's scan and tap counts
+│       └── media.py      photo upload
 └── services/
     ├── images.py         resize, WebP, blurred preview, backdrop colour
     ├── login_guard.py    failed-login lockout
     ├── photos.py         delete a photo nothing points at any more
+    ├── related.py        the three plants most like this one
+    ├── site_settings.py  read and write the contact details
+    ├── views.py          count a scan, and add them up
+    ├── taps.py           the same for order-button presses
     └── storage.py        Supabase Storage (upload, delete, list, download), or local disk in development
 migrations/               Alembic
 scripts/
-├── seed.py               load seed/*.json
+├── seed.py               load seed/*.json (only ever adds)
+├── retext.py             push a seed file's words onto a plant already in the database
 ├── backup.py             copy the Supabase database and photos to backups/
+├── brand_pot.py          print the StomatalWorld mark onto the pot in a photo
+├── corner_mark.py        the same mark in a corner, when there is no pot to print on
 └── hash_password.py      make ADMIN_PASSWORD_HASH
-seed/                     starter plants
+seed/                     the starter catalogue — one JSON file and one photo per plant
 ```
 
 ## Notes before launch

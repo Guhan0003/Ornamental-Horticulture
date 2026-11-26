@@ -3,10 +3,18 @@
 Two Vercel projects from this one repository, and one Supabase project:
 
 ```
-stomatalworld.vercel.app          frontend   Vercel project, builds from the repo root via vercel.json
+www.stomatalworld.app             frontend   Vercel project, builds from the repo root via vercel.json
 stomatalworld-api.vercel.app      backend    Vercel project, Root Directory: backend, backend/vercel.json
 Supabase                          Postgres database + plant-images bucket
 ```
+
+**The shop is live at [https://www.stomatalworld.app](https://www.stomatalworld.app).**
+`www` is the canonical host: `stomatalworld.app` redirects to it, and the Vercel
+address the site launched on, `stomatalworld.vercel.app`, still answers, so a link
+shared or a label printed before the move keeps working. Everything the site writes
+about itself — the canonical tag, the link previews, the sitemap — names the `www`
+address, so the same page is never offered to Google under two names. The API keeps
+its Vercel address; only the shop has a domain of its own.
 
 Everything below is on the free plans. Do the steps in order: the database is ready
 before any code that needs it goes live.
@@ -117,9 +125,9 @@ frontend project's Environment Variables and redeploy.
 
 Then check on a phone:
 
-- `https://stomatalworld.vercel.app/peace-lily` — the full page
-- `https://stomatalworld.vercel.app/` — the shop shows the Peace Lily
-- `https://stomatalworld.vercel.app/admin` — sign in with the password from step 2
+- `https://www.stomatalworld.app/peace-lily` — the full page
+- `https://www.stomatalworld.app/` — the shop shows the Peace Lily
+- `https://www.stomatalworld.app/admin` — sign in with the password from step 2
 
 ## Afterwards
 
@@ -133,10 +141,51 @@ Then check on a phone:
 - **Locked out of `/admin`:** five wrong passwords from one address and that address
   waits 15 minutes; the message on the sign-in form says how long is left. To clear it
   early, delete the row in Supabase → Table editor → `login_attempts`.
-- **Custom domain:** add it to the frontend project, then add it to the backend's
-  allowed origins, e.g. `CORS_ORIGINS=["https://plants.example.com","https://stomatalworld.vercel.app"]`.
-  Preview deployments are already covered by `CORS_ORIGIN_REGEX`. Then point the link
-  previews at it (see the next point).
+- **The domain is already set up**, and these are the four places it is written down,
+  should it ever move again:
+  1. the frontend Vercel project's **Domains** (`www.stomatalworld.app`, with
+     `stomatalworld.app` redirecting to it);
+  2. `DEFAULT_SITE_URL` in `server/share.js` — what the link previews and the sitemap
+     call the site. `SITE_URL` in the frontend project's environment variables
+     overrides it without a deploy, which is the quickest way to move in a hurry;
+  3. `og:image` in `frontend/index.html` and `Sitemap:` in `frontend/public/robots.txt`;
+  4. the backend's allowed origins — `CORS_ORIGINS` in its Vercel environment
+     variables, whose default list is in `backend/app/core/config.py`. A browser sends
+     the origin it started on, so the apex belongs on the list beside the `www` host,
+     e.g. `CORS_ORIGINS=["https://www.stomatalworld.app","https://stomatalworld.app"]`.
+     Preview deployments are already covered by `CORS_ORIGIN_REGEX`.
+
+  Leave the old addresses allowed when you add a new one. A QR label cannot be
+  reprinted once it is on a shelf, and the Vercel address is what the earliest ones
+  point at.
+- **The old addresses redirect, they don't disappear.** `vercel.json` sends every
+  request that arrives on `stomatalworld.vercel.app` to the same path on
+  `www.stomatalworld.app`, permanently (`308`). A label printed with the old address
+  still opens the right plant — it just finishes on the domain — and Google is told
+  the two are one page rather than two copies of it, which is what decides whether a
+  search for the shop's name shows the new address or the old one.
+  `ornamental-horticulture.vercel.app` redirects to `stomatalworld.vercel.app` in the
+  Vercel project's **Domains**, and then on again, so it takes two hops; point it
+  straight at `www.stomatalworld.app` there to make it one.
+- **Telling Google**, once the redirect is live:
+  1. **Search Console** → add and verify `https://www.stomatalworld.app` as a property
+     (the DNS record is the easiest, since the domain is yours).
+  2. Submit `https://www.stomatalworld.app/sitemap.xml` under **Sitemaps**. It is built
+     from the plant list, so it stays current by itself.
+  3. If the old address is already a verified property, run **Settings → Change of
+     address** from it to the new one. That, and the redirect, are what move the
+     search results across; without them Google keeps showing whichever address it
+     indexed first.
+  4. **URL Inspection → Request indexing** on the home page hurries the brand search
+     along. The rest follows from the sitemap.
+  5. The repository's **About → Website** on GitHub, and the link in the Instagram
+     profile, are the two places outside this repo that still name an address. Both
+     are worth pointing at the domain.
+
+  A search for the shop's name is answered by the home page, so that page carries an
+  `Organization` block naming it (in `frontend/index.html`). A plant's page carries a
+  `Product` block instead, written by `api/plant.js`, which takes the first one out —
+  one page is one thing, never both.
 - **Link previews and the sitemap:** a plant's link pasted into WhatsApp shows its photo,
   name and price, and Google gets a sitemap, because of two small functions in `api/`.
   `vercel.json` sends only crawlers (WhatsApp, Google, Facebook, Telegram and the like)
@@ -145,14 +194,14 @@ Then check on a phone:
   plant list by `api/sitemap.js`, so a plant added in the dashboard appears there on its
   own. Both read the plant list from the API, and the logic lives in `server/share.js`
   (`node --test server/share.test.js`).
-  - To check one: `curl -A "WhatsApp/2.23" https://stomatalworld.vercel.app/peace-lily`
-    should show that plant's `og:title` and `og:image`.
+  - To check one: `curl -A "WhatsApp/2.23" https://www.stomatalworld.app/peace-lily`
+    should show that plant's `og:title` and `og:image`, and a `canonical` and `og:url`
+    on `www.stomatalworld.app` — never on another host, whichever host was asked.
   - WhatsApp remembers a preview for a while. To see a changed one straight away, paste
     the link into Facebook's Sharing Debugger and press *Scrape Again*.
-  - With a custom domain, set `SITE_URL` (for example `https://plants.example.com`) in
-    the frontend project's environment variables, and change the address in
-    `frontend/index.html` (`og:image`) and `frontend/public/robots.txt` (`Sitemap:`).
-    `API_URL` can be set the same way if the API ever moves.
+  - The address they write is `DEFAULT_SITE_URL` in `server/share.js`, and `SITE_URL`
+    in the frontend project's environment variables overrides it with no deploy.
+    `API_URL` does the same if the API ever moves.
 - **Speed:** the shop's plant list (`GET /api/v1/plants`) and each plant's data
   (`GET /api/v1/plants/{slug}`, what a QR scan opens) are kept at Vercel's CDN for a minute,
   and for an hour more they are served instantly while a fresh copy is fetched, so the
@@ -171,10 +220,13 @@ Then check on a phone:
     Never cache the `/view` or `/tap` endpoints, and do not move the counting back to
     `GET /plants/{slug}`: tests guard both.
   - The list and plants answer with `Vary: Origin`, so the cache keeps one copy per website
-    that asks. Keep that if the CORS settings change or a custom domain is added.
-  - To see it working: `curl -sI -H "Origin: https://stomatalworld.vercel.app"
+    that asks. Keep that if the CORS settings change or another domain is added — the shop
+    now asks from `www.stomatalworld.app` and the old Vercel address asks as itself, and
+    each needs its own cached copy with its own permission in it.
+  - To see it working: `curl -sI -H "Origin: https://www.stomatalworld.app"
     https://stomatalworld-api.vercel.app/api/v1/plants` twice; the second answer should
-    say `x-vercel-cache: HIT`.
+    say `x-vercel-cache: HIT`, and `access-control-allow-origin` should name the origin
+    you sent.
   - Two smaller things keep the first load quick. The site sends a `Content-Type` only on
     requests that carry data, because on a plain read the browser would otherwise ask the
     API's permission first (an extra round trip of about a quarter of a second, for every
@@ -196,7 +248,7 @@ Then check on a phone:
   `vercel.json`, before the rule for plants because `order` looks like a plant's
   address) that writes the link-preview card, so WhatsApp shows "Plant order — 3 plants ·
   ₹1,197" with the first plant's photo. To check it:
-  `curl -A "WhatsApp/2.23" "https://stomatalworld.vercel.app/order?p=peace-lily"` should show
+  `curl -A "WhatsApp/2.23" "https://www.stomatalworld.app/order?p=peace-lily"` should show
   that `og:title`. `order` is a reserved address, so no plant can be given it.
 - **If the API ever moves off `*.vercel.app`:** the frontend's
   `Content-Security-Policy` in `vercel.json` allows `connect-src https:`, so a new

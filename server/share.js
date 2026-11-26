@@ -15,7 +15,13 @@
  */
 
 const SITE_NAME = 'StomatalWorld'
-const DEFAULT_SITE_URL = 'https://stomatalworld.vercel.app'
+// The shop's own domain. `www` is the canonical host: the apex redirects to it, and
+// the older stomatalworld.vercel.app address still answers, so a link that was
+// shared or a label that was printed before the domain moved keeps working. Every
+// address this file writes — canonical, og:url, the sitemap — must name one host,
+// or Google and WhatsApp treat the same page on two hosts as two pages. SITE_URL
+// overrides it without a code change if the domain ever moves again.
+const DEFAULT_SITE_URL = 'https://www.stomatalworld.app'
 const DEFAULT_API_URL = 'https://stomatalworld-api.vercel.app'
 
 const escapeHtml = (value) =>
@@ -108,13 +114,17 @@ function productJsonLd(meta, snap) {
 /** JSON that is safe to put inside a <script> element. */
 const jsonForScript = (value) => JSON.stringify(value).replace(/</g, '\\u003c')
 
-// The tags a plant's own page replaces, wherever the base page put them.
+// The tags a plant's own page replaces, wherever the base page put them. The last
+// one is the base page's Organization block: the home page says who the shop is,
+// and a plant's page says what the plant is, so only one of the two is ever on a
+// page. It is taken out here and the Product block is added below.
 const REPLACED_TAGS = [
   /<title>[\s\S]*?<\/title>/i,
   /<meta\s+name="description"[\s\S]*?\/>/gi,
   /<meta\s+property="og:[^"]*"[\s\S]*?\/>/gi,
   /<meta\s+name="twitter:[^"]*"[\s\S]*?\/>/gi,
   /<link\s+rel="canonical"[^>]*>/gi,
+  /<script\s+type="application\/ld\+json"[\s\S]*?<\/script>/gi,
 ]
 
 /**
