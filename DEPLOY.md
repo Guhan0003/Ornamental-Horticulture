@@ -160,7 +160,10 @@ Then check on a phone:
   point at.
 - **The old addresses redirect, they don't disappear.** `vercel.json` sends every
   request that arrives on `stomatalworld.vercel.app` to the same path on
-  `www.stomatalworld.app`, permanently (`308`). A label printed with the old address
+  `www.stomatalworld.app`, permanently (`308`). It takes two rules, not one:
+  `/:path*` matches a path with something in it and not the bare `/`, so the home
+  page needs its own rule, and without it the front door is the one address that
+  does not move. Check both after any change to this. A label printed with the old address
   still opens the right plant — it just finishes on the domain — and Google is told
   the two are one page rather than two copies of it, which is what decides whether a
   search for the shop's name shows the new address or the old one.
