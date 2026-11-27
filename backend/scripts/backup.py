@@ -21,6 +21,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import shutil
 import sys
 from datetime import date, datetime, timezone
@@ -82,6 +83,26 @@ def dump_database(engine: Engine, target: Path) -> dict[str, list[dict]]:
     return tables
 
 
+def escapes_its_folder(name: str) -> bool:
+    """
+    Whether an object's name would write somewhere other than where we put it.
+
+    A name comes from storage, where anyone with the dashboard can create one,
+    and it is a POSIX-style key however it is written. It has to be read that
+    way whatever computer the backup runs on: Windows does not call
+    "/etc/passwd" absolute, because it names no drive, and would have happily
+    copied it to the root of whichever drive the backup was being written to.
+    Both separators count, since a backslash is one on Windows and an ordinary
+    character in a key.
+    """
+    if name.startswith(("/", "\\")):
+        return True
+    # A drive, as in "C:evil.webp" — relative to Windows, and still not ours.
+    if re.match(r"^[A-Za-z]:", name):
+        return True
+    return ".." in re.split(r"[\\/]", name)
+
+
 def copy_images(storage: SupabaseStorage, target: Path) -> list[dict]:
     """Download every object in the bucket into target/, keeping its name."""
     target.mkdir()
@@ -90,7 +111,7 @@ def copy_images(storage: SupabaseStorage, target: Path) -> list[dict]:
     for name, size in sorted(storage.list_objects().items()):
         # Object names are whatever was uploaded, so keep one from stepping
         # outside the folder it is being copied into.
-        if Path(name).is_absolute() or ".." in Path(name).parts:
+        if escapes_its_folder(name):
             raise StorageError(f"Refusing to copy an object named {name!r}")
 
         data = storage.download(name)

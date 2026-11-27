@@ -106,7 +106,19 @@ def test_a_photo_that_arrives_short_fails_the_backup(backup, tmp_path):
         backup.copy_images(storage, tmp_path / "images")
 
 
-@pytest.mark.parametrize("name", ["../escape.webp", "/etc/passwd", "ok/../../escape.webp"])
+@pytest.mark.parametrize(
+    "name",
+    [
+        "../escape.webp",
+        "/etc/passwd",
+        "ok/../../escape.webp",
+        # Windows reads these as escapes too, and does not call "/etc/passwd"
+        # absolute, so the check cannot be left to the host's idea of a path.
+        "\\escape.webp",
+        "C:/escape.webp",
+        "ok\\..\\..\\escape.webp",
+    ],
+)
 def test_an_object_cannot_write_outside_the_backup(backup, tmp_path, name):
     storage = FakeStorage({name: b"x"})
 
