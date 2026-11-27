@@ -15,7 +15,9 @@
 const {
   DEFAULT_API_URL,
   DEFAULT_SITE_URL,
+  injectBody,
   injectMeta,
+  plantBodyHtml,
   plantMeta,
   requestOrigin,
 } = require('../server/share.js')
@@ -69,7 +71,10 @@ module.exports = async function handler(req, res) {
 
     const plant = await response.json()
     const meta = plantMeta(plant, { siteUrl: SITE_URL, apiUrl: API_URL })
-    res.status(200).send(injectMeta(html, meta, plant.snap))
+    // The tags say what the page is; the body says what it actually reads, so a
+    // crawler that runs no JavaScript gets the plant itself and not an empty div.
+    const page = injectMeta(html, meta, plant.snap)
+    res.status(200).send(injectBody(page, plantBodyHtml(plant, SITE_URL)))
   } catch (error) {
     // A generic preview is better than none, so a slow or sleeping API still
     // gets the crawler the page.

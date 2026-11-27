@@ -159,6 +159,122 @@ function injectMeta(html, meta, snap) {
   return page.replace('</head>', `    ${tags.join('\n    ')}\n  </head>`)
 }
 
+/* ---------------- the words of the page, for a crawler that runs no JavaScript ---------------- */
+
+/**
+ * The site draws itself with JavaScript, so what arrives in the HTML is an empty
+ * div. A person's browser fills it in; a crawler that does not run scripts sees
+ * nothing, and Google has to come back a second time, later, to render the page
+ * before it can read a word of it. On a new domain that delay is the difference
+ * between being found this month and next.
+ *
+ * So the crawler-only functions in /api put the page's own words into that div
+ * as plain HTML. This is the same content the browser would draw — the same
+ * names, the same prices, the same description — written out ahead of time. It
+ * has to stay that way: showing a crawler something a visitor cannot see is
+ * cloaking, and is punished. Nothing here is styled, because nobody looks at it.
+ *
+ * It is also how Google finds the plants at all. Every plant page is linked from
+ * the home page's list below, so a crawler can walk the whole shop from the
+ * front door instead of relying on the sitemap alone.
+ */
+function injectBody(html, bodyHtml) {
+  return html.replace(
+    '<div id="root"></div>',
+    `<div id="root">${bodyHtml}</div>`,
+  )
+}
+
+/** One plant's line in the shop's list: its name, what it costs, and a way in. */
+function plantListItem(plant, siteUrl) {
+  const e = escapeHtml
+  const price = formatPrice(plant.price_minor, plant.currency)
+  const sold = plant.availability === 'sold_out'
+
+  const detail = sold ? 'Sold out' : price || 'Price on request'
+  const note = plant.price_note ? ` (${e(plant.price_note)})` : ''
+  const latin = plant.scientific_name ? ` <i>${e(plant.scientific_name)}</i>` : ''
+
+  return (
+    `<li><a href="${e(siteUrl)}/${e(plant.slug)}">${e(plant.common_name)}</a>` +
+    `${latin} — ${e(detail)}${note}</li>`
+  )
+}
+
+/**
+ * The home page as words: the shop, then every plant with its price and a link.
+ *
+ * This is the page that answers a search for the shop's name, and until now the
+ * only thing on it a crawler could read was the title.
+ */
+function shopBodyHtml(plants, siteUrl = DEFAULT_SITE_URL) {
+  const e = escapeHtml
+  const items = plants.map((plant) => plantListItem(plant, siteUrl)).join('\n      ')
+
+  return `
+      <h1>${SITE_NAME} — Live plants, ready to take home</h1>
+      <p>Ornamental horticulture. Every plant has its own page, with what it costs,
+      the light it wants and how to look after it. Orders go to the shop on WhatsApp.</p>
+      <h2>Our plants</h2>
+      <ul>
+      ${items}
+      </ul>
+      <p><a href="${e(siteUrl)}/">${e(siteUrl.replace(/^https?:\/\//, ''))}</a></p>
+    `
+}
+
+/**
+ * One plant page as words: what it is, what it costs, and everything its page
+ * says about it, in the order the page says it.
+ *
+ * The suggestions at the end are links on purpose. They are how a crawler that
+ * arrives on one plant — which, with QR codes, is how almost everyone arrives —
+ * finds its way to the others.
+ */
+function plantBodyHtml(plant, siteUrl = DEFAULT_SITE_URL) {
+  const e = escapeHtml
+  const profile = plant.profile || {}
+  const light = profile.light || {}
+  const price = formatPrice(plant.price_minor, plant.currency)
+  const parts = [`<h1>${e(plant.common_name)}</h1>`]
+
+  if (plant.scientific_name) parts.push(`<p><i>${e(plant.scientific_name)}</i></p>`)
+
+  const availability =
+    plant.availability === 'sold_out'
+      ? 'Sold out'
+      : plant.availability === 'ask'
+        ? 'Ask us'
+        : 'In stock'
+  const amount = price || 'Price on request'
+  parts.push(
+    `<p>${e(amount)}${plant.price_note ? ` — ${e(plant.price_note)}` : ''} · ${e(availability)}</p>`,
+  )
+
+  parts.push(`<p>${e(plant.snap)}</p>`)
+
+  if (profile.environment) parts.push(`<p>Environment: ${e(profile.environment)}</p>`)
+  if (light.label) {
+    parts.push(`<p>Light: ${e(light.label)}${light.note ? ` (${e(light.note)})` : ''}</p>`)
+  }
+
+  for (const point of plant.deep_dive || []) {
+    parts.push(`<h2>${e(point.title)}</h2>`, `<p>${e(point.body)}</p>`)
+  }
+
+  const related = plant.related || []
+  if (related.length) {
+    const links = related
+      .map((other) => `<li><a href="${e(siteUrl)}/${e(other.slug)}">${e(other.common_name)}</a></li>`)
+      .join('\n      ')
+    parts.push('<h2>You may also like</h2>', `<ul>\n      ${links}\n      </ul>`)
+  }
+
+  parts.push(`<p><a href="${e(siteUrl)}/">All plants at ${SITE_NAME}</a></p>`)
+
+  return `\n      ${parts.join('\n      ')}\n    `
+}
+
 /* ---------------- an order, for the link in a customer's WhatsApp message ---------------- */
 
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
@@ -302,12 +418,15 @@ module.exports = {
   clip,
   escapeHtml,
   formatPrice,
+  injectBody,
   injectMeta,
   injectOrderMeta,
   orderMeta,
   parseOrder,
+  plantBodyHtml,
   plantMeta,
   productJsonLd,
   requestOrigin,
+  shopBodyHtml,
   sitemapXml,
 }

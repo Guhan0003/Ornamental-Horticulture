@@ -289,3 +289,91 @@ test('only crawlers are sent to the order card, and before the rule for plants',
   assert.ok(crawler.test('WhatsApp/2.23.20.0 A'))
   assert.ok(!crawler.test('Mozilla/5.0 (iPhone; CPU iPhone OS 17_0) AppleWebKit/605.1.15 Safari/604.1'))
 })
+
+/* ---------------- the words a crawler gets, since the page draws itself ---------------- */
+
+const { injectBody, plantBodyHtml, shopBodyHtml } = require('./share.js')
+
+const fullBirkin = {
+  ...birkin,
+  price_note: 'with white decor pot',
+  profile: {
+    environment: 'Indoor',
+    light: { label: 'Bright indirect light', note: 'No direct sun' },
+  },
+  deep_dive: [
+    { icon: 'origin', title: 'Origin & Habit', body: 'A cultivated sport of Philodendron.' },
+    { icon: 'water', title: 'Key Care Rule', body: 'Let the top inch dry out.' },
+  ],
+  related: [{ slug: 'neon-pothos', common_name: 'Neon Pothos' }],
+}
+
+test('the body a crawler gets is the page’s own words, not an empty div', () => {
+  const page = injectBody(BASE, plantBodyHtml(fullBirkin, SITE))
+
+  assert.ok(!page.includes('<div id="root"></div>'))
+  assert.ok(page.includes('<h1>Philodendron Birkin</h1>'))
+  assert.ok(page.includes('₹449'))
+  assert.ok(page.includes('with white decor pot'))
+  assert.ok(page.includes('A compact, self-heading Philodendron'))
+  // Every Deep Dive point, in the order the page shows them.
+  assert.ok(page.indexOf('Origin &amp; Habit') < page.indexOf('Key Care Rule'))
+  assert.ok(page.includes('Let the top inch dry out.'))
+  assert.ok(page.includes('Bright indirect light'))
+})
+
+test('a plant links on to the ones it suggests, so a crawler can walk the shop', () => {
+  const body = plantBodyHtml(fullBirkin, SITE)
+
+  assert.ok(body.includes(`<a href="${SITE}/neon-pothos">Neon Pothos</a>`))
+  assert.ok(body.includes(`<a href="${SITE}/">All plants at StomatalWorld</a>`))
+})
+
+test('the home page lists every plant, priced, sold out or on request', () => {
+  const body = shopBodyHtml(shopList, SITE)
+
+  for (const plant of shopList) {
+    assert.ok(body.includes(`href="${SITE}/${plant.slug}"`), `${plant.slug} is not linked`)
+    assert.ok(body.includes(plant.common_name), `${plant.common_name} is missing`)
+  }
+  assert.ok(body.includes('₹449'))
+  assert.ok(body.includes('Price on request'))
+  assert.ok(body.includes('Sold out'))
+  // A sold-out plant shows that it is, rather than a price it cannot be had at.
+  assert.ok(!body.includes('₹100'))
+})
+
+test('a plant named with markup cannot write its own HTML into the page', () => {
+  const nasty = { ...shopList[1], common_name: '<script>alert(1)</script>', scientific_name: '"><b>x' }
+  const body = shopBodyHtml([nasty], SITE)
+
+  assert.ok(!body.includes('<script>'))
+  assert.ok(!body.includes('<b>'))
+  assert.ok(body.includes('&lt;script&gt;'))
+})
+
+test('only crawlers are sent to the home card, and the rule is the bare address', () => {
+  const { rewrites } = JSON.parse(require('node:fs').readFileSync(`${__dirname}/../vercel.json`, 'utf8'))
+  const home = rewrites.findIndex((rule) => rule.source === '/')
+  const everythingElse = rewrites.findIndex((rule) => rule.source === '/(.*)')
+
+  assert.ok(home >= 0, 'the home page has no rule of its own')
+  assert.equal(rewrites[home].destination, '/api/home')
+  // "/:path*" and "/:slug(...)" both want a segment, so the front door needs its own.
+  assert.ok(home < everythingElse)
+
+  const crawler = new RegExp(`^${rewrites[home].has[0].value}$`)
+  assert.ok(crawler.test('Googlebot/2.1 (+http://www.google.com/bot.html)'))
+  assert.ok(!crawler.test('Mozilla/5.0 (iPhone; CPU iPhone OS 17_0) AppleWebKit/605.1.15 Safari/604.1'))
+})
+
+test('the old address redirects from its front door as well as its plant pages', () => {
+  const { redirects } = JSON.parse(require('node:fs').readFileSync(`${__dirname}/../vercel.json`, 'utf8'))
+  const old = 'stomatalworld.vercel.app'
+  const sources = redirects.filter((rule) => rule.has[0].value === old).map((rule) => rule.source)
+
+  // The bare "/" is the one a person types, and "/:path*" does not match it.
+  assert.ok(sources.includes('/'), 'the old home page does not redirect')
+  assert.ok(sources.includes('/:path*'), 'the old inner pages do not redirect')
+  for (const rule of redirects) assert.equal(rule.permanent, true)
+})
